@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>inicio</title>
+  <link rel="stylesheet" href="/src/css/inicio.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+ 
+  <header class="navbar">
+    <div class="logo">
+        <img src="/src/images/image-removebg-preview.png" alt="Logo do site"/>
+    </div>
+ 
+    <div class="search-bar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="search-input" placeholder="Buscar serviços"/>
+    </div>
+ 
+    <div class="nav-actions">
+      <button class="btn-outline">Painel</button>
+      <button class="btn-solid">Meu Perfil</button>
+      <button class="btn-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+ 
+  <main>
+    <section class="hero">
+      <h1>Encontre quem faz direito.</h1>
+      <p>Profissionais verificados com avaliações reais do seu bairro</p>
+      <div class="filters">
+        <select id="sel-servico">
+          <option value="">Serviço</option>
+          <option value="construcao">Construção</option>
+          <option value="eletrica">Elétrica</option>
+          <option value="hidraulica">Hidráulica</option>
+          <option value="pintura">Pintura</option>
+          <option value="limpeza">Limpeza</option>
+          <option value="jardinagem">Jardinagem</option>
+          <option value="mudancas">Mudanças</option>
+        </select>
+        <select id="sel-bairro">
+          <option value="">Bairro</option>
+          <option value="centro">Centro</option>
+          <option value="gleba-a">Gleba A</option>
+          <option value="inocoop">Inocoop</option>
+        </select>
+      </div>
+    </section>
+ 
+    <section class="categories">
+      <button class="cat" data-cat="construcao">Construção</button>
+      <button class="cat" data-cat="eletrica">Elétrica</button>
+      <button class="cat" data-cat="hidraulica">Hidráulica</button>
+      <button class="cat" data-cat="pintura">Pintura</button>
+      <button class="cat" data-cat="limpeza">Limpeza</button>
+      <button class="cat" data-cat="jardinagem">Jardinagem</button>
+      <button class="cat" data-cat="mudancas">Mudanças</button>
+      <button class="cat" data-cat="">Mais serviços</button>
+    </section>
+ 
+    <section class="cards" id="cards">
+      <div class="card" data-cat="construcao" data-bairro="centro">
+        <div class="card-top">
+          <div class="av av-m">M</div>
+          <div class="card-info">
+            <strong>Marcos Silva</strong>
+            <span class="tag">@construção</span>
+            <span class="loc">📍 Centro</span>
+          </div>
+        </div>
+        <p>Especializado em execuções residenciais e comerciais. Mais de 15 anos de experiência.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(127 avaliações)</small></div>
+        <button class="btn-msg" data-name="Marcos Silva">Enviar mensagem</button>
+      </div>
+ 
+      <div class="card" data-cat="eletrica" data-bairro="gleba-a">
+        <div class="card-top">
+          <div class="av av-s">S</div>
+          <div class="card-info">
+            <strong>Sofia Paiva</strong>
+            <span class="tag">@elétrica</span>
+            <span class="loc">📍 Gleba A</span>
+          </div>
+        </div>
+        <p>Serviços residenciais, reparos e consertos. Projetos e manutenções elétricas.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(203 avaliações)</small></div>
+        <button class="btn-msg" data-name="Sofia Paiva">Enviar mensagem</button>
+      </div>
+ 
+      <div class="card" data-cat="hidraulica" data-bairro="inocoop">
+        <div class="card-top">
+          <div class="av av-c">C</div>
+          <div class="card-info">
+            <strong>Carl</strong>
+            <span class="tag">@hidráulica</span>
+            <span class="loc">📍 Inocoop</span>
+          </div>
+        </div>
+        <p>Projetos, instalações e manutenções hidráulicas. Mais de 10 anos no mercado.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(89 avaliações)</small></div>
+        <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+      </div>
+
+      <div class="card" data-cat="hidraulica" data-bairro="inocoop">
+        <div class="card-top">
+          <div class="av av-c">C</div>
+          <div class="card-info">
+            <strong>Carlos Oliveira</strong>
+            <span class="tag">@hidráulica</span>
+            <span class="loc">📍 Inocoop</span>
+          </div>
+        </div>
+        <p>Projetos, instalações e manutenções hidráulicas. Mais de 10 anos no mercado.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(89 avaliações)</small></div>
+        <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+      </div>
+
+      <div class="card" data-cat="hidraulica" data-bairro="inocoop">
+        <div class="card-top">
+          <div class="av av-c">C</div>
+          <div class="card-info">
+            <strong>Carlos Oliveira</strong>
+            <span class="tag">@hidráulica</span>
+            <span class="loc">📍 Inocoop</span>
+          </div>
+        </div>
+        <p>Projetos, instalações e manutenções hidráulicas. Mais de 10 anos no mercado.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(89 avaliações)</small></div>
+        <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+      </div>
+
+      <div class="card" data-cat="hidraulica" data-bairro="inocoop">
+        <div class="card-top">
+          <div class="av av-c">C</div>
+          <div class="card-info">
+            <strong>Carlos Oliveira</strong>
+            <span class="tag">@hidráulica</span>
+            <span class="loc">📍 Inocoop</span>
+          </div>
+        </div>
+        <p>Projetos, instalações e manutenções hidráulicas. Mais de 10 anos no mercado.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(89 avaliações)</small></div>
+        <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+      </div>
+
+    </section>
+  </main>
+ 
+  <script src="script.js"></script>
+</body>
+</html>
