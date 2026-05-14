@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexlar - Perfil do Profissional</title>
+  <link rel="stylesheet" href="/src/css/perfilAutonomo.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar__logo">
+      <span class="navbar__grid-icon">⠿</span>
+      Nexlar
+    </div>
+    <button class="btn btn--outline" onclick="history.back()">Voltar</button>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- HERO CARD -->
+    <div class="hero-card">
+      <div class="hero-card__left">
+        <div class="avatar">M</div>
+        <div class="hero-card__info">
+          <h1 class="hero-card__name">Marcos Silva</h1>
+          <span class="hero-card__tag">@construção</span>
+          <div class="hero-card__meta">
+            <span class="stars" aria-label="4.8 estrelas">★★★★<span class="star-half">★</span></span>
+            <span class="hero-card__rating">4.8</span>
+            <span class="hero-card__dot">•</span>
+            <span class="hero-card__reviews">127 avaliações</span>
+          </div>
+          <div class="hero-card__location">
+            <span class="icon-pin"></span> Centro, Camaçari - BA
+          </div>
+        </div>
+      </div>
+      <button class="btn btn--primary">
+        <span></span> Enviar Mensagem
+      </button>
+    </div>
+
+    <!-- TWO COLUMN LAYOUT -->
+    <div class="two-col">
+
+      <!-- LEFT COLUMN -->
+      <div class="left-col">
+
+        <!-- SOBRE -->
+        <section class="card" id="sobre">
+          <h2 class="section-title">Sobre</h2>
+          <p class="about-text">Especializado em execuções residenciais e comerciais. Mais de 15 anos de experiência.</p>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <span class="stat-label">Experiência</span>
+              <span class="stat-value">15+ anos</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Projetos</span>
+              <span class="stat-value">200+</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- PORTFÓLIO -->
+        <section class="card" id="portfolio">
+          <h2 class="section-title">Portfólio de Trabalhos</h2>
+          <div class="portfolio-grid">
+            <div class="portfolio-item"><span class="camera-icon">📷</span></div>
+            <div class="portfolio-item"><span class="camera-icon">📷</span></div>
+            <div class="portfolio-item"><span class="camera-icon">📷</span></div>
+            <div class="portfolio-item"><span class="camera-icon">📷</span></div>
+            <div class="portfolio-item"><span class="camera-icon">📷</span></div>
+            <div class="portfolio-item"><span class="camera-icon">📷</span></div>
+          </div>
+        </section>
+
+        <!-- AVALIAÇÕES -->
+        <section class="card" id="avaliacoes">
+          <h2 class="section-title">Avaliações (127)</h2>
+
+          <div class="review">
+            <div class="review__header">
+              <div class="review__avatar" style="background:#7c6ef7">MS</div>
+              <div class="review__meta">
+                <span class="review__name">Maria Santos</span>
+                <span class="review__date">Há 2 semanas</span>
+              </div>
+            </div>
+            <div class="review__stars">★★★★★</div>
+            <p class="review__text">Excelente profissional! Muito caprichoso e pontual. Recomendo!</p>
+          </div>
+
+          <div class="review">
+            <div class="review__header">
+              <div class="review__avatar" style="background:#5b7cf7">JC</div>
+              <div class="review__meta">
+                <span class="review__name">João Carlos</span>
+                <span class="review__date">Há 1 mês</span>
+              </div>
+            </div>
+            <div class="review__stars">★★★★★</div>
+            <p class="review__text">Trabalho impecável. Cumpriu todos os prazos e o resultado ficou perfeito.</p>
+          </div>
+
+          <div class="review">
+            <div class="review__header">
+              <div class="review__avatar" style="background:#9b6ef7">AP</div>
+              <div class="review__meta">
+                <span class="review__name">Ana Paula</span>
+                <span class="review__date">Há 2 meses</span>
+              </div>
+            </div>
+            <div class="review__stars">★★★★<span style="color:#ddd">★</span></div>
+            <p class="review__text">Muito bom! Pequeno atraso no cronograma, mas a qualidade do trabalho compensou.</p>
+          </div>
+
+          <button class="btn btn--full btn--outline-dark" id="verTodasBtn">Ver Todas as Avaliações</button>
+        </section>
+
+      </div>
+
+      <!-- RIGHT COLUMN (SIDEBAR) -->
+      <aside class="sidebar">
+
+        <!-- AVALIAR -->
+        <div class="card">
+          <h3 class="sidebar-title">Avalie este Profissional</h3>
+          <div class="star-rating" id="starRating" role="group" aria-label="Avaliação">
+            <span class="star-btn" data-value="1" tabindex="0">☆</span>
+            <span class="star-btn" data-value="2" tabindex="0">☆</span>
+            <span class="star-btn" data-value="3" tabindex="0">☆</span>
+            <span class="star-btn" data-value="4" tabindex="0">☆</span>
+            <span class="star-btn" data-value="5" tabindex="0">☆</span>
+          </div>
+          <p class="star-hint" id="starHint">Clique nas estrelas para avaliar</p>
+        </div>
+
+        <!-- ESPECIALIDADES -->
+        <div class="card">
+          <h3 class="sidebar-title">Especialidades</h3>
+          <div class="tags">
+            <span class="tag">Construção Civil</span>
+            <span class="tag">Reformas</span>
+            <span class="tag">Acabamentos</span>
+            <span class="tag">Alvenaria</span>
+          </div>
+        </div>
+
+        <!-- DISPONIBILIDADE -->
+        <div class="card card--available">
+          <div class="available-dot"></div>
+          <strong>Disponível Agora</strong>
+          <p class="available-sub">Tempo médio de resposta: <strong>2 horas</strong></p>
+        </div>
+
+      </aside>
+
+    </div>
+  </main>
+
+  <script src="/src/js/perfilAutonomo.js"></script>
+</body>
+</html>
