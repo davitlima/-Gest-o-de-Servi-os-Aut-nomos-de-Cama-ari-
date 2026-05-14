@@ -342,3 +342,23 @@ main {
     padding: 0 16px; /* Reduz padding lateral no celular */
   }
 }
+.stars {
+  display: inline-block;
+  line-height: 1;
+}
+
+.stars::before {
+  content: "★★★★★";
+  letter-spacing: 2px;
+  /* Cria o efeito de preenchimento dourado */
+  background: linear-gradient(90deg, #f5a623 var(--percent), #444 var(--percent));
+  -webkit-background-clip: text;
+  background-clip: text;        
+  -webkit-text-fill-color: transparent;
+  font-size: 16px;
+}
+/* Define quanto da estrela será pintado de dourado */
+.stars[data-r="3.5"] { --percent: 70%; }
+.stars[data-r="4.0"] { --percent: 80%; }
+.stars[data-r="4.5"] { --percent: 90%; }
+.stars[data-r="5.0"] { --percent: 100%; }

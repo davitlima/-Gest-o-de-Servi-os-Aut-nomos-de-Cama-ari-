@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>inicio</title>
+  <title>Nexlar - Início</title>
   <link rel="stylesheet" href="/src/css/inicio.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
- 
+
   <header class="navbar">
     <div class="logo">
         <img src="/src/images/image-removebg-preview.png" alt="Logo do site"/>
     </div>
- 
+
     <div class="search-bar">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
       <input type="text" id="search-input" placeholder="Buscar serviços"/>
     </div>
- 
+
     <div class="nav-actions">
       <button class="btn-outline">Painel</button>
       <button class="btn-solid">Meu Perfil</button>
@@ -33,7 +33,7 @@
       </button>
     </div>
   </header>
- 
+
   <main>
     <section class="hero">
       <h1>Encontre quem faz direito.</h1>
@@ -50,14 +50,44 @@
           <option value="mudancas">Mudanças</option>
         </select>
         <select id="sel-bairro">
-          <option value="">Bairro</option>
-          <option value="centro">Centro</option>
-          <option value="gleba-a">Gleba A</option>
-          <option value="inocoop">Inocoop</option>
-        </select>
+  <option value="">Bairro (Todos)</option>
+  
+  <optgroup label="Sede">
+    <option value="centro">Centro</option>
+    <option value="gleba-a">Gleba A</option>
+    <option value="gleba-b">Gleba B</option>
+    <option value="gleba-c">Gleba C</option>
+    <option value="gleba-e">Gleba E</option>
+    <option value="inocoop">Inocoop</option>
+    <option value="ponto-certo">Ponto Certo</option>
+    <option value="parque-satelite">Parque Satélite</option>
+    <option value="ficam">Ficam</option>
+    <option value="mangueiral">Mangueiral</option>
+    <option value="nova-vitoria">Nova Vitória</option>
+    <option value="lama-preta">Lama Preta</option>
+    <option value="verde-horizonte">Verde Horizonte</option>
+    <option value="parafuso">Parafuso</option>
+    <option value="parque-nascente">Parque Nascente</option>
+    <option value="gravata">Gravatá</option>
+    <option value="phoc-1">Phoc I</option>
+    <option value="phoc-2">Phoc II</option>
+    <option value="phoc-3">Phoc III</option>
+  </optgroup>
+
+  <optgroup label="Orla (Costa de Camaçari)">
+    <option value="busca-vida">Busca Vida</option>
+    <option value="vila-de-abrantes">Vila de Abrantes</option>
+    <option value="jaua">Jauá</option>
+    <option value="arembepe">Arembepe</option>
+    <option value="barra-do-jacuipe">Barra do Jacuípe</option>
+    <option value="guarajuba">Guarajuba</option>
+    <option value="itacimirim">Itacimirim</option>
+    <option value="monte-gordo">Monte Gordo</option>
+  </optgroup>
+</select>
       </div>
     </section>
- 
+
     <section class="categories">
       <button class="cat" data-cat="construcao">Construção</button>
       <button class="cat" data-cat="eletrica">Elétrica</button>
@@ -68,7 +98,7 @@
       <button class="cat" data-cat="mudancas">Mudanças</button>
       <button class="cat" data-cat="">Mais serviços</button>
     </section>
- 
+
     <section class="cards" id="cards">
       <div class="card" data-cat="construcao" data-bairro="centro">
         <div class="card-top">
@@ -83,7 +113,7 @@
         <div class="rating"><span class="stars" data-r="3.5"></span><small>(127 avaliações)</small></div>
         <button class="btn-msg" data-name="Marcos Silva">Enviar mensagem</button>
       </div>
- 
+
       <div class="card" data-cat="eletrica" data-bairro="gleba-a">
         <div class="card-top">
           <div class="av av-s">S</div>
@@ -94,22 +124,22 @@
           </div>
         </div>
         <p>Serviços residenciais, reparos e consertos. Projetos e manutenções elétricas.</p>
-        <div class="rating"><span class="stars" data-r="3.5"></span><small>(203 avaliações)</small></div>
+        <div class="rating"><span class="stars" data-r="4.5"></span><small>(203 avaliações)</small></div>
         <button class="btn-msg" data-name="Sofia Paiva">Enviar mensagem</button>
       </div>
- 
-      <div class="card" data-cat="hidraulica" data-bairro="inocoop">
+
+    <div class="card" data-cat="jardinagem" data-bairro="inocoop">
         <div class="card-top">
-          <div class="av av-c">C</div>
+          <div class="av" style="background: linear-gradient(135deg,#134E5E,#71B280);">F</div>
           <div class="card-info">
-            <strong>Carl</strong>
-            <span class="tag">@hidráulica</span>
+            <strong>Fernando Costa</strong>
+            <span class="tag">@jardinagem</span>
             <span class="loc">📍 Inocoop</span>
           </div>
         </div>
-        <p>Projetos, instalações e manutenções hidráulicas. Mais de 10 anos no mercado.</p>
-        <div class="rating"><span class="stars" data-r="3.5"></span><small>(89 avaliações)</small></div>
-        <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+        <p>Instalação de sistemas de irrigação automática e manutenção de gramados esportivos.</p>
+        <div class="rating"><span class="stars" data-r="4.0"></span><small>(47 avaliações)</small></div>
+        <button class="btn-msg" data-name="Fernando Costa">Enviar mensagem</button>
       </div>
 
       <div class="card" data-cat="hidraulica" data-bairro="inocoop">
@@ -121,42 +151,124 @@
             <span class="loc">📍 Inocoop</span>
           </div>
         </div>
-        <p>Projetos, instalações e manutenções hidráulicas. Mais de 10 anos no mercado.</p>
-        <div class="rating"><span class="stars" data-r="3.5"></span><small>(89 avaliações)</small></div>
+        <p>Projetos, instalações e manutenções hidráulicas completas.</p>
+        <div class="rating"><span class="stars" data-r="4.0"></span><small>(89 avaliações)</small></div>
         <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
       </div>
 
-      <div class="card" data-cat="hidraulica" data-bairro="inocoop">
+     <div class="card" data-cat="mudancas" data-bairro="centro">
+        <div class="card-top">
+          <div class="av" style="background: linear-gradient(135deg,#FF512F,#DD2476);">R</div>
+          <div class="card-info">
+            <strong>Roberto Alencar</strong>
+            <span class="tag">@mudanças</span>
+            <span class="loc">📍 Centro</span>
+          </div>
+        </div>
+        <p>Mudanças residenciais com equipe especializada em embalagens frágeis e proteção de móveis.</p>
+        <div class="rating"><span class="stars" data-r="5.0"></span><small>(34 avaliações)</small></div>
+        <button class="btn-msg" data-name="Roberto Alencar">Enviar mensagem</button>
+      </div>
+
+      <div class="card" data-cat="limpeza" data-bairro="inocoop">
         <div class="card-top">
           <div class="av av-c">C</div>
           <div class="card-info">
-            <strong>Carlos Oliveira</strong>
-            <span class="tag">@hidráulica</span>
-            <span class="loc">📍 Inocoop</span>
+            <strong>Julia Silva</strong>
+            <span class="tag">@Limpeza</span>
+            <span class="loc">📍 Arembepe</span>
           </div>
         </div>
-        <p>Projetos, instalações e manutenções hidráulicas. Mais de 10 anos no mercado.</p>
-        <div class="rating"><span class="stars" data-r="3.5"></span><small>(89 avaliações)</small></div>
-        <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+        <p>Limpeza residencial e pós-obra detalhada com eficiência.</p>
+        <div class="rating"><span class="stars" data-r="4.5"></span><small>(89 avaliações)</small></div>
+        <button class="btn-msg" data-name="Julia Silva">Enviar mensagem</button>
       </div>
-
-      <div class="card" data-cat="hidraulica" data-bairro="inocoop">
+<div class="card" data-cat="mudancas" data-bairro="gleba-a">
         <div class="card-top">
-          <div class="av av-c">C</div>
+          <div class="av av-m" style="background: linear-gradient(135deg,#f093fb,#f5576c);">R</div>
           <div class="card-info">
-            <strong>Carlos Oliveira</strong>
+            <strong>Ricardo Freire</strong>
+            <span class="tag">@mudanças</span>
+            <span class="loc">📍 Gleba A</span>
+          </div>
+        </div>
+        <p>Transportes e mudanças locais e intermunicipais com montagem inclusa.</p>
+        <div class="rating"><span class="stars" data-r="5.0"></span><small>(42 avaliações)</small></div>
+        <button class="btn-msg" data-name="Ricardo Freire">Enviar mensagem</button>
+      </div>
+
+      <div class="card" data-cat="eletrica" data-bairro="centro">
+        <div class="card-top">
+          <div class="av av-s" style="background: linear-gradient(135deg,#4facfe,#00f2fe);">A</div>
+          <div class="card-info">
+            <strong>Ana Beatriz</strong>
+            <span class="tag">@elétrica</span>
+            <span class="loc">📍 Centro</span>
+          </div>
+        </div>
+        <p>Eletricista predial e residencial. Instalação de chuveiros e ventiladores.</p>
+        <div class="rating"><span class="stars" data-r="4.5"></span><small>(78 avaliações)</small></div>
+        <button class="btn-msg" data-name="Ana Beatriz">Enviar mensagem</button>
+      </div>
+
+      <div class="card" data-cat="pintura" data-bairro="gleba-a">
+        <div class="card-top">
+          <div class="av" style="background: linear-gradient(135deg,#434343,#000000);">P</div>
+          <div class="card-info">
+            <strong>Pedro Mendes</strong>
+            <span class="tag">@pintura</span>
+            <span class="loc">📍 Gleba A</span>
+          </div>
+        </div>
+        <p>Especialista em pintura externa, grafiato e aplicação de resinas.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(61 avaliações)</small></div>
+        <button class="btn-msg" data-name="Pedro Mendes">Enviar mensagem</button>
+      </div>
+
+      <div class="card" data-cat="hidraulica" data-bairro="gleba-a">
+        <div class="card-top">
+          <div class="av" style="background: linear-gradient(135deg,#000046,#1CB5E0);">T</div>
+          <div class="card-info">
+            <strong>Tiago Souza</strong>
             <span class="tag">@hidráulica</span>
+            <span class="loc">📍 Gleba A</span>
+          </div>
+        </div>
+        <p>Reparo de válvulas de descarga, instalação de caixas d'água e limpeza de calhas.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(63 avaliações)</small></div>
+        <button class="btn-msg" data-name="Tiago Souza">Enviar mensagem</button>
+      </div>
+
+      <div class="card" data-cat="eletrica" data-bairro="inocoop">
+        <div class="card-top">
+          <div class="av" style="background: linear-gradient(135deg,#f7971e,#ffd200);">B</div>
+          <div class="card-info">
+            <strong>Bruno Real</strong>
+            <span class="tag">@elétrica</span>
             <span class="loc">📍 Inocoop</span>
           </div>
         </div>
-        <p>Projetos, instalações e manutenções hidráulicas. Mais de 10 anos no mercado.</p>
-        <div class="rating"><span class="stars" data-r="3.5"></span><small>(89 avaliações)</small></div>
-        <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+        <p>Instalação de câmeras de segurança, alarmes e automação residencial inteligente.</p>
+        <div class="rating"><span class="stars" data-r="4.5"></span><small>(210 avaliações)</small></div>
+        <button class="btn-msg" data-name="Bruno Real">Enviar mensagem</button>
       </div>
 
+      <div class="card" data-cat="limpeza" data-bairro="centro">
+        <div class="card-top">
+          <div class="av" style="background: linear-gradient(135deg,#DA22FF,#9733EE);">S</div>
+          <div class="card-info">
+            <strong>Sônia Souza</strong>
+            <span class="tag">@limpeza</span>
+            <span class="loc">📍 Centro</span>
+          </div>
+        </div>
+        <p>Diarista com referências. Organização de closets e limpeza residencial minuciosa.</p>
+        <div class="rating"><span class="stars" data-r="5.0"></span><small>(312 avaliações)</small></div>
+        <button class="btn-msg" data-name="Sônia Souza">Enviar mensagem</button>
+      </div>
     </section>
   </main>
- 
-  <script src="script.js"></script>
+
+  <script src="/src/js/inicio.js"></script>
 </body>
 </html>
