@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexlar - Cadastro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/src/css/cadastroempresa.css">
+</head>
+<body>
+
+    <div class="container">
+        <header class="logo-header">
+            <span class="dots-icon">:::</span>
+            <h1>Nexlar</h1>
+        </header>
+
+        <main class="card">
+            <h3>Bem-vindos ao Nexlar!</h3>
+            <h2>Cadastro da Empresa</h2>
+
+            <form>
+                <div class="input-group">
+                    <i class="fa-regular fa-building"></i>
+                    <input type="text" placeholder="Nome da Empresa" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-regular fa-id-card"></i>
+                    <input type="text" placeholder="CNPJ" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" placeholder="Contato" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <input type="password" placeholder="Senha" required>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">Aceito os Termos de Uso</label>
+                </div>
+
+                <button type="submit" class="btn-continue">Continuar</button>
+            </form>
+        </main>
+    </div>
+
+</body>
+</html>
