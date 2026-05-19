@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
+  color: #0a1f44;
+}
+
+header {
+  width: 100%;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+
+nav {
+  max-width: 1500px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+
+nav > a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #0a1f44;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+
+nav > a span {
+  font-size: 18px;
+  letter-spacing: -2px;
+}
+
+
+div img {
+    width: 150px;
+    height: auto;
+}
+
+nav div {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  
+}
+
+
+nav div a {
+  text-decoration: none;
+  color: #0a1f44;
+  font-size: 14px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+
+nav div a:hover {
+  color: #1d4cff;
+}
+
+nav div a:last-child {
+  border: 2px solid #1d4cff;
+  color: #1d4cff;
+  padding: 10px 24px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+
+nav div a:last-child:hover {
+  background-color: #1d4cff;
+  color: #ffffff;
+}
+
+main {
+  min-height: calc(58vh);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+main section {
+  max-width: 900px;
+}
+
+main h1 {
+  font-size: 55px;
+  font-weight: 780;
+  color: #061a43;
+  margin-bottom: 15px;
+  padding-top: 5px;
+}
+
+main p {
+  font-size: 20px;
+  line-height: 1.7;
+  color: #4a5a7a;
+  margin-bottom: 50px;
+}
+
+main section div {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+main section div a {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 18px 40px;
+  border-radius: 999px;
+  transition: 0.3s;
+}
+
+main section div a:first-child {
+  background-color: #ffffff;
+  color: #1d4cff;
+  border: 2px solid #1d4cff;
+}
+
+main section div a:first-child:hover {
+  background-color: #1d4cff;
+  color: #ffffff;
+}
+
+main section div a:last-child {
+  background-color: #1d4cff;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(29, 76, 255, 0.3);
+}
+
+main section div a:last-child:hover {
+  background-color: #123de0;
+}
+
+main section.main {
+    margin-bottom: none;
+}
+
+/*Segunda Seção*/
+
+section.Objetivos {
+  background-color: #fbf9fa;
+  padding: 70px 40px;
+  text-align: center;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+
+section.Objetivos h2 {
+  font-size: 40px;
+  font-weight: 800;
+  color: #061a43;
+  margin-bottom: 60px;
+}
+
+section > div {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+section article {
+  background-color: #ffffff;
+  width: 330px;
+  min-height: 270px;
+  border: 1px solid #e7e7e7;
+  border-radius: 24px;
+  padding: 40px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+section article > div {
+  width: 58px;
+  height: 58px;
+  background-color: #eaf1ff;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+section article > div span {
+  font-size: 28px;
+  color: #1d4cff;
+}
+
+section article h3 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: #061a43;
+  margin-bottom: 18px;
+}
+
+section article p {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 19px;
+  line-height: 1.8;
+  color: #4f5d75;
+  max-width: 280px;
+}
+
+
+
+
