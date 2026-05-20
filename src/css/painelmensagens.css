@@ -76,6 +76,7 @@ body {
     object-fit: contain;
   }
 
+
 /* NAV */
 .sidebar-nav {
   display: flex;
@@ -487,7 +488,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 20px;
+  padding: 14px 20px 10px;
   background: #fff;
   border-top: 1px solid #e8eaed;
 }
@@ -533,6 +534,42 @@ body {
   width: 17px;
   height: 17px;
   stroke: #fff;
+}
+
+/* CONTRATAR BAR */
+.contratar-bar {
+  padding: 0 20px 14px;
+  background: #fff;
+}
+
+.contratar-btn {
+  width: 100%;
+  padding: 14px;
+  background: #5b4fe8;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.2px;
+}
+
+.contratar-btn:hover {
+  background: #4c40d4;
+}
+
+.contratar-btn:active {
+  transform: scale(0.98);
+}
+
+/* MESSAGE TIMESTAMP */
+.msg-time {
+  display: block;
+  font-size: 11px;
+  margin-top: 4px;
+  opacity: 0.6;
 }
 
 /* ===========================
@@ -640,5 +677,3 @@ body {
     height: 100%;
   }
 }
-
-  
