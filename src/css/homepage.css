@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 * {
   margin: 0;
@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-family: Inter, Arial, Helvetica, sans-serif;
   background-color: #ffffff;
   color: #0a1f44;
 }
@@ -202,11 +202,6 @@ section article > div {
   margin-bottom: 28px;
 }
 
-section article > div span {
-  font-size: 28px;
-  color: #1d4cff;
-}
-
 section article h3 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 30px;
@@ -223,6 +218,63 @@ section article p {
   max-width: 280px;
 }
 
+section.Passos {
+  background-color: #ffffff;
+  padding: 70px 40px;
+  text-align: center;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
 
+section.Passos h2 {
+  font-size: 40px;
+  font-weight: 800;
+  color: #061a43;
+  margin-bottom: 20px;
+}
 
+section.Passos p {
+  text-align: center;
+  color: #4f5d75;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+section.Passos div.text-primary {
+  border-radius: 50%;
+  color: #123de0;
+}
+
+section.Painel {
+  background-color: #050520;
+  padding: 70px 40px;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+section.Painel div.Controle {
+  text-align: left;
+}
+
+section.Painel h2 {
+  color: #ffffff;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+section.Painel p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+section.Painel li {
+  color: #6b7280;
+}
+
+section.painel li.strong {
+  color: #6b7280;
+}
+
+section.Painel div.Quadro {
+  text-align: right;
+}
 
