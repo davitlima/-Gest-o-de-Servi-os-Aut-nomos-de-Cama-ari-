@@ -9,18 +9,19 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="navbar__logo">
-      <img src="/src/images/image-removebg-preview.png" alt="Logo Nexlar" class="navbar__logo" />
+      <a href="inicio.html">
+        <img src="/src/images/image-removebg-preview.png" alt="Logo Nexlar" class="navbar__logo" />
+      </a>
     </div>
-    <button class="btn btn--outline" onclick="history.back()">Voltar</button>
+    <div class="navbar__links" style="display: flex; gap: 20px; align-items: center;">
+      <button class="btn btn--outline" onclick="history.back()">Voltar</button>
+    </div>
   </nav>
 
-  <!-- MAIN CONTENT -->
   <main class="main-content">
 
-    <!-- HERO CARD -->
     <div class="hero-card">
       <div class="hero-card__left">
         <div class="avatar">M</div>
@@ -38,18 +39,19 @@
           </div>
         </div>
       </div>
-      <button class="btn btn--primary">
-        <span></span> Enviar Mensagem
-      </button>
+      
+      <a href="painelmensagens.html" class="btn btn--primary" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="margin-right: 8px;">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 012 2z"/>
+        </svg> 
+        Enviar Mensagem
+      </a>
     </div>
 
-    <!-- TWO COLUMN LAYOUT -->
     <div class="two-col">
 
-      <!-- LEFT COLUMN -->
       <div class="left-col">
 
-        <!-- SOBRE -->
         <section class="card" id="sobre">
           <h2 class="section-title">Sobre</h2>
           <p class="about-text">Especializado em execuções residenciais e comerciais. Mais de 15 anos de experiência.</p>
@@ -65,7 +67,6 @@
           </div>
         </section>
 
-        <!-- PORTFÓLIO -->
         <section class="card" id="portfolio">
           <h2 class="section-title">Portfólio de Trabalhos</h2>
           <div class="portfolio-grid">
@@ -78,7 +79,6 @@
           </div>
         </section>
 
-        <!-- AVALIAÇÕES -->
         <section class="card" id="avaliacoes">
           <h2 class="section-title">Avaliações (127)</h2>
 
@@ -123,10 +123,8 @@
 
       </div>
 
-      <!-- RIGHT COLUMN (SIDEBAR) -->
       <aside class="sidebar">
 
-        <!-- AVALIAR -->
         <div class="card">
           <h3 class="sidebar-title">Avalie este Profissional</h3>
           <div class="star-rating" id="starRating" role="group" aria-label="Avaliação">
@@ -139,7 +137,6 @@
           <p class="star-hint" id="starHint">Clique nas estrelas para avaliar</p>
         </div>
 
-        <!-- ESPECIALIDADES -->
         <div class="card">
           <h3 class="sidebar-title">Especialidades</h3>
           <div class="tags">
@@ -150,7 +147,6 @@
           </div>
         </div>
 
-        <!-- DISPONIBILIDADE -->
         <div class="card card--available">
           <div class="available-dot"></div>
           <strong>Disponível Agora</strong>

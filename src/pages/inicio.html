@@ -22,7 +22,9 @@
     </div>
 
     <div class="nav-actions">
-      <button class="btn-outline">Painel</button>
+      <a href="Painelfinanceiro.html">
+        <button class="btn-outline">Painel</button>
+      </a>
       <button class="btn-solid">Meu Perfil</button>
       <button class="btn-icon">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -91,7 +93,7 @@
     <section class="categories">
       <button class="cat" data-cat="construcao">Construção</button>
       <button class="cat" data-cat="eletrica">Elétrica</button>
-      <button class="cat" data-cat="hidraulica">Hydráulica</button>
+      <button class="cat" data-cat="hidraulica">Hidráulica</button>
       <button class="cat" data-cat="pintura">Pintura</button>
       <button class="cat" data-cat="limpeza">Limpeza</button>
       <button class="cat" data-cat="jardinagem">Jardinagem</button>
@@ -107,12 +109,14 @@
           <div class="card-info">
             <strong>Marcos Silva</strong>
             <span class="tag">@construção</span>
-            <span class="loc">📍 Centro</span>
+            <span class="loc"> Centro</span>
           </div>
         </div>
         <p>Especializado em execuções residenciais e comerciais. Mais de 15 anos de experiência.</p>
         <div class="rating"><span class="stars" data-r="3.5"></span><small>(127 avaliações)</small></div>
-        <button class="btn-msg" data-name="Marcos Silva">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Marcos Silva">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="eletrica" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -121,12 +125,14 @@
           <div class="card-info">
             <strong>Sofia Paiva</strong>
             <span class="tag">@elétrica</span>
-            <span class="loc">📍 Gleba A</span>
+            <span class="loc"> Gleba A</span>
           </div>
         </div>
         <p>Serviços residenciais, reparos e consertos. Projetos e manutenções elétricas.</p>
         <div class="rating"><span class="stars" data-r="4.5"></span><small>(203 avaliações)</small></div>
-        <button class="btn-msg" data-name="Sofia Paiva">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Sofia Paiva">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="jardinagem" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -135,12 +141,14 @@
           <div class="card-info">
             <strong>Fernando Costa</strong>
             <span class="tag">@jardinagem</span>
-            <span class="loc">📍 Inocoop</span>
+            <span class="loc"> Inocoop</span>
           </div>
         </div>
         <p>Instalação de sistemas de irrigação automática e manutenção de gramados esportivos.</p>
         <div class="rating"><span class="stars" data-r="4.0"></span><small>(47 avaliações)</small></div>
-        <button class="btn-msg" data-name="Fernando Costa">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Fernando Costa">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="hidraulica" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -149,12 +157,14 @@
           <div class="card-info">
             <strong>Carlos Oliveira</strong>
             <span class="tag">@hidráulica</span>
-            <span class="loc">📍 Inocoop</span>
+            <span class="loc"> Inocoop</span>
           </div>
         </div>
         <p>Projetos, instalações e manutenções hidráulicas completas.</p>
         <div class="rating"><span class="stars" data-r="4.0"></span><small>(89 avaliações)</small></div>
-        <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="mudancas" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -163,12 +173,14 @@
           <div class="card-info">
             <strong>Roberto Alencar</strong>
             <span class="tag">@mudanças</span>
-            <span class="loc">📍 Centro</span>
+            <span class="loc"> Centro</span>
           </div>
         </div>
         <p>Mudanças residenciais com equipe especializada em embalagens frágeis e proteção de móveis.</p>
         <div class="rating"><span class="stars" data-r="5.0"></span><small>(34 avaliações)</small></div>
-        <button class="btn-msg" data-name="Roberto Alencar">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Roberto Alencar">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="limpeza" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -177,12 +189,14 @@
           <div class="card-info">
             <strong>Julia Silva</strong>
             <span class="tag">@Limpeza</span>
-            <span class="loc">📍 Arembepe</span>
+            <span class="loc"> Arembepe</span>
           </div>
         </div>
         <p>Limpeza residencial e pós-obra detalhada com eficiência.</p>
         <div class="rating"><span class="stars" data-r="4.5"></span><small>(89 avaliações)</small></div>
-        <button class="btn-msg" data-name="Julia Silva">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Julia Silva">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="mudancas" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -191,12 +205,14 @@
           <div class="card-info">
             <strong>Ricardo Freire</strong>
             <span class="tag">@mudanças</span>
-            <span class="loc">📍 Gleba A</span>
+            <span class="loc">Gleba A</span>
           </div>
         </div>
         <p>Transportes e mudanças locais e intermunicipais com montagem inclusa.</p>
         <div class="rating"><span class="stars" data-r="5.0"></span><small>(42 avaliações)</small></div>
-        <button class="btn-msg" data-name="Ricardo Freire">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Ricardo Freire">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="eletrica" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -205,12 +221,14 @@
           <div class="card-info">
             <strong>Ana Beatriz</strong>
             <span class="tag">@elétrica</span>
-            <span class="loc">📍 Centro</span>
+            <span class="loc"> Centro</span>
           </div>
         </div>
         <p>Eletricista predial e residencial. Instalação de chuveiros e ventiladores.</p>
         <div class="rating"><span class="stars" data-r="4.5"></span><small>(78 avaliações)</small></div>
-        <button class="btn-msg" data-name="Ana Beatriz">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Ana Beatriz">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="pintura" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -219,12 +237,14 @@
           <div class="card-info">
             <strong>Pedro Mendes</strong>
             <span class="tag">@pintura</span>
-            <span class="loc">📍 Gleba A</span>
+            <span class="loc"> Gleba A</span>
           </div>
         </div>
         <p>Especialista em pintura externa, grafiato e aplicação de resinas.</p>
         <div class="rating"><span class="stars" data-r="3.5"></span><small>(61 avaliações)</small></div>
-        <button class="btn-msg" data-name="Pedro Mendes">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Pedro Mendes">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="hidraulica" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -233,12 +253,14 @@
           <div class="card-info">
             <strong>Tiago Souza</strong>
             <span class="tag">@hidráulica</span>
-            <span class="loc">📍 Gleba A</span>
+            <span class="loc"> Gleba A</span>
           </div>
         </div>
         <p>Reparo de válvulas de descarga, instalação de caixas d'água e limpeza de calhas.</p>
         <div class="rating"><span class="stars" data-r="3.5"></span><small>(63 avaliações)</small></div>
-        <button class="btn-msg" data-name="Tiago Souza">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Tiago Souza">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="eletrica" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -247,12 +269,14 @@
           <div class="card-info">
             <strong>Bruno Real</strong>
             <span class="tag">@elétrica</span>
-            <span class="loc">📍 Inocoop</span>
+            <span class="loc"> Inocoop</span>
           </div>
         </div>
-        <p>Instalação de câmeras de segurança, alarmes e automação residencial inteligente.</p>
+        <p>Instalação de cameras de segurança, alarmes e automação residencial inteligente.</p>
         <div class="rating"><span class="stars" data-r="4.5"></span><small>(210 avaliações)</small></div>
-        <button class="btn-msg" data-name="Bruno Real">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Bruno Real">Enviar mensagem</button>
+        </a>
       </div>
 
       <div class="card" data-cat="limpeza" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
@@ -261,12 +285,14 @@
           <div class="card-info">
             <strong>Sônia Souza</strong>
             <span class="tag">@limpeza</span>
-            <span class="loc">📍 Centro</span>
+            <span class="loc"> Centro</span>
           </div>
         </div>
         <p>Diarista com referências. Organização de closets e limpeza residencial minuciosa.</p>
         <div class="rating"><span class="stars" data-r="5.0"></span><small>(312 avaliações)</small></div>
-        <button class="btn-msg" data-name="Sônia Souza">Enviar mensagem</button>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Sônia Souza">Enviar mensagem</button>
+        </a>
       </div>
       
     </section>

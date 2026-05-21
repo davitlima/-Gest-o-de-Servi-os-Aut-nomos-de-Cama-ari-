@@ -1,52 +1,91 @@
 const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const META   = 5000;
 
-/* ---------- ESTADO DA APLICAÇÃO ---------- */
+
 const estado = { 
   servicos: [], 
-  titulos: new Array(12).fill(0), 
   ganhoMes: new Array(12).fill(0), 
   idEditando: null, 
   idInspecionando: null 
 };
 
-/* ---------- ELEMENTOS DO DOM ---------- */
+
 const $ = id => document.getElementById(id);
 const camposFormulario = ['fNome', 'fCategoria', 'fMes', 'fValor', 'fData', 'fCliente', 'fStatus', 'fObs'];
 
-/* ---------- CONFIGURAÇÃO DOS GRÁFICOS ---------- */
-const CONFIG_GRAFICO = { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } };
-const MARCA_EIXO = { color: '#94a3b8', font: { size: 10 } };
-const LINHA_GRADE = { color: '#f1f5f9' };
-
-const graficoBarras = new Chart($('barChart'), {
-  type: 'bar',
-  data: { labels: MESES, datasets: [{ data: [...estado.titulos], backgroundColor: '#7c3aed', borderRadius: 5, borderSkipped: false }] },
-  options: { ...CONFIG_GRAFICO, scales: { y: { min: 0, suggestedMax: 5, grid: LINHA_GRADE, ticks: MARCA_EIXO }, x: { grid: { display: false }, ticks: MARCA_EIXO } } }
-});
-
-const graficoLinhas = new Chart($('lineChart'), {
-  type: 'line',
-  data: { labels: MESES, datasets: [{ data: [...estado.ganhoMes], borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,.08)', fill: true, pointBackgroundColor: '#fff', pointBorderColor: '#6366f1', pointRadius: 4, tension: 0.35 }] },
-  options: { ...CONFIG_GRAFICO, scales: { y: { min: 0, suggestedMax: 100, grid: LINHA_GRADE, ticks: { ...MARCA_EIXO, callback: valor => 'R$' + valor } }, x: { grid: { display: false }, ticks: MARCA_EIXO } } }
-});
-
-/* ---------- FUNÇÕES AUXILIARES ---------- */
 const formatarMoeda = valor => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const gerarIdUnico = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
 const classeBadgeStatus = status => status === 'Concluído' ? 'badge badge-green' : status === 'Em andamento' ? 'badge badge-yellow' : 'badge badge-gray';
 
-/* ---------- ATUALIZAÇÃO DA INTERFACE (KPIs, HISTÓRICO, GRÁFICOS) ---------- */
-function atualizacaoCompleta() {
-  // Recalcular Gráficos
-  const titulos = new Array(12).fill(0), ganhoMes = new Array(12).fill(0);
-  estado.servicos.forEach(s => { titulos[s.mes]++; ganhoMes[s.mes] += s.valor; });
-  
-  graficoBarras.data.datasets[0].data = [...titulos];
-  graficoLinhas.data.datasets[0].data = [...ganhoMes];
-  graficoBarras.update('active'); graficoLinhas.update('active');
 
-  // Atualizar KPIs
+const MARCA_EIXO = { color: '#94a3b8', font: { size: 10 } };
+const LINHA_GRADE = { color: '#f1f5f9' };
+
+// Configuração padrão de Tooltip para exibir em formato de Moeda (R$) ao passar o mouse
+const CONFIG_TOOLTIP = {
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      callbacks: {
+        label: function(context) {
+          let valor = context.raw || 0;
+          return ' Ganho: ' + formatarMoeda(valor);
+        }
+      }
+    }
+  },
+  scales: {
+    y: { 
+      min: 0, 
+      grid: LINHA_GRADE, 
+      ticks: { ...MARCA_EIXO, callback: valor => 'R$ ' + valor } 
+    }, 
+    x: { 
+      grid: { display: false }, 
+      ticks: MARCA_EIXO 
+    }
+  },
+  responsive: true,
+  maintainAspectRatio: true
+};
+
+const graficoBarras = new Chart($('barChart'), {
+  type: 'bar',
+  data: { 
+    labels: MESES, 
+    datasets: [{ data: [...estado.ganhoMes], backgroundColor: '#7c3aed', borderRadius: 5, borderSkipped: false }] 
+  },
+  options: CONFIG_TOOLTIP
+});
+
+const graficoLinhas = new Chart($('lineChart'), {
+  type: 'line',
+  data: { 
+    labels: MESES, 
+    datasets: [{ data: [...estado.ganhoMes], borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,.08)', fill: true, pointBackgroundColor: '#fff', pointBorderColor: '#6366f1', pointRadius: 4, tension: 0.35 }] 
+  },
+  options: CONFIG_TOOLTIP
+});
+
+function abrirJanela() {} // Mantida vazia caso use em escopos externos
+
+function atualizacaoCompleta() {
+  // Inicializa o array limpando os meses para o recálculo somatório
+  const valoresMensais = new Array(12).fill(0);
+  
+  // Agora calcula somando o valor real (s.valor) guardado no objeto do serviço
+  estado.servicos.forEach(s => { 
+    valoresMensais[s.mes] += s.valor; 
+  });
+  
+  // Atualiza os conjuntos de dados de ambos os gráficos com os valores somados corretos
+  graficoBarras.data.datasets[0].data = [...valoresMensais];
+  graficoLinhas.data.datasets[0].data = [...valoresMensais];
+  
+  graficoBarras.update(); 
+  graficoLinhas.update();
+
+  // Calcular KPIs globais baseados no histórico total carregado
   const total = estado.servicos.reduce((acumulador, s) => acumulador + s.valor, 0);
   const media = estado.servicos.length ? total / estado.servicos.length : 0;
   const porcentagem = Math.min(Math.round((total / META) * 100), 100);
@@ -57,16 +96,17 @@ function atualizacaoCompleta() {
   $('progressLabel').textContent = `${formatarMoeda(total)} / ${formatarMoeda(META)}`;
   $('progressPct').textContent = porcentagem + '%';
 
-  // Renderizar Histórico
+  // Renderizar a lista do Histórico visual
   if (!estado.servicos.length) {
     $('historyList').innerHTML = '<p class="empty-state">Nenhum registro ainda. Clique em "Adicionar Registro".</p>';
     return;
   }
+  
   $('historyList').innerHTML = '';
   [...estado.servicos].reverse().forEach(s => {
     const elemento = document.createElement('div');
     elemento.className = 'service-item';
-    elemento.innerHTML = `<span>${s.nome}<span class="service-hint">▸ clique para ver detalhes</span></span><span class="service-val">+${formatarMoeda(s.valor)}</span>`;
+    elemento.innerHTML = `<span>${s.nome}<span class="service-hint"> ▸ clique para ver detalhes</span></span><span class="service-val">+${formatarMoeda(s.valor)}</span>`;
     elemento.addEventListener('click', () => abrirInspecao(s.id));
     $('historyList').appendChild(elemento);
   });
@@ -94,13 +134,18 @@ function fecharModal() { $('modalOverlay').classList.remove('open'); estado.idEd
 
 function salvarRegistro() {
   const dados = {
-    nome: $('fNome').value.trim(), categoria: $('fCategoria').value, mes: parseInt($('fMes').value),
-    valor: parseFloat($('fValor').value), data: $('fData').value, cliente: $('fCliente').value.trim(),
-    status: $('fStatus').value, obs: $('fObs').value.trim()
+    nome: $('fNome').value.trim(), 
+    categoria: $('fCategoria').value, 
+    mes: parseInt($('fMes').value),
+    valor: parseFloat($('fValor').value), 
+    data: $('fData').value, 
+    cliente: $('fCliente').value.trim(),
+    status: $('fStatus').value, 
+    obs: $('fObs').value.trim()
   };
 
   if (!dados.nome) return exibirAviso('⚠ Informe o nome do serviço.', true);
-  if (!dados.valor || dados.valor <= 0) return exibirAviso('⚠ Informe um valor válido.', true);
+  if (isNaN(dados.valor) || dados.valor <= 0) return exibirAviso('⚠ Informe um valor válido.', true);
 
   if (estado.idEditando) {
     const indice = estado.servicos.findIndex(x => x.id === estado.idEditando);
@@ -110,7 +155,8 @@ function salvarRegistro() {
     estado.servicos.push({ id: gerarIdUnico(), ...dados });
     exibirAviso('✓ Registro adicionado com sucesso!');
   }
-  fecharModal(); atualizacaoCompleta();
+  fecharModal(); 
+  atualizacaoCompleta();
 }
 
 function abrirInspecao(id) {
@@ -135,8 +181,10 @@ function abrirInspecao(id) {
 function fecharInspecao() { $('inspectOverlay').classList.remove('open'); estado.idInspecionando = null; }
 
 function exibirAviso(mensagem, ehAviso = false) {
-  $('toast').textContent = mensagem; $('toast').style.background = ehAviso ? '#b91c1c' : '#1e293b';
-  $('toast').classList.add('show'); setTimeout(() => $('toast').classList.remove('show'), 3000);
+  $('toast').textContent = mensagem; 
+  $('toast').style.background = ehAviso ? '#b91c1c' : '#1e293b';
+  $('toast').classList.add('show'); 
+  setTimeout(() => $('toast').classList.remove('show'), 3000);
 }
 
 /* ---------- GERENCIAMENTO DE EVENTOS ---------- */
@@ -155,7 +203,9 @@ $('editRecord').addEventListener('click', () => { const id = estado.idInspeciona
 $('deleteRecord').addEventListener('click', () => {
   if (!confirm('Deseja excluir este registro?')) return;
   estado.servicos = estado.servicos.filter(x => x.id !== estado.idInspecionando);
-  fecharInspecao(); atualizacaoCompleta(); exibirAviso('🗑 Registro excluído.');
+  fecharInspecao(); 
+  atualizacaoCompleta(); 
+  exibirAviso('🗑 Registro excluído.');
 });
 
 document.querySelectorAll('.nav-link').forEach(link => {
@@ -165,6 +215,5 @@ document.querySelectorAll('.nav-link').forEach(link => {
     link.classList.add('active');
   });
 });
-
 // Inicialização Automática
 atualizacaoCompleta();

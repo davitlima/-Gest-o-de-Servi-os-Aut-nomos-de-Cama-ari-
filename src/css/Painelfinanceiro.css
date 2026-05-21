@@ -1,8 +1,8 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --sidebar-bg: #0d1b2e;
-  --sidebar-hover: #162236;
+  --sidebar-bg: #050520;
+  --sidebar-hover: #050520;
   --accent: #7c3aed;
   --accent2: #4f46e5;
   --accent-light: #ede9fe;

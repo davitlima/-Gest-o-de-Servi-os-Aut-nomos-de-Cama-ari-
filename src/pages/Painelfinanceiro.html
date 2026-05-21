@@ -10,53 +10,48 @@
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo">
     <img src="../images/image_c3ad5e85-removebg-preview 1.png" alt="logo" class="logo-img-dashboard">
   </div>
   <nav>
-    <a href="#" class="nav-link active">
+    <a href="inicio.html" onclick="window.location.href='inicio.html';" class="nav-link">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Início
     </a>
-    <a href="#" class="nav-link">
+    
+    <a href="javascript:void(0);" class="nav-link" style="cursor: default;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Meu Perfil
     </a>
-    <a href="#" class="nav-link">
+    
+    <a href="Painelfinanceiro.html" onclick="window.location.href='Painelfinanceiro.html';" class="nav-link active">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Financeiro
     </a>
-    <a href="#" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Mensagem
+    
+    <a href="painelmensagens.html" onclick="window.location.href='painelmensagens.html';" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 012 2z"/></svg>Mensagem
     </a>
   </nav>
 </aside>
 
-<!-- MAIN -->
 <main class="main">
   <header class="top-bar">
     <h1>Painel do Autônomo</h1>
     <button class="btn-primary" id="openModal">+ Adicionar Registro</button>
   </header>
 
-  <!-- KPI CARDS -->
   <section class="kpi-row">
     <div class="card kpi-card">
       <div class="card-header">
         <div class="icon-wrap icon-blue">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
         </div>
-        <div class="icon-wrap icon-green">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-        </div>
       </div>
       <p class="kpi-label">Ganho do Mês</p>
       <p class="kpi-value" id="ganhoMes">R$ 0,00</p>
     </div>
+
     <div class="card kpi-card">
       <div class="card-header">
-        <div class="icon-wrap icon-green">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-        </div>
         <div class="icon-wrap icon-green">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         </div>
@@ -64,11 +59,11 @@
       <p class="kpi-label">Média mensal</p>
       <p class="kpi-value" id="mediaMensal">R$ 0,00</p>
     </div>
+
     <div class="card kpi-card">
       <div class="card-header">
-        <div></div>
         <div class="icon-wrap icon-purple">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
         </div>
       </div>
       <p class="kpi-label">Meta mensal</p>
@@ -82,7 +77,6 @@
     </div>
   </section>
 
-  <!-- CHARTS -->
   <section class="chart-row">
     <div class="card chart-card">
       <h3>Ganhos</h3>
@@ -94,7 +88,6 @@
     </div>
   </section>
 
-  <!-- HISTORY -->
   <section class="history-section">
     <h3>Histórico de Serviços</h3>
     <div id="historyList">
@@ -103,7 +96,6 @@
   </section>
 </main>
 
-<!-- ======= MODAL ADICIONAR / EDITAR ======= -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
@@ -112,23 +104,23 @@
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label>Nome do Serviço</label>
+        <label for="fNome">Nome do Serviço</label>
         <input type="text" id="fNome" placeholder="Ex: Instalação Elétrica - Centro" />
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Categoria</label>
+          <label for="fCategoria">Categoria</label>
           <select id="fCategoria">
             <option value="">Selecione</option>
-            <option>Serviço Residencial</option>
-            <option>Instalação Elétrica</option>
-            <option>Manutenção Preventiva</option>
-            <option>Serviço Comercial</option>
-            <option>Outro</option>
+            <option value="Serviço Residencial">Serviço Residencial</option>
+            <option value="Instalação Elétrica">Instalação Elétrica</option>
+            <option value="Manutenção Preventiva">Manutenção Preventiva</option>
+            <option value="Serviço Comercial">Serviço Comercial</option>
+            <option value="Outro">Outro</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Mês</label>
+          <label for="fMes">Mês</label>
           <select id="fMes">
             <option value="0">Janeiro</option>
             <option value="1">Fevereiro</option>
@@ -147,28 +139,28 @@
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Valor (R$)</label>
-          <input type="number" id="fValor" placeholder="0,00" min="0" step="0.01" />
+          <label for="fValor">Valor (R$)</label>
+          <input type="number" id="fValor" placeholder="0.00" min="0" step="0.01" />
         </div>
         <div class="form-group">
-          <label>Data</label>
+          <label for="fData">Data</label>
           <input type="date" id="fData" />
         </div>
       </div>
       <div class="form-group">
-        <label>Cliente / Local</label>
+        <label for="fCliente">Cliente / Local</label>
         <input type="text" id="fCliente" placeholder="Ex: Inocoop, Gleba A..." />
       </div>
       <div class="form-group">
-        <label>Status</label>
+        <label for="fStatus">Status</label>
         <select id="fStatus">
-          <option>Concluído</option>
-          <option>Em andamento</option>
-          <option>Pendente</option>
+          <option value="Concluído">Concluído</option>
+          <option value="Em andamento">Em andamento</option>
+          <option value="Pendente">Pendente</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Observações</label>
+        <label for="fObs">Observações</label>
         <textarea id="fObs" rows="2" placeholder="Detalhes adicionais..."></textarea>
       </div>
     </div>
@@ -179,7 +171,6 @@
   </div>
 </div>
 
-<!-- ======= MODAL INSPECIONAR ======= -->
 <div class="modal-overlay" id="inspectOverlay">
   <div class="modal">
     <div class="modal-header">
@@ -197,7 +188,6 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 </body>
