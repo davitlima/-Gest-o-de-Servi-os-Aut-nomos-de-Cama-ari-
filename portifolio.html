@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meu Perfil - Portfólio</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <link rel="stylesheet" href="src/css/portifolio.css">
+
+</head>
+
+<body>
+
+ <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="src/images/image_c3ad5e85-removebg-preview 1.png" alt="Logo Nexlar" class="imagem-logo">
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="inicio.html" class="nav-item" data-page="inicio">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span>Início</span>
+            </a>
+
+            <a href="perfilAutonomo.html" class="nav-item active" data-page="perfil">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span>Meu Perfil</span>
+            </a>
+
+            <a href="Painelfinanceiro.html" class="nav-item" data-page="financeiro">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span>Financeiro</span>
+            </a>
+
+            <a href="painelmensagens.html" class="nav-item" data-page="mensagem">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                <span>Mensagem</span>
+            </a>
+
+        </nav>
+
+    </aside>
+    <!-- FIM SIDEBAR -->
+
+    <div class="container">
+
+        <header class="profile-header">
+
+            <div class="header-titles">
+
+                <h1>Meu Perfil</h1>
+
+                <p>Gerencie suas informações e configurações</p>
+
+            </div>
+
+            <div class="header-actions">
+
+                <button class="btn btn-outline">
+
+                    <span class="material-symbols-outlined">logout</span> Sair
+
+                </button>
+
+                <button class="btn btn-danger-outline" onclick="toggleModal(true)">
+
+                    <span class="material-symbols-outlined">delete</span> Excluir Conta
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <nav class="tabs">
+
+            <a href="#" class="tab-item">Informações Pessoais</a>
+
+            <a href="#" class="tab-item active">Portfólio</a>
+
+        </nav>
+
+
+
+        <main class="content-card">
+
+            <h3>Portfólio de Trabalhos</h3>
+
+            <p class="subtitle">Adicione fotos dos seus trabalhos realizados para mostrar sua qualidade aos clientes.</p>
+
+           
+
+            <div class="upload-area">
+
+                <label for="file-upload" class="upload-box">
+
+                    <input type="file" id="file-upload" hidden onchange="handleFile(this)">
+
+                    <span class="material-symbols-outlined upload-icon">upload</span>
+
+                    <span class="upload-text">Adicionar Foto</span>
+
+                </label>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+
+    <div id="modalOverlay" class="modal-overlay">
+
+        <div class="modal-card">
+
+            <div class="icon-circle">
+
+                <span class="material-symbols-outlined">delete</span>
+
+            </div>
+
+            <h2>Excluir Conta</h2>
+
+            <p>Tem certeza que deseja excluir sua conta? Esta ação é irreversível e todos os seus dados serão permanentemente removidos.</p>
+
+            <div class="modal-buttons">
+
+                <button class="btn-confirm">Sim, Excluir Minha Conta</button>
+
+                <button class="btn-cancel" onclick="toggleModal(false)">Cancelar</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        function toggleModal(show) {
+
+            document.getElementById('modalOverlay').style.display = show ? 'flex' : 'none';
+
+        }
+
+
+
+        function handleFile(input) {
+
+            if (input.files && input.files[0]) {
+
+                alert("Arquivo selecionado: " + input.files[0].name);
+
+           
+
+            }
+
+        }
+
+        
+    </script>
+
+</body>
+
+</html> 
