@@ -41,9 +41,7 @@
     --color-gray-900: oklch(21% 0.034 264.665);
     --color-black: #000;
     --color-white: #fff;
+    --color-blue: #050520;
 }
 
-button {
-    padding: 20px;
-}
 
