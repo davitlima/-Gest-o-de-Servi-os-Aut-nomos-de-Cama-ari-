@@ -39,12 +39,12 @@ body {
   padding: 24px 0 16px;
 }
 
-.logo-img-dashboard {
-  height: 50px;
-  width: auto;         
-  display: block;      
-  max-width: 100%;    
-  object-fit: contain; 
+.imagem-logo {
+  height: auto;
+  max-height: 45px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .logo-image-main {

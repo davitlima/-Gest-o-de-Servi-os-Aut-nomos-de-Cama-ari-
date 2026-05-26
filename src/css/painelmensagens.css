@@ -5,9 +5,8 @@
 }
 
 :root {
-  
   --sidebar-bg: #050520;
-  --sidebar-hover: #050520;
+  --sidebar-hover: #050520; /* Mantido conforme seu padrão */
   --accent: #7c3aed;
   --accent2: #4f46e5;
   --accent-light: #ede9fe;
@@ -39,7 +38,9 @@ body {
   overflow: hidden;
 }
 
-
+/* ==========================================================================
+   BARRA LATERAL (SIDEBAR) - IGUAL AO FINANCEIRO
+   ========================================================================== */
 .sidebar {
   width: 210px;
   min-width: 210px;
@@ -59,12 +60,12 @@ body {
   padding: 0 20px 28px;
 }
 
-.imagem-legal {
-  height: 50px;
-  width: auto;         
-  display: block;      
-  max-width: 100%;    
-  object-fit: contain; 
+.imagem-logo {
+  height: auto;
+  max-height: 45px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .logo-sub {
@@ -74,7 +75,7 @@ body {
   margin-top: 1px;
 }
 
-/* NAV */
+/* NAVEGAÇÃO DA SIDEBAR */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -82,7 +83,8 @@ body {
   padding: 0;
 }
 
-.nav-item {
+/* Suporta tanto as classes .nav-item quanto .nav-link com design idêntico */
+.nav-item, .nav-link {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -93,27 +95,30 @@ body {
   border-left: 3px solid transparent;
   transition: background .18s, color .18s, border-color .18s;
   border-radius: 0;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
-.nav-item:hover {
+.nav-item:hover, .nav-link:hover {
   background: var(--sidebar-hover);
   color: #ffffff;
 }
 
-.nav-item.active {
+.nav-item.active, .nav-link.active {
   background: var(--sidebar-hover);
   color: #ffffff;
   border-left-color: var(--accent);
 }
 
-.nav-icon {
+.nav-icon, .nav-link svg {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
   stroke: currentColor;
+  fill: none;
 }
 
-/* Close btn (mobile only) */
+/* Botão de Fechar (Mobile) */
 .sidebar-close {
   display: none;
   position: absolute;
@@ -139,7 +144,9 @@ body {
   display: block;
 }
 
-
+/* ==========================================================================
+   ÁREA PRINCIPAL DE MENSAGENS (CONTAINERS)
+   ========================================================================== */
 .main-wrapper {
   flex: 1;
   display: flex;
@@ -147,7 +154,7 @@ body {
   min-width: 0;
 }
 
-
+/* PAINEL ESQUERDO (LISTA DE CONVERSAS) */
 .messages-panel {
   width: 290px;
   min-width: 290px;
@@ -197,7 +204,7 @@ body {
   padding: 0 20px 18px;
 }
 
-/* SEARCH */
+/* FILTRO / BUSCA DE CHAT */
 .search-wrapper {
   position: relative;
   margin: 0 16px 18px;
@@ -234,7 +241,7 @@ body {
   border-color: var(--accent);
 }
 
-/* CONVERSATION LIST */
+/* LISTAGEM DE CONVERSAS ITEMS */
 .conversation-list {
   list-style: none;
   overflow-y: auto;
@@ -260,7 +267,7 @@ body {
   background: var(--accent-light);
 }
 
-/* AVATAR */
+/* AVATARES COLORIDOS */
 .avatar {
   width: 46px;
   height: 46px;
@@ -280,7 +287,7 @@ body {
 .avatar-blue   { background: linear-gradient(135deg, #6c85f5, #4c63e3); }
 .avatar-indigo { background: linear-gradient(135deg, #7c6ef5, #5a4be3); }
 
-/* CONV INFO */
+/* METADADOS DAS CONVERSAS */
 .conv-info {
   flex: 1;
   min-width: 0;
@@ -333,7 +340,9 @@ body {
   margin-left: 8px;
 }
 
-
+/* ==========================================================================
+   ÁREA DE CHAT ATIVO (CONVERSA INTERNA)
+   ========================================================================== */
 .chat-area {
   flex: 1;
   background: #f8f9fb;
@@ -344,7 +353,7 @@ body {
   position: relative;
 }
 
-/* EMPTY STATE */
+/* ESTADO VAZIO (NENHUMA SELECIONADA) */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -383,6 +392,7 @@ body {
   max-width: 300px;
 }
 
+/* TELA DE CONVERSA */
 .chat-view {
   width: 100%;
   height: 100%;
@@ -447,6 +457,7 @@ body {
   gap: 10px;
 }
 
+/* BALÕES DE MENSAGEM */
 .msg-bubble {
   max-width: 65%;
   padding: 10px 14px;
@@ -471,6 +482,14 @@ body {
   border-bottom-right-radius: 4px;
 }
 
+.msg-time {
+  display: block;
+  font-size: 11px;
+  margin-top: 4px;
+  opacity: 0.6;
+}
+
+/* BARRA DE INPUT E ENVIAR */
 .chat-input-bar {
   display: flex;
   align-items: center;
@@ -523,7 +542,7 @@ body {
   stroke: #fff;
 }
 
-/* CONTRATAR BAR */
+/* BARRA CONTRATAR SERVIÇO */
 .contratar-bar {
   padding: 0 20px 14px;
   background: #fff;
@@ -551,14 +570,7 @@ body {
   transform: scale(0.98);
 }
 
-/* MESSAGE TIMESTAMP */
-.msg-time {
-  display: block;
-  font-size: 11px;
-  margin-top: 4px;
-  opacity: 0.6;
-}
-
+/* BOTÃO FLUTUANTE DE AJUDA */
 .help-btn {
   position: fixed;
   bottom: 22px;
@@ -584,12 +596,16 @@ body {
   background: #3f4470;
 }
 
+/* CUSTOM SCROLLBAR */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #d0d4e0; border-radius: 4px; }
 
+/* ==========================================================================
+   MEDIA QUERIES (RESPONSIVIDADE GERAL)
+   ========================================================================== */
 
-/* Tablet */
+/* Layout de Tablet */
 @media (max-width: 860px) {
   .sidebar {
     position: fixed;
@@ -623,7 +639,7 @@ body {
   }
 }
 
-/* Mobile: single column - list OR chat */
+/* Layout Mobile (Alterna entre Lista ou Janela do Chat ativo) */
 @media (max-width: 600px) {
   .messages-panel {
     width: 100%;
