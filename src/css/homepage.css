@@ -17,8 +17,7 @@ header {
   border-bottom: 1px solid #e5e5e5;
 }
 
-
-nav {
+nav.cabecalho{
   max-width: 1500px;
   margin: 0 auto;
   display: flex;
@@ -27,38 +26,32 @@ nav {
   display: flex;
 }
 
-
-nav > a {
+.header > a {
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 8px;
   color: #0a1f44;
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 20px;
 }
 
-
-nav > a span {
-  font-size: 18px;
-  letter-spacing: -2px;
-}
-
-
-div img {
+.logo img {
     width: 150px;
     height: auto;
 }
 
-nav div {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  
+.logo{
+    display:flex;
+    align-items:center;
 }
 
+.header{
+    display:flex;
+    align-items:center;
+    gap:28px;
+}
 
-nav div a {
+header a {
   text-decoration: none;
   color: #0a1f44;
   font-size: 14px;
@@ -66,12 +59,11 @@ nav div a {
   transition: 0.3s;
 }
 
-
-nav div a:hover {
+.header a:hover {
   color: #1d4cff;
 }
 
-nav div a:last-child {
+.header a:last-child {
   border: 2px solid #1d4cff;
   color: #1d4cff;
   padding: 10px 24px;
@@ -79,8 +71,7 @@ nav div a:last-child {
   font-weight: 600;
 }
 
-
-nav div a:last-child:hover {
+.header a:last-child:hover {
   background-color: #1d4cff;
   color: #ffffff;
 }
@@ -153,23 +144,22 @@ main section.main {
     margin-bottom: none;
 }
 
-/*Segunda Seção*/
-
-section.Objetivos {
+/*Seção Objetivos*/
+.objetivos {
   background-color: #fbf9fa;
   padding: 70px 40px;
   text-align: center;
   font-family: Roboto, Arial, Helvetica, sans-serif;
 }
 
-section.Objetivos h2 {
+.objetivos h2 {
   font-size: 40px;
   font-weight: 800;
   color: #061a43;
   margin-bottom: 60px;
 }
 
-section > div {
+.objetivos-cards {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
@@ -178,7 +168,7 @@ section > div {
   flex-wrap: wrap;
 }
 
-section article {
+.objetivos article {
   background-color: #ffffff;
   width: 330px;
   min-height: 270px;
@@ -191,7 +181,7 @@ section article {
   align-items: center;
 }
 
-section article > div {
+.objetivos article > div {
   width: 58px;
   height: 58px;
   background-color: #eaf1ff;
@@ -202,7 +192,7 @@ section article > div {
   margin-bottom: 28px;
 }
 
-section article h3 {
+.objetivos article h3 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 30px;
   font-weight: 700;
@@ -210,7 +200,7 @@ section article h3 {
   margin-bottom: 18px;
 }
 
-section article p {
+.objetivos article p {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 19px;
   line-height: 1.8;
@@ -218,42 +208,66 @@ section article p {
   max-width: 280px;
 }
 
-section.Passos {
+/*Seção Passos*/
+.passos {
   background-color: #ffffff;
   padding: 70px 40px;
   text-align: center;
   font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
-section.Passos h2 {
+.passos h2 {
   font-size: 40px;
   font-weight: 800;
   color: #061a43;
   margin-bottom: 20px;
 }
 
-section.Passos p {
+.passos p {
   text-align: center;
   color: #4f5d75;
   font-size: 18px;
   margin-bottom: 20px;
 }
 
-section.Passos div.text-primary {
+.passos-icone {
   border-radius: 50%;
   color: #123de0;
 }
 
-section.Painel {
-  background-color: #050520;
-  padding: 70px 40px;
-  font-family: Inter, Arial, Helvetica, sans-serif;
+.passos-cards{
+    max-width:1200px;
+    margin:0 auto;
+
+    display:flex;
+    justify-content:center;
+    gap:30px;
+
+    flex-wrap:wrap;
+}
+
+.passos article{
+    width:330px;
+    min-height:260px;
+
+    background:#ffffff;
+
+    border:1px solid #e7e7e7;
+    border-radius:24px;
+
+    padding:40px 30px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.04);
 }
 
 /* SEÇÃO */
-.Painel {
+.painel {
     background: #02042d;
-    padding: 80px 5%;
+    padding: 90px 6%;
 }
 
 .painel-container {
@@ -262,34 +276,40 @@ section.Painel {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 60px;
+    gap: 80px;
 }
 
-.Controle {
+/* TEXTO */
+.painel-texto {
     flex: 1;
     color: #fff;
 }
 
-.Controle h2 {
+.painel-texto h2 {
     font-size: 3rem;
-    line-height: 1.1;
+    line-height: 1.05;
     margin-bottom: 25px;
+    font-weight: 700;
+}
+
+.painel-texto .item{
+    margin-top:20px;
 }
 
 .descricao {
     color: #c7c7d4;
     font-size: 1rem;
     line-height: 1.8;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
 }
 
-.Painel.item {
+.item {
     display: flex;
     gap: 15px;
     margin-bottom: 25px;
 }
 
-.painel.icone {
+.icone {
     width: 34px;
     height: 34px;
     border-radius: 50%;
@@ -312,7 +332,7 @@ section.Painel {
 }
 
 /* CARD */
-.Quadro {
+.painel-card {
     flex: 1;
     background: rgba(20, 20, 60, 0.9);
     border: 1px solid rgba(255,255,255,0.08);
@@ -322,7 +342,7 @@ section.Painel {
     box-shadow: 0 10px 30px rgba(0,0,0,.25);
 }
 
-.Quadro h3 {
+.painel-card h3 {
     margin-bottom: 30px;
     font-size: 1.4rem;
 }
@@ -332,6 +352,14 @@ section.Painel {
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
+}
+
+.meta-topo span{
+    color:#cfd3e7;
+}
+
+.meta-topo strong{
+    font-size:1.3rem;
 }
 
 .barra {
@@ -428,6 +456,7 @@ section.Painel {
     text-align: center;
 }
 
+/* ÍCONE */
 .icone-calculadora {
     width: 60px;
     height: 60px;
@@ -442,11 +471,11 @@ section.Painel {
     font-size: 28px;
 }
 
+/* TÍTULO */
 .calculadora h2 {
     font-size: 2.8rem;
     color: #071b44;
     margin-bottom: 15px;
-    margin-top: 15px;
 }
 
 .subtitulo {
@@ -459,6 +488,7 @@ section.Painel {
     color: #071b44;
 }
 
+/* CARD */
 .card-calculadora {
     max-width: 900px;
     margin: auto;
@@ -468,6 +498,7 @@ section.Painel {
     box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
 }
 
+/* CAMPOS */
 .campos {
     display: flex;
     gap: 25px;
@@ -489,6 +520,7 @@ section.Painel {
     font-size: .9rem;
 }
 
+/* INPUT */
 .campo input {
     width: 100%;
     padding: 22px 15px;
@@ -499,6 +531,7 @@ section.Painel {
     outline: none;
 }
 
+/* RESULTADO */
 .resultado-box {
     background: linear-gradient(
         90deg,
@@ -520,6 +553,7 @@ section.Painel {
     font-size: .9rem;
 }
 
+/* INFORMAÇÃO */
 .info-box {
     margin-top: 30px;
     background: #eef4fd;
@@ -530,6 +564,7 @@ section.Painel {
     line-height: 1.7;
 }
 
+/* BOTÃO */
 .btn-ganhar {
     display: inline-block;
     margin-top: 30px;
@@ -551,53 +586,37 @@ section.Painel {
     transform: translateY(-3px);
 }
 
+/*Seção Profissionais*/
 .profissionais{
     padding:80px 5%;
-    background:#f4f6fb;
+    background: #f4f6fb;
 }
-
-/* ===================================
-   TOPO
-=================================== */
 
 .topo-profissionais{
     max-width:1250px;
     margin:0 auto;
-
     background:#02042d;
-
-    padding:48px 40px;
-
+    padding:40px;
     border-radius:24px;
 }
 
 .topo-profissionais h2{
     color:#fff;
-
     font-size:3rem;
     font-weight:700;
     line-height:1.1;
-
-    margin-bottom:12px;
+    margin:0 0 12px 0;
 }
 
 .topo-profissionais p{
-    color:#d6dcef;
-
+    color:#fff;
     font-size:1rem;
-
-    margin-bottom:30px;
+    margin:0 0 30px 0;
 }
-
-/* ===================================
-   FILTROS
-=================================== */
 
 .filtros{
     background:#fff;
-
-    padding:18px;
-
+    padding:16px;
     border-radius:18px;
 
     display:flex;
@@ -606,53 +625,37 @@ section.Painel {
 
 .filtros select{
     flex:1;
-
     height:56px;
-
     padding:0 18px;
 
-    border:1px solid #dde2ec;
-    border-radius:12px;
+    border:1px solid #d8dde8;
+    border-radius:10px;
 
     background:#fff;
-
-    font-size:15px;
     color:#24304d;
+    font-size:15px;
 
-    cursor:pointer;
     outline:none;
+    cursor:pointer;
 }
-
-/* ===================================
-   CATEGORIAS
-=================================== */
 
 .categorias{
     max-width:1250px;
-
     margin:25px auto;
-
     display:grid;
     grid-template-columns:repeat(4,1fr);
-
     gap:12px;
 }
 
 .categorias button{
     height:44px;
-
     border:none;
     border-radius:30px;
-
     background:#d8deea;
-
     color:#23304f;
-
     font-size:14px;
     font-weight:500;
-
     cursor:pointer;
-
     transition:.3s;
 }
 
@@ -661,55 +664,36 @@ section.Painel {
     color:#fff;
 }
 
-/* ===================================
-   GRID DOS CARDS
-=================================== */
-
 .cards-profissionais{
     max-width:1250px;
     margin:auto;
-
     display:grid;
     grid-template-columns:repeat(3,1fr);
-
-    gap:18px;
+    gap: 25px;
 }
 
-/* ===================================
-   CARD
-=================================== */
-
-.card{
+.card-menu {
     background:#07124a;
-
-    border-radius:24px;
-
+    border-radius: 30px;
     padding:18px;
-
     display:flex;
     flex-direction:column;
-
-    transition:.35s ease;
+    min-height: 210px;
+    transition: all .3s ease;
 }
 
-.card:hover{
+.card-menu:hover{
     transform:translateY(-10px) scale(1.04);
-
     box-shadow:
     0 25px 50px rgba(0,0,0,.30);
+    cursor: pointer;
 }
-
-/* ===================================
-   PERFIL
-=================================== */
 
 .perfil{
     display:flex;
-    align-items:center;
-
-    gap:12px;
-
-    margin-bottom:12px;
+    align-items:flex-start;
+    gap:14px;
+    margin-bottom:16px;
 }
 
 .avatar{
@@ -761,10 +745,6 @@ section.Painel {
     font-size:12px;
 }
 
-/* ===================================
-   DESCRIÇÃO
-=================================== */
-
 .descricao{
     color:#d8deee;
 
@@ -775,10 +755,6 @@ section.Painel {
 
     flex:1;
 }
-
-/* ===================================
-   AVALIAÇÃO
-=================================== */
 
 .avaliacao{
     color:#ffd54a;
@@ -792,35 +768,22 @@ section.Painel {
     color:#b6c0dd;
 }
 
-/* ===================================
-   BOTÃO DO CARD
-=================================== */
-
-.card button{
+.btn-profissional {
     width:100%;
     height:40px;
-
     border:none;
     border-radius:10px;
-
     background:#2d4eff;
     color:#fff;
-
     font-size:13px;
     font-weight:600;
-
     cursor:pointer;
-
     transition:.3s;
 }
 
-.card button:hover{
+.btn.profissional:hover{
     background:#4967ff;
 }
-
-/* ===================================
-   BOTÃO FINAL
-=================================== */
 
 .ver-todos{
     text-align:center;
@@ -848,12 +811,130 @@ section.Painel {
 
 .ver-todos button:hover{
     background:#4967ff;
+    margin-bottom: 20px;
+}
+.sobre {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #ffffff;
+    font-family: 'Inter', sans-serif;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.título-sobre h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    color: #0a0f3c;
+}
+
+.título-sobre p {
+    color: #444;
+    max-width: 700px;
+    margin: 0 auto 50px;
+    font-size: 16px;
+}
+
+.cards-sobre {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+}
+
+.card-sobre {
+    flex: 1;
+    min-width: 250px;
+    max-width: 320px;
+    text-align: center;
+}
+
+.icone-sobre {
+    width: 60px;
+    height: 60px;
+    background-color: #ebf0ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.icone-sobre svg {
+    width: 28px; /* Ícone maior como na imagem */
+    height: 28px;
+    color: #2d5bff;
+}
+
+.card-sobre h3 {
+    font-size: 18px;
+    color: #0a0f3c;
+    margin-bottom: 12px;
+}
+
+.card-sobre p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* ESTILO DO BLOCO AZUL (CTA) */
+.cta-sobre {
+    background: linear-gradient(135deg, #0a0f3c, #141b4d);
+    color: #fff;
+    padding: 50px 40px;
+    border-radius: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.cta-sobre h3 {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.cta-sobre p {
+    font-size: 15px;
+    color: #cbd5e0;
+    max-width: 800px;
+    margin: 0 auto 30px;
+    line-height: 1.6;
+}
+
+/* BOTÕES */
+.botoes-area {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-white, .btn-outline {
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.btn-white {
+    background-color: #fff;
+    color: #0a0f3c;
+    border: none;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+.btn-white:hover {
+    background-color: #e2e8f0;
+}
+
+.btn-outline:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 footer {
@@ -911,5 +992,3 @@ footer {
 .rodape a:hover {
     color: white;
 }
-
-
