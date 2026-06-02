@@ -1,656 +1,473 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="src/css/homepage.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>Homepage</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="src/css/homepage.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <title>Homepage</title>
 
 </head>
 
 <body>
 
-    <header>
-        <nav>
-            <div class="cabecalho">
-                <img src="/src/images/Logo.png" alt="Logo da Empresa">
-            </div>
+  <header>
+    <nav class="nav-container">
+      <div class="logo-box">
+        <img src="/src/images/Logo.png" alt="Logo da Empresa">
+      </div>
 
-            <div class="header">
-                <a href="#">Para Autônomo</a>
-                <a href="#">Para Empresa</a>
-                <a href="#">Entrar</a>
-            </div>
-        </nav>
-    </header>
+      <div class="menu-links">
+        <a href="#">Para Autônomo</a>
+        <a href="#">Para Empresa</a>
+        <a href="#" class="btn-entrar">Entrar</a>
+      </div>
+    </nav>
+  </header>
 
-    <main>
+  <main>
 
-        <section class="main">
-            <h1>
-                A conexão inteligente entre você
-                e os melhores do seu bairro
-            </h1>
+    <section class="main">
+      <h1>
+        A conexão inteligente entre você
+        e os melhores do seu bairro
+      </h1>
 
-            <p>
-                O Nexlar é o lugar onde confiança e profissionalismo se encontram.
-                <br>
-                Encontre prestadores verificados ou gerencie sua carreira autônoma em um só lugar.
-            </p>
+      <p>
+        O Nexlar é o lugar onde confiança e profissionalismo se encontram.
+        <br>
+        Encontre prestadores verificados ou gerencie sua carreira autônoma em um só lugar.
+      </p>
 
-            <div>
-                <a href="#">Encontrar Profissional</a>
-                <a href="#">Sou Profissional</a>
-            </div>
-        </section>
-
-    </main>
-
-    <section class="objetivos">
-        <h2>Por que escolher a Nexlar?</h2>
-
-        <div class="objetivos-cards">
-            <article>
-                <div class="text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                        class="bi bi-geo-alt" viewBox="0 0 16 16">
-                        <path
-                            d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                    </svg>
-                </div>
-                <h3>Foco Local</h3>
-                <p>
-                    Priorizamos quem está perto de você.
-                    Profissionais do seu bairro, prontos para atender.
-                </p>
-            </article>
-
-            <article>
-                <div class="text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                        class="bi bi-shield" viewBox="0 0 16 16">
-                        <path
-                            d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56" />
-                    </svg>
-                </div>
-                <h3>Avaliações Reais</h3>
-                <p>
-                    Sistema de review à prova de fraudes.
-                    Feedbacks autênticos de clientes verificados.
-                </p>
-            </article>
-
-            <article>
-                <div class="text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                        class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5" />
-                    </svg>
-                </div>
-                <h3>Gestão Pro</h3>
-                <p>
-                    Painel financeiro exclusivo para quem presta serviços.
-                    Controle total do seu negócio.
-                </p>
-            </article>
-        </div>
+      <div>
+        <a href="#">Encontrar Profissional</a>
+        <a href="#">Sou Profissional</a>
+      </div>
     </section>
 
-    <section class="passos">
-        <h2>Simples, rápido e seguro</h2>
-        <p class="paragrafo">Encontre o profissional ideal em 3 passos</p>
+  </main>
 
-        <div class="passos-card">
-            <article class="passo-card">
-                <div class="passos-icone">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                        class="bi bi-1-circle-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M9.283 4.002H7.971L6.072 5.385v1.271l1.834-1.318h.065V12h1.312z" />
-                    </svg>
-                </div>
-                <h3>Busque</h3>
-                <p>
-                    Escolha a categoria e o seu bairro para encontrar
-                    profissionais próximos.
-                </p>
-            </article>
+  <section class="objetivos">
+    <h2>Por que escolher a Nexlar?</h2>
 
-            <article class="passo-card">
-                <div class="passos-icone">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                        class="bi bi-2-circle-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.646 6.24c0-.691.493-1.306 1.336-1.306.756 0 1.313.492 1.313 1.236 0 .697-.469 1.23-.902 1.705l-2.971 3.293V12h5.344v-1.107H7.268v-.077l1.974-2.22.096-.107c.688-.763 1.287-1.428 1.287-2.43 0-1.266-1.031-2.215-2.613-2.215-1.758 0-2.637 1.19-2.637 2.402v.065h1.271v-.07Z" />
-                    </svg>
-                </div>
-                <h3>Compare</h3>
-                <p>
-                    Analise perfis, avaliações, notas e metas dos profissionais
-                    disponíveis.
-                </p>
-            </article>
-
-            <article class="passo-card">
-                <div class="passos-icone">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                        class="bi bi-3-circle-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-8.082.414c.92 0 1.535.54 1.541 1.318.012.791-.615 1.36-1.588 1.354-.861-.006-1.482-.469-1.54-1.066H5.104c.047 1.177 1.05 2.144 2.754 2.144 1.653 0 2.954-.937 2.93-2.396-.023-1.278-1.031-1.846-1.734-1.916v-.07c.597-.1 1.505-.739 1.482-1.876-.03-1.177-1.043-2.074-2.637-2.062-1.675.006-2.59.984-2.625 2.12h1.248c.036-.556.557-1.054 1.348-1.054.785 0 1.348.486 1.348 1.195.006.715-.563 1.237-1.342 1.237h-.838v1.072h.879Z" />
-                    </svg>
-                </div>
-                <h3>Contrate</h3>
-                <p>
-                    Negocie via chat integrado e feche o serviço com
-                    segurança.
-                </p>
-            </article>
-        </div>
-    </section>
-
-    <section class="painel">
-        <div class="painel-container">
-
-            <div class="painel-texto">
-                <h2>Tenha o controle total do seu negócio</h2>
-
-                <p class="descricao">
-                    Com o painel exclusivo para profissionais, você tem acesso a
-                    ferramentas poderosas para gerenciar sua carreira autônoma.
-                </p>
-
-                <div class="item">
-                    <span class="icone">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z" />
-                    </svg>
-                    </span>
-
-                    <div>
-                        <strong>Monitoramento de Faturamento</strong>
-                        <p>Acompanhe seus ganhos em tempo real com gráficos detalhados.</p>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <span class="icone">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5" />
-                    </svg>
-                    </span>
-
-                    <div>
-                        <strong>Metas Mensais</strong>
-                        <p>Defina e acompanhe suas metas de faturamento mensais.</p>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-coin" viewBox="0 0 16 16">
-                        <path
-                            d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518z" />
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                        <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11m0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12" />
-                    </svg>
-                    </span>
-
-                    <div>
-                        <strong>Controle de Leads</strong>
-                        <p>Gerencie todas as solicitações e oportunidades em um só lugar.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="painel-card">
-                <h3>Dashboard do Profissional</h3>
-
-                <div class="meta">
-                    <div class="meta-topo">
-                        <span>Meta Mensal</span>
-                        <strong>78%</strong>
-                    </div>
-
-                    <div class="barra">
-                        <div class="progresso"></div>
-                    </div>
-
-                    <div class="valores">
-                        <span>R$ 3.900</span>
-                        <span>R$ 5.000</span>
-                    </div>
-                </div>
-
-                <div class="grafico">
-                    <p>Faturamento Semanal</p>
-
-                    <div class="barras">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div>
-
-                <a href="#" class="btn-dashboard">
-                    Criar Conta Profissional
-                </a>
-            </div>
-
-        </div>
-    </section>
-
-    <section class="calculadora">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-calculator-fill"
+    <div class="objetivos-cards">
+      <article>
+        <div class="text-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-geo-alt"
             viewBox="0 0 16 16">
             <path
-                d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z" />
-        </svg>
+              d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+          </svg>
+        </div>
+        <h3>Foco Local</h3>
+        <p>
+          Priorizamos quem está perto de você.
+          Profissionais do seu bairro, prontos para atender.
+        </p>
+      </article>
 
-        <h2>Calculadora de Recebimento</h2>
+      <article>
+        <div class="text-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-shield"
+            viewBox="0 0 16 16">
+            <path
+              d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56" />
+          </svg>
+        </div>
+        <h3>Avaliações Reais</h3>
+        <p>
+          Sistema de review à prova de fraudes.
+          Feedbacks autênticos de clientes verificados.
+        </p>
+      </article>
 
-        <p class="subtitulo">
-            Transparência total: você fica com <strong>85% do valor</strong>
+      <article>
+        <div class="text-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+            class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5" />
+          </svg>
+        </div>
+        <h3>Gestão Pro</h3>
+        <p>
+          Painel financeiro exclusivo para quem presta serviços.
+          Controle total do seu negócio.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="passos">
+    <h2>Simples, rápido e seguro</h2>
+    <p class="paragrafo">Encontre o profissional ideal em 3 passos</p>
+
+    <div class="passos-card">
+      <article class="passo-card">
+        <div class="passos-icone">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-1-circle-fill"
+            viewBox="0 0 16 16">
+            <path
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M9.283 4.002H7.971L6.072 5.385v1.271l1.834-1.318h.065V12h1.312z" />
+          </svg>
+        </div>
+        <h3>Busque</h3>
+        <p>
+          Escolha a categoria e o seu bairro para encontrar
+          profissionais próximos.
+        </p>
+      </article>
+
+      <article class="passo-card">
+        <div class="passos-icone">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-2-circle-fill"
+            viewBox="0 0 16 16">
+            <path
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.646 6.24c0-.691.493-1.306 1.336-1.306.756 0 1.313.492 1.313 1.236 0 .697-.469 1.23-.902 1.705l-2.971 3.293V12h5.344v-1.107H7.268v-.077l1.974-2.22.096-.107c.688-.763 1.287-1.428 1.287-2.43 0-1.266-1.031-2.215-2.613-2.215-1.758 0-2.637 1.19-2.637 2.402v.065h1.271v-.07Z" />
+          </svg>
+        </div>
+        <h3>Compare</h3>
+        <p>
+          Analise perfis, avaliações, notas e metas dos profissionais
+          disponíveis.
+        </p>
+      </article>
+
+      <article class="passo-card">
+        <div class="passos-icone">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-3-circle-fill"
+            viewBox="0 0 16 16">
+            <path
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-8.082.414c.92 0 1.535.54 1.541 1.318.012.791-.615 1.36-1.588 1.354-.861-.006-1.482-.469-1.54-1.066H5.104c.047 1.177 1.05 2.144 2.754 2.144 1.653 0 2.954-.937 2.93-2.396-.023-1.278-1.031-1.846-1.734-1.916v-.07c.597-.1 1.505-.739 1.482-1.876-.03-1.177-1.043-2.074-2.637-2.062-1.675.006-2.59.984-2.625 2.12h1.248c.036-.556.557-1.054 1.348-1.054.785 0 1.348.486 1.348 1.195.006.715-.563 1.237-1.342 1.237h-.838v1.072h.879Z" />
+          </svg>
+        </div>
+        <h3>Contrate</h3>
+        <p>
+          Negocie via chat integrado e feche o serviço com
+          segurança.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="painel">
+    <div class="painel-container">
+
+      <div class="painel-texto">
+        <h2>Tenha o controle total do seu negócio</h2>
+
+        <p class="descricao">
+          Com o painel exclusivo para profissionais, você tem acesso a
+          ferramentas poderosas para gerenciar sua carreira autônoma.
         </p>
 
-        <div class="card-calculadora">
+        <div class="item">
+          <span class="icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
+              <path
+                d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z" />
+            </svg>
+          </span>
 
-            <div class="campos">
-                <div class="campo">
-                    <label>Valor do Serviço</label>
-                    <input type="text" placeholder="R$ 0,00">
-                </div>
-
-                <div class="resultado">
-                    <span>Você Receberá (85%)</span>
-
-                    <div class="resultado-box">
-                        <h3>R$ 0,00</h3>
-                        <p>Taxa da plataforma: R$ 0,00</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="info-box">
-                <strong>Transparência total:</strong>
-                Nós retemos apenas <strong>15% do valor</strong> para manutenção,
-                segurança, processamento de pagamentos e divulgação da plataforma.
-                Você fica com 85% garantidos!
-            </div>
-
-            <a href="#" class="btn-ganhar">
-                Começar a Ganhar Agora
-            </a>
-
+          <div>
+            <strong>Monitoramento de Faturamento</strong>
+            <p>Acompanhe seus ganhos em tempo real com gráficos detalhados.</p>
+          </div>
         </div>
-    </section>
 
-    <section class="hero">
-      <h1>Encontre quem faz direito.</h1>
-      <p>Profissionais verificados com avaliações reais do seu bairro</p>
-      <div class="filters">
-        <select id="sel-servico">
-          <option value="">Serviço</option>
-          <option value="construcao">Construção</option>
-          <option value="eletrica">Elétrica</option>
-          <option value="hidraulica">Hidráulica</option>
-          <option value="pintura">Pintura</option>
-          <option value="limpeza">Limpeza</option>
-          <option value="jardinagem">Jardinagem</option>
-          <option value="mudancas">Mudanças</option>
-        </select>
-        <select id="sel-bairro">
-          <option value="">Bairro (Todos)</option>
-          
-          <optgroup label="Sede">
-            <option value="centro">Centro</option>
-            <option value="gleba-a">Gleba A</option>
-            <option value="gleba-b">Gleba B</option>
-            <option value="gleba-c">Gleba C</option>
-            <option value="gleba-e">Gleba E</option>
-            <option value="inocoop">Inocoop</option>
-            <option value="ponto-certo">Ponto Certo</option>
-            <option value="parque-satelite">Parque Satélite</option>
-            <option value="ficam">Ficam</option>
-            <option value="mangueiral">Mangueiral</option>
-            <option value="nova-vitoria">Nova Vitória</option>
-            <option value="lama-preta">Lama Preta</option>
-            <option value="verde-horizonte">Verde Horizonte</option>
-            <option value="parafuso">Parafuso</option>
-            <option value="parque-nascente">Parque Nascente</option>
-            <option value="gravata">Gravatá</option>
-            <option value="phoc-1">Phoc I</option>
-            <option value="phoc-2">Phoc II</option>
-            <option value="phoc-3">Phoc III</option>
+        <div class="item">
+          <span class="icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5" />
+            </svg>
+          </span>
+
+          <div>
+            <strong>Metas Mensais</strong>
+            <p>Defina e acompanhe suas metas de faturamento mensais.</p>
+          </div>
+        </div>
+
+        <div class="item">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-coin"
+              viewBox="0 0 16 16">
+              <path
+                d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518z" />
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+              <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11m0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12" />
+            </svg>
+          </span>
+
+          <div>
+            <strong>Controle de Leads</strong>
+            <p>Gerencie todas as solicitações e oportunidades em um só lugar.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="painel-card">
+        <h3>Dashboard do Profissional</h3>
+
+        <div class="meta">
+          <div class="meta-topo">
+            <span>Meta Mensal</span>
+            <strong>78%</strong>
+          </div>
+
+          <div class="barra">
+            <div class="progresso"></div>
+          </div>
+
+          <div class="valores">
+            <span>R$ 3.900</span>
+            <span>R$ 5.000</span>
+          </div>
+        </div>
+
+        <div class="grafico">
+          <p>Faturamento Semanal</p>
+
+          <div class="barras">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+
+        <a href="#" class="btn-dashboard">
+          Criar Conta Profissional
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="calculadora">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-calculator-fill"
+      viewBox="0 0 16 16">
+      <path
+        d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z" />
+    </svg>
+
+    <h2>Calculadora de Recebimento</h2>
+
+    <p class="subtitulo">
+      Transparência total: você fica com <strong>85% do valor</strong>
+    </p>
+
+    <div class="card-calculadora">
+
+      <div class="campos">
+        <div class="campo">
+          <label>Valor do Serviço</label>
+          <input type="number" id="input-valor" placeholder="R$ 0,00" step="0.01">
+        </div>
+
+        <div class="resultado">
+          <span>Você Receberá (85%)</span>
+
+          <div class="resultado-box">
+            <h3 id="valor-receber">R$ 0,00</h3>
+            <p id="valor-taxa">Taxa da plataforma: R$ 0,00</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Transparência total:</strong>
+        Nós retemos apenas <strong>15% do valor</strong> para manutenção,
+        segurança, processamento de pagamentos e divulgação da plataforma.
+        Você fica com 85% garantidos!
+      </div>
+
+      <a href="#" class="btn-ganhar">
+        Começar a Ganhar Agora
+      </a>
+
+    </div>
+
+  </section>
+
+<section class="homepage-discovery">
+
+  <div class="discovery-header">
+    <div class="search-bar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="search-input" placeholder="Buscar serviços agora..."/>
+    </div>
+
+    <div class="discovery-filters-inline">
+      <select id="sel-servico">
+        <option value="">Todos os Serviços</option>
+        <option value="construcao">Construção</option>
+        <option value="eletrica">Elétrica</option>
+        <option value="hidraulica">Hidráulica</option>
+        <option value="pintura">Pintura</option>
+        <option value="limpeza">Limpeza</option>
+        <option value="jardinagem">Jardinagem</option>
+        <option value="mudancas">Mudanças</option>
+      </select>
+
+      <select id="sel-bairro">
+        <option value="">Todos os Bairros</option>
+        <optgroup label="Sede">
+          <option value="centro">Centro</option>
+          <option value="gleba-a">Gleba A</option>
           </optgroup>
-
-          <optgroup label="Orla (Costa de Camaçari)">
-            <option value="busca-vida">Busca Vida</option>
-            <option value="vila-de-abrantes">Vila de Abrantes</option>
-            <option value="jaua">Jauá</option>
-            <option value="arembepe">Arembepe</option>
-            <option value="barra-do-jacuipe">Barra do Jacuípe</option>
-            <option value="guarajuba">Guarajuba</option>
-            <option value="itacimirim">Itacimirim</option>
-            <option value="monte-gordo">Monte Gordo</option>
-          </optgroup>
-        </select>
-      </div>
-    </section>
-
-    <section class="categories">
-      <button class="cat" data-cat="construcao">Construção</button>
-      <button class="cat" data-cat="eletrica">Elétrica</button>
-      <button class="cat" data-cat="hidraulica">Hidráulica</button>
-      <button class="cat" data-cat="pintura">Pintura</button>
-      <button class="cat" data-cat="limpeza">Limpeza</button>
-      <button class="cat" data-cat="jardinagem">Jardinagem</button>
-      <button class="cat" data-cat="mudancas">Mudanças</button>
-      <button class="cat" data-cat="">Mais serviços</button>
-    </section>
-
-    <section class="cards" id="cards">
-      
-      <div class="card" data-cat="construcao" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av av-m">M</div>
-          <div class="card-info">
-            <strong>Marcos Silva</strong>
-            <span class="tag">@construção</span>
-            <span class="loc"> Centro</span>
-          </div>
-        </div>
-        <p>Especializado em execuções residenciais e comerciais. Mais de 15 anos de experiência.</p>
-        <div class="rating"><span class="stars" data-r="3.5"></span><small>(127 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Marcos Silva">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="eletrica" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av av-s">S</div>
-          <div class="card-info">
-            <strong>Sofia Paiva</strong>
-            <span class="tag">@elétrica</span>
-            <span class="loc"> Gleba A</span>
-          </div>
-        </div>
-        <p>Serviços residenciais, reparos e consertos. Projetos e manutenções elétricas.</p>
-        <div class="rating"><span class="stars" data-r="4.5"></span><small>(203 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Sofia Paiva">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="jardinagem" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av" style="background: linear-gradient(135deg,#134E5E,#71B280);">F</div>
-          <div class="card-info">
-            <strong>Fernando Costa</strong>
-            <span class="tag">@jardinagem</span>
-            <span class="loc"> Inocoop</span>
-          </div>
-        </div>
-        <p>Instalação de sistemas de irrigação automática e manutenção de gramados esportivos.</p>
-        <div class="rating"><span class="stars" data-r="4.0"></span><small>(47 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Fernando Costa">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="hidraulica" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av av-c">C</div>
-          <div class="card-info">
-            <strong>Carlos Oliveira</strong>
-            <span class="tag">@hidráulica</span>
-            <span class="loc"> Inocoop</span>
-          </div>
-        </div>
-        <p>Projetos, instalações e manutenções hidráulicas completas.</p>
-        <div class="rating"><span class="stars" data-r="4.0"></span><small>(89 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="mudancas" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av" style="background: linear-gradient(135deg,#FF512F,#DD2476);">R</div>
-          <div class="card-info">
-            <strong>Roberto Alencar</strong>
-            <span class="tag">@mudanças</span>
-            <span class="loc"> Centro</span>
-          </div>
-        </div>
-        <p>Mudanças residenciais com equipe especializada em embalagens frágeis e proteção de móveis.</p>
-        <div class="rating"><span class="stars" data-r="5.0"></span><small>(34 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Roberto Alencar">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="limpeza" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av av-c">C</div>
-          <div class="card-info">
-            <strong>Julia Silva</strong>
-            <span class="tag">@Limpeza</span>
-            <span class="loc"> Arembepe</span>
-          </div>
-        </div>
-        <p>Limpeza residencial e pós-obra detalhada com eficiência.</p>
-        <div class="rating"><span class="stars" data-r="4.5"></span><small>(89 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Julia Silva">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="mudancas" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av av-m" style="background: linear-gradient(135deg,#f093fb,#f5576c);">R</div>
-          <div class="card-info">
-            <strong>Ricardo Freire</strong>
-            <span class="tag">@mudanças</span>
-            <span class="loc">Gleba A</span>
-          </div>
-        </div>
-        <p>Transportes e mudanças locais e intermunicipais com montagem inclusa.</p>
-        <div class="rating"><span class="stars" data-r="5.0"></span><small>(42 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Ricardo Freire">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="eletrica" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av av-s" style="background: linear-gradient(135deg,#4facfe,#00f2fe);">A</div>
-          <div class="card-info">
-            <strong>Ana Beatriz</strong>
-            <span class="tag">@elétrica</span>
-            <span class="loc"> Centro</span>
-          </div>
-        </div>
-        <p>Eletricista predial e residencial. Instalação de chuveiros e ventiladores.</p>
-        <div class="rating"><span class="stars" data-r="4.5"></span><small>(78 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Ana Beatriz">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="pintura" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av" style="background: linear-gradient(135deg,#434343,#000000);">P</div>
-          <div class="card-info">
-            <strong>Pedro Mendes</strong>
-            <span class="tag">@pintura</span>
-            <span class="loc"> Gleba A</span>
-          </div>
-        </div>
-        <p>Especialista em pintura externa, grafiato e aplicação de resinas.</p>
-        <div class="rating"><span class="stars" data-r="3.5"></span><small>(61 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Pedro Mendes">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="hidraulica" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av" style="background: linear-gradient(135deg,#000046,#1CB5E0);">T</div>
-          <div class="card-info">
-            <strong>Tiago Souza</strong>
-            <span class="tag">@hidráulica</span>
-            <span class="loc"> Gleba A</span>
-          </div>
-        </div>
-        <p>Reparo de válvulas de descarga, instalação de caixas d'água e limpeza de calhas.</p>
-        <div class="rating"><span class="stars" data-r="3.5"></span><small>(63 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Tiago Souza">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="eletrica" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av" style="background: linear-gradient(135deg,#f7971e,#ffd200);">B</div>
-          <div class="card-info">
-            <strong>Bruno Real</strong>
-            <span class="tag">@elétrica</span>
-            <span class="loc"> Inocoop</span>
-          </div>
-        </div>
-        <p>Instalação de cameras de segurança, alarmes e automação residencial inteligente.</p>
-        <div class="rating"><span class="stars" data-r="4.5"></span><small>(210 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Bruno Real">Enviar mensagem</button>
-        </a>
-      </div>
-
-      <div class="card" data-cat="limpeza" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
-        <div class="card-top">
-          <div class="av" style="background: linear-gradient(135deg,#DA22FF,#9733EE);">S</div>
-          <div class="card-info">
-            <strong>Sônia Souza</strong>
-            <span class="tag">@limpeza</span>
-            <span class="loc"> Centro</span>
-          </div>
-        </div>
-        <p>Diarista com referências. Organização de closets e limpeza residencial minuciosa.</p>
-        <div class="rating"><span class="stars" data-r="5.0"></span><small>(312 avaliações)</small></div>
-        <a href="painelmensagens.html" onclick="event.stopPropagation();">
-          <button class="btn-msg" data-name="Sônia Souza">Enviar mensagem</button>
-        </a>
-      </div>
-      
-    </section>
-
-    <section class="sobre">
-  <div class="título-sobre">
-    <h2>Sobre a Nexlar</h2>
-    <p>Conectando a força de trabalho autônoma de Camaçari a clientes de forma segura e profissional</p>
-  </div>
-
-  <div class="cards-sobre">
-    <div class="card-sobre">
-      <div class="icone-sobre">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-bullseye" viewBox="0 0 16 16">
-          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-          <path d="M8 13A5 5 0 1 1 8 3a5 5 0 0 1 0 10m0 1A6 6 0 1 0 8 2a6 6 0 0 0 0 12" />
-          <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8" />
-          <path d="M9.5 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-        </svg>
-      </div>
-      <h3>Nossa Missão</h3>
-      <p>Facilitar o acesso entre profissionais autônomos qualificados e clientes que precisam de serviços confiáveis em Camaçari e região.</p>
-    </div>
-
-    <div class="card-sobre">
-      <div class="icone-sobre">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
-          <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
-        </svg>
-      </div>
-      <h3>Nossa Visão</h3>
-      <p>Ser a principal plataforma de serviços locais, valorizando o trabalho autônomo e promovendo o desenvolvimento econômico da nossa comunidade.</p>
-    </div>
-
-    <div class="card-sobre">
-      <div class="icone-sobre">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-shield" viewBox="0 0 16 16">
-          <path d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56" />
-        </svg>
-      </div>
-      <h3>Nossos Valores</h3>
-      <p>Transparência, segurança e profissionalismo. Acreditamos em oportunidades justas e na valorização do trabalho local.</p>
+      </select>
     </div>
   </div>
 
-  <div class="cta-sobre">
-    <h3>Feito para Camaçari, com orgulho baiano</h3>
-    <p>A Nexlar nasceu para fortalecer a economia local, conectando quem precisa de serviços com profissionais talentosos da nossa região. Juntos, construímos uma comunidade mais forte e próspera.</p>
-    <div class="botoes-area">
-      <button class="btn-white">Encontrar Profissionais</button>
-      <button class="btn-outline">Oferecer Meus Serviços</button>
-    </div>
+  <div class="hero-minimal">
+    <h1>Encontre quem faz direito.</h1>
+    <p>Profissionais verificados com avaliações reais do seu bairro</p>
   </div>
+
+  <div class="categories-grid">
+    <button class="cat" data-cat="construcao">Construção</button>
+    <button class="cat" data-cat="eletrica">Elétrica</button>
+    <button class="cat" data-cat="hidraulica">Hidráulica</button>
+    <button class="cat" data-cat="pintura">Pintura</button>
+    <button class="cat" data-cat="limpeza">Limpeza</button>
+    <button class="cat" data-cat="jardinagem">Jardinagem</button>
+    <button class="cat" data-cat="mudancas">Mudanças</button>
+  </div>
+
+  <div class="cards-container" id="cards">
+    <div class="card" data-cat="construcao" data-bairro="centro" onclick="location.href='perfilAutonomo.html'">
+      <div class="card-top">
+        <div class="av av-m">M</div>
+        <div class="card-info">
+          <strong>Marcos Silva</strong>
+          <span class="tag">@construção</span>
+          <span class="loc"> Centro</span>
+        </div>
+      </div>
+      <p>Especializado em execuções residenciais e comerciais. Mais de 15 anos de experiência.</p>
+      <div class="rating"><span class="stars" data-r="3.5"></span><small>(127 avaliações)</small></div>
+      <a href="painelmensagens.html" onclick="event.stopPropagation();">
+        <button class="btn-msg">Enviar mensagem</button>
+      </a>
+    </div>
+
+    </div>
+
 </section>
 
+  <section class="sobre">
+    <div class="título-sobre">
+      <h2>Sobre a Nexlar</h2>
+      <p>Conectando a força de trabalho autônoma de Camaçari a clientes de forma segura e profissional</p>
+    </div>
 
-    <footer>
-
-        <div class="footer-container">
-
-            <div class="rodape">
-                <img src="src/images/logobranca.png.png" alt="Logo Branca do site">
-
-                <p>
-                    A conexão inteligente entre você e os melhores profissionais do seu bairro.
-                </p>
-            </div>
-
-            <div class="rodape">
-                <h4>Para Você</h4>
-
-                <a href="#">Encontrar Profissionais</a>
-                <a href="#">Cadastrar-se</a>
-            </div>
-
-            <div class="rodape">
-                <h4>Institucional</h4>
-
-                <a href="#">Sobre Nós</a>
-                <a href="#">Contato</a>
-                <a href="#">Privacidade</a>
-            </div>
-
-            <div class="rodape">
-                <h4>Contato</h4>
-
-                <a href="#">suporte@nexlar.com</a>
-                <p>Camaçari, Bahia</p>
-                <p>Brasil</p>
-            </div>
-
+    <div class="cards-sobre">
+      <div class="card-sobre">
+        <div class="icone-sobre">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-bullseye" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+            <path d="M8 13A5 5 0 1 1 8 3a5 5 0 0 1 0 10m0 1A6 6 0 1 0 8 2a6 6 0 0 0 0 12" />
+            <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8" />
+            <path d="M9.5 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+          </svg>
         </div>
+        <h3>Nossa Missão</h3>
+        <p>Facilitar o acesso entre profissionais autônomos qualificados e clientes que precisam de serviços
+          confiáveis em Camaçari e região.</p>
+      </div>
 
-        <div class="footer-bottom">
-            © 2026 Nexlar. Todos os direitos reservados.
+      <div class="card-sobre">
+        <div class="icone-sobre">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+            <path
+              d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+          </svg>
         </div>
+        <h3>Nossa Visão</h3>
+        <p>Ser a principal plataforma de serviços locais, valorizando o trabalho autônomo e promovendo o
+          desenvolvimento econômico da nossa comunidade.</p>
+      </div>
 
-    </footer>
+      <div class="card-sobre">
+        <div class="icone-sobre">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-shield" viewBox="0 0 16 16">
+            <path
+              d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56" />
+          </svg>
+        </div>
+        <h3>Nossos Valores</h3>
+        <p>Transparência, segurança e profissionalismo. Acreditamos em oportunidades justas e na valorização do
+          trabalho local.</p>
+      </div>
+    </div>
 
+    <div class="cta-sobre">
+      <h3>Feito para Camaçari, com orgulho baiano</h3>
+      <p>A Nexlar nasceu para fortalecer a economia local, conectando quem precisa de serviços com profissionais
+        talentosos da nossa região. Juntos, construímos uma comunidade mais forte e próspera.</p>
+      <div class="botoes-area">
+        <button class="btn-white">Encontrar Profissionais</button>
+        <button class="btn-outline">Oferecer Meus Serviços</button>
+      </div>
+    </div>
+  </section>
+
+
+  <footer>
+
+    <div class="footer-container">
+
+      <div class="rodape">
+        <img src="src/images/logobranca.png.png" alt="Logo Branca do site">
+
+        <p>
+          A conexão inteligente entre você e os melhores profissionais do seu bairro.
+        </p>
+      </div>
+
+      <div class="rodape">
+        <h4>Para Você</h4>
+
+        <a href="#">Encontrar Profissionais</a>
+        <a href="#">Cadastrar-se</a>
+      </div>
+
+      <div class="rodape">
+        <h4>Institucional</h4>
+
+        <a href="#">Sobre Nós</a>
+        <a href="#">Contato</a>
+        <a href="#">Privacidade</a>
+      </div>
+
+      <div class="rodape">
+        <h4>Contato</h4>
+
+        <a href="#">suporte@nexlar.com</a>
+        <p>Camaçari, Bahia</p>
+        <p>Brasil</p>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      © 2026 Nexlar. Todos os direitos reservados.
+    </div>
+
+  </footer>
+
+  <script src="src/js/homepage.js"></script>
 
 </body>
+
 </html>
