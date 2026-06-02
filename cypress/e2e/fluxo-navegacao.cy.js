@@ -5,9 +5,9 @@ describe('Testes de Fluxo de Navegação Completa - Nexlar', () => {
 
   it('Deve navegar com sucesso por todas as páginas do sistema', () => {
     
-    // ----------------------------------------------------
+    
     // 1. TESTANDO A PÁGINA INICIAL (inicio.html)
-    // ----------------------------------------------------
+    
     cy.visit(`${baseUrl}/inicio.html`)
     cy.title().should('include', 'Nexlar - Início')
     
