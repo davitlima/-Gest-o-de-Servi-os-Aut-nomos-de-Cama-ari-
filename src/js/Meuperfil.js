@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ==========================================================================
-    // 1. ALTERNÂNCIA DE ABAS (TABS)
-    // ==========================================================================
     const tabs = document.querySelectorAll('.tabs .tab');
     const profileCard = document.querySelector('.profile-card');
 

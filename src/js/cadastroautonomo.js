@@ -46,8 +46,6 @@ function isValidDate(str) {
   return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
 }
  
-// ── Toast ──────────────────────────────────────────────────
- 
 let toastTimer = null;
  
 /**
@@ -55,6 +53,7 @@ let toastTimer = null;
   @param {string} msg  
   @param {number} duration 
  */
+
 function showToast(msg, duration = 3000) {
   const toast = document.getElementById('toast');
   toast.textContent = msg;
@@ -132,7 +131,6 @@ function focusField(id) {
   }, { once: true });
 }
  
-/** Limpa todos os campos do formulário. */
 function resetForm() {
   ['nome','nascimento','cpf','contato','senha'].forEach(id => {
     document.getElementById(id).value = '';
@@ -140,20 +138,15 @@ function resetForm() {
   document.getElementById('termos').checked = false;
 }
  
-// ── Help button ────────────────────────────────────────────
- 
-/** Exibe um toast de ajuda. */
 function showHelp() {
   showToast('💡 Preencha todos os campos para criar sua conta Nexlar.', 4000);
 }
 
-// ── Integração Final (Opcional, mas recomendada) ───────────
-// Garante que o formulário não seja enviado sem passar pelo handleSubmit
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   if (form) {
     form.addEventListener('submit', (e) => {
-      e.preventDefault(); // Impede o recarregamento da página
+      e.preventDefault(); 
       handleSubmit();
     });
   }

@@ -1,16 +1,11 @@
-/**
- * Formata data no padrão DD/MM/AAAA enquanto o usuário digita.
- */
+
 function maskDate(input) {
   let v = input.value.replace(/\D/g, '').slice(0, 8);
   if (v.length >= 5)      v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4);
   else if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
   input.value = v;
 }
- 
-/**
- * Formata CPF no padrão 000.000.000-00 enquanto o usuário digita.
- */
+
 function maskCPF(input) {
   let v = input.value.replace(/\D/g, '').slice(0, 11);
   if (v.length > 9)      v = v.slice(0,3) + '.' + v.slice(3,6) + '.' + v.slice(6,9) + '-' + v.slice(9);
@@ -19,9 +14,6 @@ function maskCPF(input) {
   input.value = v;
 }
  
-/**
- * Formata telefone no padrão (00) 00000-0000 enquanto o usuário digita.
- */
 function maskPhone(input) {
   let v = input.value.replace(/\D/g, '').slice(0, 11);
   if (v.length > 10)     v = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
@@ -31,11 +23,6 @@ function maskPhone(input) {
   input.value = v;
 }
  
-// ── Validation ─────────────────────────────────────────────
- 
-/**
- * Valida CPF (algoritmo oficial).
- */
 function isValidCPF(cpf) {
   const nums = cpf.replace(/\D/g, '');
   if (nums.length !== 11 || /^(\d)\1+$/.test(nums)) return false;
@@ -51,17 +38,12 @@ function isValidCPF(cpf) {
   return rest === parseInt(nums[10]);
 }
  
-/**
- * Valida data no formato DD/MM/AAAA.
- */
 function isValidDate(str) {
   if (!/^\d{2}\/\d{2}\/\d{4}$/.test(str)) return false;
   const [d, m, y] = str.split('/').map(Number);
   const date = new Date(y, m - 1, d);
   return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
 }
- 
-// ── Toast ──────────────────────────────────────────────────
  
 let toastTimer = null;
  
@@ -70,6 +52,7 @@ let toastTimer = null;
  * @param {string} msg  — texto da mensagem
  * @param {number} duration — duração em ms (padrão 3000)
  */
+
 function showToast(msg, duration = 3000) {
   const toast = document.getElementById('toast');
   toast.textContent = msg;
@@ -78,12 +61,6 @@ function showToast(msg, duration = 3000) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
 }
  
-// ── Form Submit ────────────────────────────────────────────
- 
-/**
- * Chamado pelo clique no botão "Continuar".
- * Valida os campos e exibe feedback ao usuário.
- */
 function handleSubmit() {
   const nome      = document.getElementById('nome').value.trim();
   const nasc      = document.getElementById('nascimento').value.trim();
@@ -92,7 +69,6 @@ function handleSubmit() {
   const senha     = document.getElementById('senha').value;
   const termos    = document.getElementById('termos').checked;
  
-  // ── Validações ──
   if (!nome) {
     showToast('⚠️ Preencha o nome completo.');
     focusField('nome');
@@ -129,12 +105,10 @@ function handleSubmit() {
     return;
   }
  
-  // ── Sucesso ──
   const btn = document.getElementById('btnContinuar');
   btn.disabled = true;
   btn.textContent = 'Processando…';
  
-  // Simula envio assíncrono (substitua pelo seu fetch/API real)
   setTimeout(() => {
     showToast('✅ Cadastro realizado com sucesso!', 4000);
     btn.textContent = 'Continuar';
@@ -143,9 +117,6 @@ function handleSubmit() {
   }, 1500);
 }
  
-// ── Helpers ────────────────────────────────────────────────
- 
-/** Foca e destaca visualmente o campo com problema. */
 function focusField(id) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -159,7 +130,6 @@ function focusField(id) {
   }, { once: true });
 }
  
-/** Limpa todos os campos do formulário. */
 function resetForm() {
   ['nome','nascimento','cpf','contato','senha'].forEach(id => {
     document.getElementById(id).value = '';
@@ -167,20 +137,15 @@ function resetForm() {
   document.getElementById('termos').checked = false;
 }
  
-// ── Help button ────────────────────────────────────────────
- 
-/** Exibe um toast de ajuda. */
 function showHelp() {
   showToast('💡 Preencha todos os campos para criar sua conta Nexlar.', 4000);
 }
 
-// ── Integração Final (Opcional, mas recomendada) ───────────
-// Garante que o formulário não seja enviado sem passar pelo handleSubmit
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   if (form) {
     form.addEventListener('submit', (e) => {
-      e.preventDefault(); // Impede o recarregamento da página
+      e.preventDefault(); 
       handleSubmit();
     });
   }

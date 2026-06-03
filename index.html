@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <html lang="pt-br">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="src/css/homepage.css">
+  <link rel="stylesheet" href="src/css/menu-home.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <title>Homepage</title>
@@ -298,73 +298,234 @@
 
   </section>
 
-<section class="homepage-discovery">
+  <section class="menu-home">
 
-  <div class="discovery-header">
-    <div class="search-bar">
+     <div class="search-bar">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input type="text" id="search-input" placeholder="Buscar serviços agora..."/>
+      <input type="text" id="search-input" placeholder="Buscar serviços"/>
     </div>
 
-    <div class="discovery-filters-inline">
-      <select id="sel-servico">
-        <option value="">Todos os Serviços</option>
-        <option value="construcao">Construção</option>
-        <option value="eletrica">Elétrica</option>
-        <option value="hidraulica">Hidráulica</option>
-        <option value="pintura">Pintura</option>
-        <option value="limpeza">Limpeza</option>
-        <option value="jardinagem">Jardinagem</option>
-        <option value="mudancas">Mudanças</option>
-      </select>
-
-      <select id="sel-bairro">
-        <option value="">Todos os Bairros</option>
-        <optgroup label="Sede">
-          <option value="centro">Centro</option>
-          <option value="gleba-a">Gleba A</option>
+    <section class="hero">
+      <h1>Encontre quem faz direito.</h1>
+      <p>Profissionais verificados com avaliações reais do seu bairro</p>
+      <div class="filters">
+        <select id="sel-servico">
+          <option value="">Serviço</option>
+          <option value="construcao">Construção</option>
+          <option value="eletrica">Elétrica</option>
+          <option value="hidraulica">Hidráulica</option>
+          <option value="pintura">Pintura</option>
+          <option value="limpeza">Limpeza</option>
+          <option value="jardinagem">Jardinagem</option>
+          <option value="mudancas">Mudanças</option>
+        </select>
+        <select id="sel-bairro">
+          <option value="">Bairro (Todos)</option>
+          
+          <optgroup label="Sede">
+            <option value="centro">Centro</option>
+            <option value="gleba-a">Gleba A</option>
+            <option value="gleba-b">Gleba B</option>
+            <option value="gleba-c">Gleba C</option>
+            <option value="gleba-e">Gleba E</option>
+            <option value="inocoop">Inocoop</option>
+            <option value="ponto-certo">Ponto Certo</option>
+            <option value="parque-satelite">Parque Satélite</option>
+            <option value="ficam">Ficam</option>
+            <option value="mangueiral">Mangueiral</option>
+            <option value="nova-vitoria">Nova Vitória</option>
+            <option value="lama-preta">Lama Preta</option>
+            <option value="verde-horizonte">Verde Horizonte</option>
+            <option value="parafuso">Parafuso</option>
+            <option value="parque-nascente">Parque Nascente</option>
+            <option value="gravata">Gravatá</option>
+            <option value="phoc-1">Phoc I</option>
+            <option value="phoc-2">Phoc II</option>
+            <option value="phoc-3">Phoc III</option>
           </optgroup>
-      </select>
-    </div>
-  </div>
 
-  <div class="hero-minimal">
-    <h1>Encontre quem faz direito.</h1>
-    <p>Profissionais verificados com avaliações reais do seu bairro</p>
-  </div>
-
-  <div class="categories-grid">
-    <button class="cat" data-cat="construcao">Construção</button>
-    <button class="cat" data-cat="eletrica">Elétrica</button>
-    <button class="cat" data-cat="hidraulica">Hidráulica</button>
-    <button class="cat" data-cat="pintura">Pintura</button>
-    <button class="cat" data-cat="limpeza">Limpeza</button>
-    <button class="cat" data-cat="jardinagem">Jardinagem</button>
-    <button class="cat" data-cat="mudancas">Mudanças</button>
-  </div>
-
-  <div class="cards-container" id="cards">
-    <div class="card" data-cat="construcao" data-bairro="centro" onclick="location.href='perfilAutonomo.html'">
-      <div class="card-top">
-        <div class="av av-m">M</div>
-        <div class="card-info">
-          <strong>Marcos Silva</strong>
-          <span class="tag">@construção</span>
-          <span class="loc"> Centro</span>
-        </div>
+          <optgroup label="Orla (Costa de Camaçari)">
+            <option value="busca-vida">Busca Vida</option>
+            <option value="vila-de-abrantes">Vila de Abrantes</option>
+            <option value="jaua">Jauá</option>
+            <option value="arembepe">Arembepe</option>
+            <option value="barra-do-jacuipe">Barra do Jacuípe</option>
+            <option value="guarajuba">Guarajuba</option>
+            <option value="itacimirim">Itacimirim</option>
+            <option value="monte-gordo">Monte Gordo</option>
+          </optgroup>
+        </select>
       </div>
-      <p>Especializado em execuções residenciais e comerciais. Mais de 15 anos de experiência.</p>
-      <div class="rating"><span class="stars" data-r="3.5"></span><small>(127 avaliações)</small></div>
-      <a href="painelmensagens.html" onclick="event.stopPropagation();">
-        <button class="btn-msg">Enviar mensagem</button>
-      </a>
-    </div>
+    </section>
 
-    </div>
+    <section class="categories">
+      <button class="cat" data-cat="construcao">Construção</button>
+      <button class="cat" data-cat="eletrica">Elétrica</button>
+      <button class="cat" data-cat="hidraulica">Hidráulica</button>
+      <button class="cat" data-cat="pintura">Pintura</button>
+      <button class="cat" data-cat="limpeza">Limpeza</button>
+      <button class="cat" data-cat="jardinagem">Jardinagem</button>
+      <button class="cat" data-cat="mudancas">Mudanças</button>
+      <button class="cat" data-cat="">Mais serviços</button>
+    </section>
 
-</section>
+    <section class="cards" id="cards">
+      
+      <div class="card" data-cat="construcao" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+        <div class="card-top">
+          <div class="av av-m">M</div>
+          <div class="card-info">
+            <strong>Marcos Silva</strong>
+            <span class="tag">@construção</span>
+            <span class="loc"> Centro</span>
+          </div>
+        </div>
+        <p>Especializado em execuções residenciais e comerciais. Mais de 15 anos de experiência.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(127 avaliações)</small></div>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Marcos Silva">Enviar mensagem</button>
+        </a>
+      </div>
+
+      <div class="card" data-cat="eletrica" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+        <div class="card-top">
+          <div class="av av-s">S</div>
+          <div class="card-info">
+            <strong>Sofia Paiva</strong>
+            <span class="tag">@elétrica</span>
+            <span class="loc"> Gleba A</span>
+          </div>
+        </div>
+        <p>Serviços residenciais, reparos e consertos. Projetos e manutenções elétricas.</p>
+        <div class="rating"><span class="stars" data-r="4.5"></span><small>(203 avaliações)</small></div>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Sofia Paiva">Enviar mensagem</button>
+        </a>
+      </div>
+
+      <div class="card" data-cat="jardinagem" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+        <div class="card-top">
+          <div class="av" style="background: linear-gradient(135deg,#134E5E,#71B280);">F</div>
+          <div class="card-info">
+            <strong>Fernando Costa</strong>
+            <span class="tag">@jardinagem</span>
+            <span class="loc"> Inocoop</span>
+          </div>
+        </div>
+        <p>Instalação de sistemas de irrigação automática e manutenção de gramados esportivos.</p>
+        <div class="rating"><span class="stars" data-r="4.0"></span><small>(47 avaliações)</small></div>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Fernando Costa">Enviar mensagem</button>
+        </a>
+      </div>
+
+      <div class="card" data-cat="hidraulica" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+        <div class="card-top">
+          <div class="av av-c">C</div>
+          <div class="card-info">
+            <strong>Carlos Oliveira</strong>
+            <span class="tag">@hidráulica</span>
+            <span class="loc"> Inocoop</span>
+          </div>
+        </div>
+        <p>Projetos, instalações e manutenções hidráulicas completas.</p>
+        <div class="rating"><span class="stars" data-r="4.0"></span><small>(89 avaliações)</small></div>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Carlos Oliveira">Enviar mensagem</button>
+        </a>
+      </div>
+
+      <div class="card" data-cat="mudancas" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+        <div class="card-top">
+          <div class="av" style="background: linear-gradient(135deg,#FF512F,#DD2476);">R</div>
+          <div class="card-info">
+            <strong>Roberto Alencar</strong>
+            <span class="tag">@mudanças</span>
+            <span class="loc"> Centro</span>
+          </div>
+        </div>
+        <p>Mudanças residenciais com equipe especializada em embalagens frágeis e proteção de móveis.</p>
+        <div class="rating"><span class="stars" data-r="5.0"></span><small>(34 avaliações)</small></div>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Roberto Alencar">Enviar mensagem</button>
+        </a>
+      </div>
+
+      <div class="card" data-cat="limpeza" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+        <div class="card-top">
+          <div class="av av-c">C</div>
+          <div class="card-info">
+            <strong>Julia Silva</strong>
+            <span class="tag">@Limpeza</span>
+            <span class="loc"> Arembepe</span>
+          </div>
+        </div>
+        <p>Limpeza residencial e pós-obra detalhada com eficiência.</p>
+        <div class="rating"><span class="stars" data-r="4.5"></span><small>(89 avaliações)</small></div>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Julia Silva">Enviar mensagem</button>
+        </a>
+      </div>
+
+      <div class="card" data-cat="mudancas" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+        <div class="card-top">
+          <div class="av av-m" style="background: linear-gradient(135deg,#f093fb,#f5576c);">R</div>
+          <div class="card-info">
+            <strong>Ricardo Freire</strong>
+            <span class="tag">@mudanças</span>
+            <span class="loc">Gleba A</span>
+          </div>
+        </div>
+        <p>Transportes e mudanças locais e intermunicipais com montagem inclusa.</p>
+        <div class="rating"><span class="stars" data-r="5.0"></span><small>(42 avaliações)</small></div>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Ricardo Freire">Enviar mensagem</button>
+        </a>
+      </div>
+
+      <div class="card" data-cat="eletrica" data-bairro="centro" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+        <div class="card-top">
+          <div class="av av-s" style="background: linear-gradient(135deg,#4facfe,#00f2fe);">A</div>
+          <div class="card-info">
+            <strong>Ana Beatriz</strong>
+            <span class="tag">@elétrica</span>
+            <span class="loc"> Centro</span>
+          </div>
+        </div>
+        <p>Eletricista predial e residencial. Instalação de chuveiros e ventiladores.</p>
+        <div class="rating"><span class="stars" data-r="4.5"></span><small>(78 avaliações)</small></div>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Ana Beatriz">Enviar mensagem</button>
+        </a>
+      </div>
+
+      <div class="card" data-cat="pintura" data-bairro="gleba-a" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+        <div class="card-top">
+          <div class="av" style="background: linear-gradient(135deg,#434343,#000000);">P</div>
+          <div class="card-info">
+            <strong>Pedro Mendes</strong>
+            <span class="tag">@pintura</span>
+            <span class="loc"> Gleba A</span>
+          </div>
+        </div>
+        <p>Especialista em pintura externa, grafiato e aplicação de resinas.</p>
+        <div class="rating"><span class="stars" data-r="3.5"></span><small>(61 avaliações)</small></div>
+        <a href="painelmensagens.html" onclick="event.stopPropagation();">
+          <button class="btn-msg" data-name="Pedro Mendes">Enviar mensagem</button>
+        </a>
+      </div>
+      </section>
+
+      <section>
+        <div class="container-botao">
+      <a href="#" class="btn-profissionais">Ver Todos os Profissionais</a>
+      </div>
+    </section>
+      
+
+    </section>
 
   <section class="sobre">
     <div class="título-sobre">
@@ -471,15 +632,4 @@
 
 </body>
 
-=======
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
->>>>>>> origin/feature/cadastrocliente
 </html>

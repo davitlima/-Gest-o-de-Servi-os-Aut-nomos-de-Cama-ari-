@@ -146,3 +146,42 @@ Funcionalidade: Tela Inicial de Serviços - Nexlar
     Quando eu clico no botão "Enviar mensagem" do card de "Marcos Silva"
     Então o clique no card não deve ser disparado
     E eu devo ser redirecionado para a página "painelmensagens.html"
+
+    -----------------------------------------------------------------------------------------------------------------------------
+
+  Funcionalidade: Página de Homepage - Nexlar
+  Como um cliente interessado na plataforma Nexlar 
+  Quero entender os objetivos, passos e funcionamento do site 
+  Para ter certeza de que me cadastrarei 
+
+  Contexto:
+    Dado que eu acesse a Página de Homepage
+
+  Cenário: Clicar nos botões de Encontrar e Sou Profissional
+    Então o botão irá me levar até a página de cadastro correspondente ao que se apertou
+    E devo preencher as informações
+    Então estarei cadastrado na conta desejado
+
+  Cenário: Mostrar os passos e objetivos do site
+    Quando eu desço ao longo do site
+    Então irei ler o objetivos e passos do site
+    E compreenderei melhor o Nexlar
+
+  Cenário: Mostrar seção de calculadora de taxa
+    Quando eu desço ao longo do site
+    E leio a seção de calcular 
+    Então apenas o card de "Carlos Oliveira" deve ser exibido na tela
+    E o card de "Tiago Souza" que é de "Gleba A" deve ficar oculto
+
+  Cenário: Buscar por nome do profissional através da barra de pesquisa
+    Quando eu digito "Marcos Silva" na barra de busca superior
+    Então apenas o card do profissional "Marcos Silva" deve ser exibido
+
+  Cenário: Navegar para o perfil detalhado do autônomo
+    Quando eu clico no corpo do card do profissional "Sofia Paiva"
+    Então eu devo ser redirecionado para a página "perfilAutonomo.html"
+
+  Cenário: Redirecionar para o chat ao clicar em enviar mensagem
+    Quando eu clico no botão "Enviar mensagem" do card de "Marcos Silva"
+    Então o clique no card não deve ser disparado
+    E eu devo ser redirecionado para a página "painelmensagens.html"

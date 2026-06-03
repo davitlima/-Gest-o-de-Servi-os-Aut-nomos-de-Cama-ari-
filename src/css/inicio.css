@@ -1,4 +1,3 @@
-/* RESET E VARIÁVEIS */
 *, *::before, *::after { 
   box-sizing: border-box; 
   margin: 0; 
@@ -20,11 +19,9 @@
 
 body { 
   font-family: var(--font); 
-  background: var(--bg); 
   min-height: 100vh; 
 }
 
-/* NAVBAR */
 .navbar {
   display: flex; 
   align-items: center; 
@@ -38,21 +35,19 @@ body {
   z-index: 100;
 }
 
-/* LOGO - NOVOS AJUSTES */
 .logo {
   display: flex;
   align-items: center;
-  flex-shrink: 0; /* Impede a logo de encolher */
+  flex-shrink: 0; 
 }
 
 .logo img {
-  height: 38px;    /* Altura equilibrada para a nav de 58px */
+  height: 38px;    
   width: auto;
   display: block;
   object-fit: contain;
 }
 
-/* SEARCH BAR */
 .search-bar {
   display: flex; 
   align-items: center; 
@@ -63,7 +58,7 @@ body {
   padding: 7px 16px;
   flex: 1; 
   max-width: 440px; 
-  margin: 0 20px; /* Margem ajustada para dar respiro à logo */
+  margin: 0 20px; 
 }
 
 .search-bar input {
@@ -80,7 +75,6 @@ body {
   color: #aaa; 
 }
 
-/* NAV ACTIONS */
 .nav-actions { 
   display: flex; 
   align-items: center; 
@@ -135,17 +129,15 @@ body {
   color: #333; 
 }
 
-/* MAIN CONTENT */
 main {
-  max-width: 860px; 
-  margin: 0 auto;
+  width: 1600px;
+  margin: auto;
   padding: 28px 16px 48px;
   display: flex; 
   flex-direction: column; 
   gap: 20px;
 }
 
-/* HERO SECTION */
 .hero {
   background: var(--hero); 
   border-radius: 14px;
@@ -190,7 +182,6 @@ main {
   border-color: var(--accent); 
 }
 
-/* CATEGORIES */
 .categories {
   display: grid; 
   grid-template-columns: repeat(4, 1fr); 
@@ -216,7 +207,6 @@ main {
   transform: translateY(-1px); 
 }
 
-/* CARDS SECTION */
 .cards { 
   display: grid; 
   grid-template-columns: repeat(3, 1fr); 
@@ -327,7 +317,6 @@ main {
   background: #4a4abf; 
 }
 
-/* RESPONSIVE */
 @media(max-width: 680px) {
   .cards { 
     grid-template-columns: 1fr; 
@@ -339,7 +328,7 @@ main {
     display: none; 
   }
   .navbar {
-    padding: 0 16px; /* Reduz padding lateral no celular */
+    padding: 0 16px; 
   }
 }
 .stars {
@@ -350,14 +339,13 @@ main {
 .stars::before {
   content: "★★★★★";
   letter-spacing: 2px;
-  /* Cria o efeito de preenchimento dourado */
   background: linear-gradient(90deg, #f5a623 var(--percent), #444 var(--percent));
   -webkit-background-clip: text;
   background-clip: text;        
   -webkit-text-fill-color: transparent;
   font-size: 16px;
 }
-/* Define quanto da estrela será pintado de dourado */
+
 .stars[data-r="3.5"] { --percent: 70%; }
 .stars[data-r="4.0"] { --percent: 80%; }
 .stars[data-r="4.5"] { --percent: 90%; }
