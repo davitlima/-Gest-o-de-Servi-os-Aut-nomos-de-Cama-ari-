@@ -1,0 +1,118 @@
+/* Configurações Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #0a0e21; /* Fundo azul marinho escuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Header da Logo */
+.logo-header {
+    text-align: left;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.dots-icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.logo-header h1 {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/* Card Principal */
+.card {
+    background-color: #ffffff;
+    width: 400px;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.card h3 {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.card h2 {
+    font-size: 18px;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Campos de Input */
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #0a0e21;
+}
+
+/* Checkbox */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    font-size: 13px;
+    color: #444;
+}
+
+.checkbox-group input {
+    cursor: pointer;
+}
+
+/* Botão */
+.btn-continue {
+    width: 100%;
+    background-color: #0a0e21; /* Cor escura do fundo */
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-continue:hover {
+    background-color: #1a1f3d;
+}
