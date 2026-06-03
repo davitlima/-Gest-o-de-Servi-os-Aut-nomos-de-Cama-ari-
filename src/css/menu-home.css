@@ -1,0 +1,291 @@
+/* RESET E VARIÁVEIS */
+*, *::before, *::after { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+:root {
+  --bg: #eeeef5;
+  --hero: #0e1128;
+  --card: #141830;
+  --accent: #5b5bd6;
+  --cat-bg: #d0d0ee;
+  --cat-txt: #3a3a6e;
+  --muted: #9090b8;
+  --tag: #8888dd;
+  --star: #f5a623;
+  --font: 'Sora', sans-serif;
+}
+
+.menu-home { 
+  font-family: var(--font); 
+  background: var(--bg); 
+  min-height: 100vh; 
+}
+
+.search-bar {
+  display: flex; 
+  align-items: center; 
+  gap: 8px;
+  background: #f5f5fb; 
+  border: 1px solid #e0e0ec;
+  border-radius: 999px; 
+  padding: 7px 16px;
+  width: 100%;
+  max-width: 700px; 
+  margin: 0 auto; /* Margem ajustada para dar respiro à logo */
+}
+
+.search-bar input {
+  border: none; 
+  background: transparent; 
+  outline: none;
+  font-family: var(--font); 
+  font-size: 13px; 
+  color: #333; 
+  width: 100%;
+}
+
+.search-bar input::placeholder { 
+  color: #aaa; 
+}
+
+.menu-home {
+  max-width: none;
+  width: 100%;
+  padding: 28px 16px 48px;
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px;
+  background-color: var(--bg);
+}
+
+/* HERO SECTION */
+.menu-home .hero {
+  background: var(--hero); 
+  border-radius: 14px;
+  padding: 32px 36px 36px;
+}
+
+.menu-home .hero h1 { 
+  font-size: 24px; 
+  font-weight: 700; 
+  color: #fff; 
+  margin-bottom: 6px; 
+}
+
+.menu-home .hero p { 
+  font-size: 13px; 
+  color: var(--muted); 
+  margin-bottom: 24px; 
+}
+
+.menu-home .filters {
+  background: #fff; 
+  border-radius: 10px;
+  padding: 12px 14px; 
+  display: flex; 
+  gap: 14px;
+}
+
+.menu-home .filters select {
+  flex: 1; 
+  border: 1.5px solid #e0e0ec; 
+  border-radius: 8px;
+  padding: 9px 12px; 
+  font-family: var(--font); 
+  font-size: 13px;
+  color: #333; 
+  background: #fff; 
+  cursor: pointer; 
+  outline: none;
+}
+
+.menu-home .filters select:focus { 
+  border-color: var(--accent); 
+}
+
+/* CATEGORIES */
+.menu-home .categories {
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 10px;
+}
+
+.menu-home .cat {
+  background: var(--cat-bg); 
+  border: none; 
+  border-radius: 999px;
+  padding: 10px 14px; 
+  font-family: var(--font); 
+  font-size: 13px;
+  font-weight: 500; 
+  color: var(--cat-txt); 
+  cursor: pointer;
+  transition: background .2s, color .2s, transform .15s;
+}
+
+.menu-home .cat:hover, .cat.active { 
+  background: var(--accent); 
+  color: #fff; 
+  transform: translateY(-1px); 
+}
+
+/* CARDS SECTION */
+.menu-home .cards { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 14px; 
+}
+
+.menu-home .card {
+  background: var(--card); 
+  border-radius: 14px;
+  padding: 18px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.menu-home .card:hover { 
+  transform: translateY(-3px); 
+  box-shadow: 0 8px 24px rgba(0,0,0,.3); 
+}
+
+.menu-home .card.hidden { 
+  display: none; 
+}
+
+.menu-home .card-top { 
+  display: flex; 
+  align-items: flex-start; 
+  gap: 11px; 
+}
+
+.menu-home .av {
+  width: 42px; 
+  height: 42px; 
+  border-radius: 50%; 
+  flex-shrink: 0;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  font-size: 17px; 
+  font-weight: 700; 
+  color: #fff;
+}
+
+.menu-home .av-m { background: linear-gradient(135deg,#6060e0,#9090ff); }
+.menu-home .av-s { background: linear-gradient(135deg,#8060e0,#b090ff); }
+.menu-home .av-c { background: linear-gradient(135deg,#5050c0,#8080e0); }
+
+.menu-home .card-info { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 2px; 
+}
+
+.menu-home .card-info strong { 
+  font-size: 14px; 
+  color: #fff; 
+}
+
+.menu-home .tag { 
+  font-size: 12px; 
+  color: var(--tag); 
+}
+
+.menu-home .loc { 
+  font-size: 11px; 
+  color: var(--muted); 
+}
+
+.menu-home .card > p { 
+  font-size: 12px; 
+  color: var(--muted); 
+  line-height: 1.6; 
+}
+
+.menu-home .rating { 
+  display: flex; 
+  align-items: center; 
+  gap: 7px; 
+}
+
+.menu-home .stars { 
+  display: inline-flex; 
+  gap: 2px; 
+}
+
+.menu-home .rating small { 
+  font-size: 11px; 
+  color: var(--muted); 
+  font-family: var(--font); 
+}
+
+.menu-home .btn-msg {
+  width: 100%; 
+  background: var(--accent); 
+  border: none; 
+  border-radius: 8px;
+  padding: 10px; 
+  font-family: var(--font); 
+  font-size: 13px;
+  font-weight: 600; 
+  color: #fff; 
+  cursor: pointer; 
+  margin-top: auto;
+}
+
+.menu-home .btn-msg:hover { 
+  background: #4a4abf; 
+}
+
+.stars {
+  display: inline-block;
+  line-height: 1;
+}
+
+.stars::before {
+  content: "★★★★★";
+  letter-spacing: 2px;
+  /* Cria o efeito de preenchimento dourado */
+  background: linear-gradient(90deg, #f5a623 var(--percent), #444 var(--percent));
+  -webkit-background-clip: text;
+  background-clip: text;        
+  -webkit-text-fill-color: transparent;
+  font-size: 16px;
+}
+/* Define quanto da estrela será pintado de dourado */
+.stars[data-r="3.5"] { --percent: 70%; }
+.stars[data-r="4.0"] { --percent: 80%; }
+.stars[data-r="4.5"] { --percent: 90%; }
+.stars[data-r="5.0"] { --percent: 100%; }
+
+.container-botao {
+    text-align: center;
+}
+
+.btn-profissionais {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 16px 40px;
+
+    background: #2450ff;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+
+    border-radius: 40px;
+
+    box-shadow: 0 8px 20px rgba(36, 80, 255, .3);
+
+    transition: .3s;
+}
+
+.btn-profissionais:hover {
+    transform: translateY(-3px);
+}
+
