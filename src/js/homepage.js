@@ -67,10 +67,17 @@ document.addEventListener('DOMContentLoaded', () => {
     catButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             if (btn.classList.contains('active')) {
+<<<<<<< HEAD
                 btn.classList.remove('active'); 
             } else {
                 catButtons.forEach(b => b.classList.remove('active')); 
                 btn.classList.add('active'); 
+=======
+                btn.classList.remove('active'); // Se já está ativo, desmarca
+            } else {
+                catButtons.forEach(b => b.classList.remove('active')); // Limpa outros
+                btn.classList.add('active'); // Marca o novo
+>>>>>>> 4fd869fde914a33bbc8842425d651cd7436a8809
             }
             filtrar();
         });
