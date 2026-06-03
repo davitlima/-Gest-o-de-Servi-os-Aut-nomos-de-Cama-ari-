@@ -1,0 +1,260 @@
+*, *::before, *::after { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+:root {
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --border: #e4e8f0;
+  --text: #1a1d2e;
+  --muted: #6b7280;
+  --accent: #3b6ef8;
+  --accent-bg: #eff3ff;
+  --dark-card: #1a1d2e;
+  --dark-card-text: #ffffff;
+  --radius: 14px;
+  --shadow: 0 1px 4px rgba(0,0,0,.07);
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 52px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* Nova classe padronizada para a logo da Nexlar */
+.imagem-logo {
+  height: auto;
+  max-height: 45px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.nav-back {
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  transition: color .2s;
+}
+.nav-back:hover { color: var(--accent); }
+
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  padding: 56px 20px 40px;
+}
+
+.hero-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--accent-bg);
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.hero-icon svg { width: 26px; height: 26px; color: var(--accent); }
+
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -.3px;
+}
+
+.hero .date {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.hero .intro {
+  max-width: 620px;
+  margin: 24px auto 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.hero .intro strong { color: var(--text); font-weight: 600; }
+
+/* ── CONTENT ── */
+.content {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 30px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.card.dark {
+  background: var(--dark-card);
+  border-color: transparent;
+  color: var(--dark-card-text);
+}
+
+.card.dark .card-title { color: #fff; }
+.card.dark p, .card.dark li { color: rgba(255,255,255,.78); }
+.card.dark a { color: #7aa4ff; }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--accent-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon svg { width: 17px; height: 17px; color: var(--accent); }
+
+.card.dark .card-icon { background: rgba(255,255,255,.12); }
+.card.dark .card-icon svg { color: #a5bfff; }
+
+.card-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 13.5px;
+  margin-bottom: 10px;
+}
+
+.card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card ul li {
+  position: relative;
+  padding-left: 16px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.card ul li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.card.dark ul li::before { color: #7aa4ff; }
+
+.card ul li strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.card.dark ul li strong { color: #fff; }
+
+.card a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.card a:hover { text-decoration: underline; }
+
+/* ── SECTION TITLE ── */
+.section-title {
+  text-align: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  font-weight: 400;
+  margin: 48px 0 20px;
+  letter-spacing: -.2px;
+}
+
+/* ── BACK BUTTON (bottom) ── */
+.btn-home {
+  display: block;
+  width: fit-content;
+  margin: 32px auto 0;
+  padding: 12px 30px;
+  background: var(--text);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+
+.btn-home:hover { opacity: .85; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--text);
+  color: rgba(255,255,255,.5);
+  text-align: center;
+  font-size: 12px;
+  padding: 20px;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
