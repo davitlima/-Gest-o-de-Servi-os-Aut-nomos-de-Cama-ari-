@@ -185,3 +185,7 @@ Funcionalidade: Tela Inicial de Serviços - Nexlar
     Quando eu clico no botão "Enviar mensagem" do card de "Marcos Silva"
     Então o clique no card não deve ser disparado
     E eu devo ser redirecionado para a página "painelmensagens.html"
+
+    -----------------------------------------------------------------------------------------------------------------------------
+
+    
