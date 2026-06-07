@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Pagamento</title>
+    <link rel="stylesheet" href="/src/css/pagamento.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<header>
+     <div class="logo">
+        <img src="/src/images/image_c3ad5e85-removebg-preview 1.png" alt="Logo da Empresa">
+      </div>
+
+    <a href="#" class="cancelar">Cancelar</a>
+</header>
+
+<main class="container">
+
+    <h1>Finalizar Pagamento</h1>
+
+    <div class="conteudo">
+
+        <!-- ESQUERDA -->
+        <div class="esquerda">
+
+            <!-- Resumo Serviço -->
+            <div class="card">
+                <h3>Resumo do Serviço</h3>
+
+                <div class="linha">
+                    <span>Profissional</span>
+                    <strong>Marcos Silva</strong>
+                </div>
+
+                <div class="linha">
+                    <span>Categoria</span>
+                    <strong>Construção</strong>
+                </div>
+
+                <div class="linha">
+                    <span>Descrição</span>
+                    <strong>Reforma residencial - 2 cômodos</strong>
+                </div>
+
+                <div class="linha total-servico">
+                    <span>Valor Total</span>
+                    <strong>R$ 1.500,00</strong>
+                </div>
+            </div>
+
+            <!-- Pagamento -->
+            <div class="card">
+                <h3>Método de Pagamento</h3>
+
+                <div class="metodo ativo" data-pagamento="pix">
+                    <div>
+                        <i class="fa-solid fa-qrcode"></i>
+                        <div>
+                            <strong>PIX</strong>
+                            <p>Aprovação instantânea</p>
+                        </div>
+                    </div>
+
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+
+                <div class="metodo" data-pagamento="cartao">
+                    <div>
+                        <i class="fa-regular fa-credit-card"></i>
+                        <div>
+                            <strong>Cartão de Crédito</strong>
+                            <p>Parcelamento disponível</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIX -->
+                <div id="pix" class="pagamento-box">
+                    <div class="qrcode">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </div>
+
+                    <small>Código PIX Copia e Cola</small>
+
+                    <input type="text"
+                        value="00020126360014BR.GOV.BCB.PIX..."
+                        readonly>
+
+                    <button class="copiar">
+                        Copiar código
+                    </button>
+                </div>
+
+                <!-- Cartão -->
+                <div id="cartao" class="pagamento-box oculto">
+
+                    <input type="text" placeholder="Número do cartão">
+
+                    <div class="duplo">
+                        <input type="text" placeholder="MM/AA">
+                        <input type="text" placeholder="CVV">
+                    </div>
+
+                    <input type="text" placeholder="Nome impresso no cartão">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DIREITA -->
+        <div class="pedido">
+
+            <h3>Resumo do Pedido</h3>
+
+            <div class="pedido-linha">
+                <span>Subtotal</span>
+                <span>R$ 1500,00</span>
+            </div>
+
+            <div class="pedido-linha">
+                <span>Taxa da plataforma (15%)</span>
+                <span>R$ 225,00</span>
+            </div>
+
+            <hr>
+
+            <div class="pedido-total">
+                <span>Total</span>
+                <strong>R$ 1500,00</strong>
+            </div>
+
+            <button class="btn-pagar">
+                Confirmar Pagamento
+            </button>
+
+            <p>Pagamento seguro e criptografado</p>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script src="pagamento.js"></script>
+</body>
+</html>
