@@ -20,6 +20,8 @@
 body { 
   font-family: var(--font); 
   min-height: 100vh; 
+  max-width: none;
+  width: 100%;
 }
 
 .navbar {
@@ -130,8 +132,13 @@ body {
 }
 
 main {
+<<<<<<< HEAD
   width: 1600px;
   margin: auto;
+=======
+  max-width: none; 
+  width: 100%;
+>>>>>>> origin/feature/tela-lgpd
   padding: 28px 16px 48px;
   display: flex; 
   flex-direction: column; 

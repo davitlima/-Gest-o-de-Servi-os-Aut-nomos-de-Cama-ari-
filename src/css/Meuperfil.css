@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/feature/tela-lgpd
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -112,7 +116,11 @@ body {
 
   display: flex;
   flex-direction: column;
+<<<<<<< HEAD
   align-items: center; 
+=======
+  align-items: center; /* CENTRALIZA TODO O CONTEÚDO */
+>>>>>>> origin/feature/tela-lgpd
 }
 
 .top-header {
@@ -350,4 +358,8 @@ textarea {
   .container {
     padding: 24px;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/feature/tela-lgpd
