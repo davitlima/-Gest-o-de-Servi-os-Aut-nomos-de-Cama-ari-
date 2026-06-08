@@ -149,43 +149,85 @@ Funcionalidade: Tela Inicial de Serviços - Nexlar
 
     -----------------------------------------------------------------------------------------------------------------------------
 
-  Funcionalidade: Página de Homepage - Nexlar
-  Como um cliente interessado na plataforma Nexlar 
-  Quero entender os objetivos, passos e funcionamento do site 
-  Para ter certeza de que me cadastrarei 
+Funcionalidade: Página de Homepage - Nexlar
 
-  Contexto:
-    Dado que eu acesse a Página de Homepage
+Como um visitante interessado na plataforma Nexlar
+Quero conhecer os recursos e funcionalidades da plataforma
+Para decidir se desejo utilizá-la
 
-  Cenário: Clicar nos botões de Encontrar e Sou Profissional
-    Então o botão irá me levar até a página de cadastro correspondente ao que se apertou
-    E devo preencher as informações
-    Então estarei cadastrado na conta desejado
+Contexto:
+Dado que eu acesse a Página de Homepage
 
-  Cenário: Mostrar os passos e objetivos do site
-    Quando eu desço ao longo do site
-    Então irei ler o objetivos e passos do site
-    E compreenderei melhor o Nexlar
+Cenário: Clicar nos botões de cadastro
+Quando eu clico no botão "Encontrar Profissional"
+Então devo ser redirecionado para a página de cadastro de cliente
 
-  Cenário: Mostrar seção de calculadora de taxa
-    Quando eu desço ao longo do site
-    E leio a seção de calcular 
-    Então apenas o card de "Carlos Oliveira" deve ser exibido na tela
-    E o card de "Tiago Souza" que é de "Gleba A" deve ficar oculto
+```
+Quando eu clico no botão "Sou Profissional"
+Então devo ser redirecionado para a página de cadastro de profissional
+```
 
-  Cenário: Buscar por nome do profissional através da barra de pesquisa
-    Quando eu digito "Marcos Silva" na barra de busca superior
-    Então apenas o card do profissional "Marcos Silva" deve ser exibido
+Cenário: Visualizar a seção de objetivos da plataforma
+Quando eu desço pela página inicial
+Então devo visualizar a seção de objetivos da Nexlar
+E compreender a proposta da plataforma
 
-  Cenário: Navegar para o perfil detalhado do autônomo
-    Quando eu clico no corpo do card do profissional "Sofia Paiva"
-    Então eu devo ser redirecionado para a página "perfilAutonomo.html"
+Cenário: Visualizar a seção de passos de utilização
+Quando eu desço pela página inicial
+Então devo visualizar a seção de passos de utilização
+E compreender como utilizar a plataforma
 
-  Cenário: Redirecionar para o chat ao clicar em enviar mensagem
-    Quando eu clico no botão "Enviar mensagem" do card de "Marcos Silva"
-    Então o clique no card não deve ser disparado
-    E eu devo ser redirecionado para a página "painelmensagens.html"
+Cenário: Utilizar a calculadora de taxa
+Quando eu acesso a seção "Calcule sua Taxa"
+E eu informo os valores solicitados
+Então o sistema deve exibir o valor calculado da taxa
+
+Cenário: Visualizar a prévia da página inicial do aplicativo
+Quando eu desço pela página inicial
+Então devo visualizar a seção de apresentação do aplicativo
+E compreender como será a experiência dentro da plataforma
+
+Cenário: Visualizar a seção Sobre a Nexlar
+Quando eu acesso a seção "Sobre a Nexlar"
+Então devo visualizar informações institucionais da plataforma
+E compreender sua missão e propósito
+
+Cenário: Visualizar o rodapé do site
+Quando eu chego ao final da página
+Então devo visualizar o rodapé
+E devo encontrar informações de contato e navegação da plataforma
+
 
     -----------------------------------------------------------------------------------------------------------------------------
 
-    
+  Funcionalidade: Página de Pagamento - Nexlar
+
+  Cenário: Deve acessar e concluir o processo de pagamento com sucesso
+   Dado que eu estou na página de Pagamento
+
+   Quando eu seleciono uma forma de pagamento válida
+   E eu preencho os dados obrigatórios do pagamento
+   E eu clico no botão "Confirmar Pagamento"
+   Então o sistema deve processar a solicitação de pagamento
+   E eu devo visualizar a mensagem "Pagamento realizado com sucesso"
+
+  Cenário: Deve impedir a confirmação com campos obrigatórios vazios
+   Dado que eu estou na página de Pagamento
+
+   Quando eu clico no botão "Confirmar Pagamento" sem preencher os dados obrigatórios
+   Então o sistema deve exibir mensagens de validação dos campos obrigatórios
+
+  Cenário: Deve retornar para a página anterior
+   Dado que eu estou na página de Pagamento
+
+   Quando eu clico no botão "Cancelar"
+   Então eu devo ser redirecionado para a página anterior
+
+  Cenário: Deve alterar a forma de pagamento
+   Dado que eu estou na página de Pagamento
+
+   Quando eu seleciono a opção "Cartão de Crédito"
+   Então os campos de cartão devem ser exibidos
+
+   Quando eu seleciono a opção "PIX"
+   Então as informações de pagamento via PIX devem ser exibidas
