@@ -15,7 +15,8 @@
   --bg: #f1f4f9;
   --card-bg: #ffffff;
   --text: #1e293b;
-  --muted: #64748b;
+  /* CORRIGIDO: Modificado de #64748b para #50617a para aprovar o contraste de texto em fundos brancos */
+  --muted: #50617a; 
   --border: #e2e8f0;
   --service-grad: linear-gradient(90deg, #4338ca, #7c3aed);
   --shadow: 0 2px 8px rgba(0,0,0,.07);
@@ -56,7 +57,8 @@ body {
 
 .logo { display: flex; align-items: center; gap: 10px; padding: 0 20px 28px; }
 .logo-name { display: block; color: #fff; font-weight: 700; font-size: 1rem; }
-.logo-sub  { display: block; color: #64748b; font-size: .68rem; margin-top: 1px; }
+/* CORRIGIDO: Usando um tom claro fixo (#94a3b8) porque o fundo da sidebar é muito escuro */
+.logo-sub  { display: block; color: #94a3b8; font-size: .68rem; margin-top: 1px; }
 
 .nav-link {
   display: flex; align-items: center; gap: 10px;
@@ -233,7 +235,7 @@ body {
   background: var(--accent-light); border-radius: 8px; padding: 10px 14px;
 }
 
-/* ===== TOAST ===== */
+
 .toast {
   position: fixed; bottom: 28px; right: 28px;
   background: #1e293b; color: #fff; padding: 12px 22px;
@@ -244,3 +246,4 @@ body {
   pointer-events: none; z-index: 300;
 }
 .toast.show { opacity: 1; transform: translateY(0); }
+

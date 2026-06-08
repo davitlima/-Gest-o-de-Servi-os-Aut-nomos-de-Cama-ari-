@@ -30,7 +30,7 @@
         <button class="btn-solid">Meu Perfil</button>
       </a>
       
-      <button class="btn-icon">
+      <button class="btn-icon" aria-label="Sair da conta">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16 17 21 12 16 7"/>
@@ -46,7 +46,7 @@
       <h1>Encontre quem faz direito.</h1>
       <p>Profissionais verificados com avaliações reais do seu bairro</p>
       <div class="filters">
-        <select id="sel-servico">
+        <select id="sel-servico" aria-label="Filtrar por tipo de serviço">
           <option value="">Serviço</option>
           <option value="construcao">Construção</option>
           <option value="eletrica">Elétrica</option>
@@ -56,7 +56,8 @@
           <option value="jardinagem">Jardinagem</option>
           <option value="mudancas">Mudanças</option>
         </select>
-        <select id="sel-bairro">
+        
+        <select id="sel-bairro" aria-label="Filtrar por bairro">
           <option value="">Bairro (Todos)</option>
           
           <optgroup label="Sede">
@@ -98,7 +99,7 @@
     <section class="categories">
       <button class="cat" data-cat="construcao">Construção</button>
       <button class="cat" data-cat="eletrica">Elétrica</button>
-      <button class="cat" data-cat="hidraulica">Hidráulica</button>
+      <button class="cat" data-cat="hidraulica">Hydráulica</button>
       <button class="cat" data-cat="pintura">Pintura</button>
       <button class="cat" data-cat="limpeza">Limpeza</button>
       <button class="cat" data-cat="jardinagem">Jardinagem</button>
@@ -156,7 +157,7 @@
         </a>
       </div>
 
-      <div class="card" data-cat="hidraulica" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="cursor: pointer;">
+      <div class="card" data-cat="hidraulica" data-bairro="inocoop" onclick="if(!event.target.closest('.btn-msg')) location.href='perfilAutonomo.html'" style="pointer-events: auto; cursor: pointer;">
         <div class="card-top">
           <div class="av av-c">C</div>
           <div class="card-info">
