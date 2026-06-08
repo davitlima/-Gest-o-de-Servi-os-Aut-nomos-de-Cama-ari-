@@ -20,10 +20,6 @@
 
 .menu-home { 
   font-family: var(--font); 
-<<<<<<< HEAD
-=======
-  background: var(--bg); 
->>>>>>> origin/feature/tela-lgpd
   min-height: 100vh; 
 }
 
@@ -55,21 +51,12 @@
 }
 
 .menu-home {
-<<<<<<< HEAD
   width: 1600px;
   margin: auto;
-=======
-  max-width: none;
-  width: 100%;
->>>>>>> origin/feature/tela-lgpd
   padding: 28px 16px 48px;
   display: flex; 
   flex-direction: column; 
   gap: 20px;
-<<<<<<< HEAD
-=======
-  background-color: var(--bg);
->>>>>>> origin/feature/tela-lgpd
 }
 
 /* HERO SECTION */
@@ -298,9 +285,4 @@
 
 .btn-profissionais:hover {
     transform: translateY(-3px);
-<<<<<<< HEAD
 }
-=======
-}
-
->>>>>>> origin/feature/tela-lgpd
