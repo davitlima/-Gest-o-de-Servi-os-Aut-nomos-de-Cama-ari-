@@ -19,4 +19,8 @@ inputValor.addEventListener('input', () => {
 
     displayReceber.innerText = formatar(valorFinal);
     displayTaxa.innerText = `Taxa da plataforma: ${formatar(valorTaxa)}`;
+
+    window.addEventListener('load', () => {
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+    });
 });
