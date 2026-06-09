@@ -231,3 +231,172 @@ E devo encontrar informações de contato e navegação da plataforma
 
    Quando eu seleciono a opção "PIX"
    Então as informações de pagamento via PIX devem ser exibidas
+
+    -----------------------------------------------------------------------------------------------------------------------------
+
+  Funcionalidade: Meu Perfil - Nexlar
+
+  Contexto:
+    Dado que eu acesso a página "Meu Perfil" da Nexlar
+
+  Cenário: Validar exibição inicial da página de perfil
+    Então o título da página deve conter "Meu Perfil"
+    E a descrição deve exibir "Gerencie suas informações e configurações"
+    E o formulário de dados pessoais deve estar visível
+    E o botão "Salvar Anotações" deve estar visível
+    E as abas "Informações Pessoais" e "Portfólio" devem estar visíveis
+
+  Cenário: Validar os dados pessoais do usuário
+    Então o campo "Nome Completo" deve conter "João Pedro Silva"
+    E o campo "Telefone" deve conter "(71) 98856-2546"
+    E o campo "Email" deve conter "joaopedro@email.com"
+    E o campo "Endereço / Bairro" deve conter "Centro, Campinas - SA"
+    E o campo "Sobre você" deve conter "Eletricista com 10 anos de experiência."
+
+  Cenário: Alternar para a aba Portfólio
+    Quando eu clico na aba "Portfólio"
+    Então a seção "Meu Portfólio" deve ser exibida
+    E o texto "Adicione fotos e detalhes dos seus melhores trabalhos executados." deve estar visível
+    E o formulário de dados pessoais deve ficar oculto
+
+  Cenário: Voltar para a aba Informações Pessoais
+    Dado que eu estou na aba "Portfólio"
+    Quando eu clico na aba "Informações Pessoais"
+    Então o formulário de dados pessoais deve ser exibido
+    E a seção de portfólio deve ficar oculta
+
+  Cenário: Salvar alterações do perfil com sucesso
+    Quando eu altero o campo "Nome Completo" para "Maria Silva"
+    E clico no botão "Salvar Anotações"
+    Então o botão deve exibir o texto "Salvando..."
+    E o botão deve ficar desabilitado
+    E a mensagem "Anotações Salvas com Sucesso! ✓" deve ser exibida
+
+  Cenário: Realizar upload de foto de perfil com sucesso
+  Dado que estou na página "Meu Perfil"
+  Quando eu clico no botão "Alterar Foto"
+  E seleciono o arquivo "perfil.jpg"
+  Então o avatar deve exibir a imagem carregada
+
+  Cenário: Realizar logout com confirmação
+    Quando eu clico no botão "Sair"
+    E confirmo a ação de logout
+    Então devo ser redirecionado para "index.html"
+
+  Cenário: Cancelar logout
+    Quando eu clico no botão "Sair"
+    E cancelo a ação de logout
+    Então devo permanecer na página "Meu Perfil"
+
+  Cenário: Excluir conta com confirmação válida
+    Quando eu clico no botão "Excluir Conta"
+    E informo "DELETAR" na confirmação de exclusão
+    Então devo visualizar o alerta "Sua conta foi removida de nossa base de dados."
+    E devo ser redirecionado para "index.html"
+
+  Cenário: Cancelar exclusão da conta com confirmação inválida
+    Quando eu clico no botão "Excluir Conta"
+    E informo "ABC123" na confirmação de exclusão
+    Então devo visualizar o alerta "Palavra incorreta. A exclusão foi cancelada."
+
+    -----------------------------------------------------------------------------------------------------------------------------
+
+    Funcionalidade: Cadastro do Cliente - Nexlar
+
+  Como um cliente da plataforma Nexlar
+  Quero criar uma conta
+  Para contratar serviços de profissionais autônomos
+
+  Contexto:
+    Dado que eu acesso a página de Cadastro do Cliente
+
+  Cenário: Validar exibição dos campos de cadastro
+    Então devo visualizar o campo "Nome completo"
+    E devo visualizar o campo "Data de nascimento"
+    E devo visualizar o campo "CPF"
+    E devo visualizar o campo "Contato"
+    E devo visualizar o campo "Senha"
+    E devo visualizar o checkbox "Aceito os Termos de Uso"
+    E devo visualizar o botão "Continuar"
+
+  Cenário: Aplicar máscara de data
+    Quando eu informo "01012000" no campo de nascimento
+    Então o campo deve exibir "01/01/2000"
+
+  Cenário: Aplicar máscara de CPF
+    Quando eu informo "12345678909" no campo CPF
+    Então o campo deve exibir "123.456.789-09"
+
+  Cenário: Aplicar máscara de telefone
+    Quando eu informo "71999998888" no campo contato
+    Então o campo deve exibir "(71) 99999-8888"
+
+  Cenário: Não permitir cadastro com CPF inválido
+    Quando eu preencher o formulário com CPF inválido
+    Então devo visualizar a mensagem "CPF inválido"
+
+  Cenário: Não permitir cadastro com data inválida
+    Quando eu preencher o formulário com data inválida
+    Então devo visualizar a mensagem "Data de nascimento inválida"
+
+  Cenário: Não permitir cadastro com senha menor que 6 caracteres
+    Quando eu preencher o formulário com senha inválida
+    Então devo visualizar a mensagem "A senha deve ter pelo menos 6 caracteres"
+
+  Cenário: Não permitir cadastro sem aceitar os termos
+    Quando eu preencher o formulário sem aceitar os termos
+    Então o cadastro não deve ser concluído
+
+  Cenário: Realizar cadastro com sucesso
+    Quando eu preencher todos os campos corretamente
+    E clicar no botão "Continuar"
+    Então devo visualizar a mensagem "Cadastro realizado com sucesso"
+
+  Cenário: Exibir mensagem de ajuda
+    Quando eu clicar no botão de ajuda
+    Então devo visualizar a orientação de preenchimento do cadastro
+
+    -----------------------------------------------------------------------------------------------------------------------------
+
+    Funcionalidade: Cadastro do Autônomo - Nexlar
+
+  Como um profissional autônomo
+  Quero realizar meu cadastro na plataforma
+  Para oferecer meus serviços aos clientes
+
+  Contexto:
+    Dado que eu acesso a página de Cadastro do Autônomo
+
+  Cenário: Validar exibição dos campos do formulário
+    Então devo visualizar o título "Cadastro do Autônomo"
+    E devo visualizar o campo "Nome completo"
+    E devo visualizar o campo "Data de nascimento"
+    E devo visualizar o campo "CPF"
+    E devo visualizar o campo "Contato"
+    E devo visualizar o campo "Senha"
+    E devo visualizar o checkbox "Aceito os Termos de Uso"
+    E devo visualizar o botão "Continuar"
+
+  Cenário: Realizar cadastro com sucesso
+    Quando eu preencho todos os campos com dados válidos
+    E aceito os Termos de Uso
+    E clico no botão "Continuar"
+    Então devo visualizar a mensagem "Cadastro realizado com sucesso"
+
+  Cenário: Tentar cadastrar sem preencher os campos
+    Quando eu clico no botão "Continuar" sem preencher o formulário
+    Então devo visualizar a mensagem "Preencha o nome completo"
+
+  Cenário: Informar CPF inválido
+    Quando eu preencho o formulário com um CPF inválido
+    E clico no botão "Continuar"
+    Então devo visualizar a mensagem "CPF inválido"
+
+  Cenário: Informar senha menor que 6 caracteres
+    Quando eu preencho o formulário com uma senha inválida
+    E clico no botão "Continuar"
+    Então devo visualizar a mensagem "A senha deve ter pelo menos 6 caracteres"
+
+  Cenário: Solicitar ajuda
+    Quando eu clico no botão de ajuda
+    Então devo visualizar a mensagem "Preencha todos os campos para criar sua conta Nexlar"

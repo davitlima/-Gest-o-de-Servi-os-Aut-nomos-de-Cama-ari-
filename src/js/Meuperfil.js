@@ -1,14 +1,14 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.tabs .tab');
-    const profileCard = document.querySelector('.profile-card');
+document.addEventListener("DOMContentLoaded", () => {
+  const tabs = document.querySelectorAll(".tabs .tab");
+  const profileCard = document.querySelector(".profile-card");
 
-    // Cria dinamicamente o container de Portfólio caso ele não exista no HTML
-    let portfolioSection = document.getElementById('portfolio-content');
-    if (!portfolioSection) {
-        portfolioSection = document.createElement('div');
-        portfolioSection.id = 'portfolio-content';
-        portfolioSection.style.display = 'none';
-        portfolioSection.innerHTML = `
+  // Cria dinamicamente o container de Portfólio caso ele não exista no HTML
+  let portfolioSection = document.getElementById("portfolio-content");
+  if (!portfolioSection) {
+    portfolioSection = document.createElement("div");
+    portfolioSection.id = "portfolio-content";
+    portfolioSection.style.display = "none";
+    portfolioSection.innerHTML = `
             <h3>Meu Portfólio</h3>
             <p style="color: var(--muted); margin-bottom: 20px;">Adicione fotos e detalhes dos seus melhores trabalhos executados.</p>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px;">
@@ -18,104 +18,104 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
-        profileCard.appendChild(portfolioSection);
+    profileCard.appendChild(portfolioSection);
+  }
+
+  // Seleciona o formulário de dados pessoais para podermos escondê-lo/mostrá-lo
+  const profileForm = document.querySelector(".profile-form");
+  const profileTitle = profileCard.querySelector("h3");
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => {
+      // Remove classe ativa de todas as abas e adiciona na clicada
+      tabs.forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      // Index 0 = Informações Pessoais, Index 1 = Portfólio
+      if (index === 0) {
+        profileForm.style.display = "flex";
+        profileTitle.style.display = "block";
+        portfolioSection.style.display = "none";
+      } else {
+        profileForm.style.display = "none";
+        profileTitle.style.display = "none";
+        portfolioSection.style.display = "block";
+      }
+    });
+  });
+
+  const btnPhoto = document.querySelector(".btn-photo");
+  const avatarDiv = document.querySelector(".profile-photo .avatar");
+
+  // Cria um input de arquivo oculto para abrir a galeria do dispositivo
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*";
+  fileInput.style.display = "none";
+
+  document.body.appendChild(fileInput);
+  fileInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        // Remove o texto (JS) e insere a imagem selecionada no avatar
+        avatarDiv.textContent = "";
+        avatarDiv.style.backgroundImage = `url('${e.target.result}')`;
+        avatarDiv.style.backgroundSize = "cover";
+        avatarDiv.style.backgroundPosition = "center";
+      };
+      reader.readAsDataURL(file);
     }
+  });
 
-    // Seleciona o formulário de dados pessoais para podermos escondê-lo/mostrá-lo
-    const profileForm = document.querySelector('.profile-form');
-    const profileTitle = profileCard.querySelector('h3');
+  const form = document.querySelector(".profile-form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault(); // Impede o recarregamento da página
 
-    tabs.forEach((tab, index) => {
-        tab.addEventListener('click', () => {
-            // Remove classe ativa de todas as abas e adiciona na clicada
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
+    const btnSave = document.querySelector(".btn-save");
+    const originalText = btnSave.textContent;
 
-            // Index 0 = Informações Pessoais, Index 1 = Portfólio
-            if (index === 0) {
-                profileForm.style.display = 'flex';
-                profileTitle.style.display = 'block';
-                portfolioSection.style.display = 'none';
-            } else {
-                profileForm.style.display = 'none';
-                profileTitle.style.display = 'none';
-                portfolioSection.style.display = 'block';
-            }
-        });
+    // Efeito visual de carregamento (Loading)
+    btnSave.textContent = "Salvando...";
+    btnSave.disabled = true;
+    btnSave.style.opacity = "0.7";
+
+    setTimeout(() => {
+      btnSave.textContent = "Anotações Salvas com Sucesso! ✓";
+      btnSave.style.background = "var(--green)";
+
+      // Restaura o botão após 2 segundos
+      setTimeout(() => {
+        btnSave.textContent = originalText;
+        btnSave.style.background = "";
+        btnSave.disabled = false;
+        btnSave.style.opacity = "";
+      }, 2000);
+    }, 1200);
+  });
+  const btnLogout = document.querySelector(".btn-outline");
+  const btnDelete = document.querySelector(".btn-danger");
+
+  if (btnLogout) {
+    btnLogout.addEventListener("click", () => {
+      if (confirm("Tem certeza que deseja sair do sistema Nexlar?")) {
+        window.location.href = "index.html"; // Altere para a sua página de login
+      }
     });
+  }
 
-    const btnPhoto = document.querySelector('.btn-photo');
-    const avatarDiv = document.querySelector('.profile-photo .avatar');
-
-    // Cria um input de arquivo oculto para abrir a galeria do dispositivo
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-
-    btnPhoto.addEventListener('click', () => {
-        fileInput.click();
+  if (btnDelete) {
+    btnDelete.addEventListener("click", () => {
+      const confirmacao = prompt(
+        'Para excluir sua conta definitivamente, digite "DELETAR":',
+      );
+      if (confirmacao === "DELETAR") {
+        alert("Sua conta foi removida de nossa base de dados.");
+        window.location.href = "index.html";
+      } else if (confirmacao !== null) {
+        alert("Palavra incorreta. A exclusão foi cancelada.");
+      }
     });
-
-    fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Remove o texto (JS) e insere a imagem selecionada no avatar
-                avatarDiv.textContent = '';
-                avatarDiv.style.backgroundImage = `url('${e.target.result}')`;
-                avatarDiv.style.backgroundSize = 'cover';
-                avatarDiv.style.backgroundPosition = 'center';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    const form = document.querySelector('.profile-form');
-    form.addEventListener('submit', (e) => {
-        e.preventDefault(); // Impede o recarregamento da página
-
-        const btnSave = document.querySelector('.btn-save');
-        const originalText = btnSave.textContent;
-
-        // Efeito visual de carregamento (Loading)
-        btnSave.textContent = 'Salvando...';
-        btnSave.disabled = true;
-        btnSave.style.opacity = '0.7';
-
-        setTimeout(() => {
-            btnSave.textContent = 'Anotações Salvas com Sucesso! ✓';
-            btnSave.style.background = 'var(--green)';
-            
-            // Restaura o botão após 2 segundos
-            setTimeout(() => {
-                btnSave.textContent = originalText;
-                btnSave.style.background = '';
-                btnSave.disabled = false;
-                btnSave.style.opacity = '';
-            }, 2000);
-        }, 1200);
-    });
-    const btnLogout = document.querySelector('.btn-outline');
-    const btnDelete = document.querySelector('.btn-danger');
-
-    if (btnLogout) {
-        btnLogout.addEventListener('click', () => {
-            if (confirm('Tem certeza que deseja sair do sistema Nexlar?')) {
-                window.location.href = 'index.html'; // Altere para a sua página de login
-            }
-        });
-    }
-
-    if (btnDelete) {
-        btnDelete.addEventListener('click', () => {
-            const confirmacao = prompt('Para excluir sua conta definitivamente, digite "DELETAR":');
-            if (confirmacao === 'DELETAR') {
-                alert('Sua conta foi removida de nossa base de dados.');
-                window.location.href = 'index.html';
-            } else if (confirmacao !== null) {
-                alert('Palavra incorreta. A exclusão foi cancelada.');
-            }
-        });
-    }
+  }
 });
