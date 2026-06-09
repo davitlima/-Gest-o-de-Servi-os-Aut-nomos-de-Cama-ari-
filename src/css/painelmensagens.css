@@ -92,7 +92,7 @@ body {
   align-items: center;
   gap: 10px;
   padding: 11px 20px;
-  color: #8899aa;
+  color: #cbd5e1;
   text-decoration: none;
   font-size: .85rem;
   border-left: 3px solid transparent;
@@ -220,7 +220,7 @@ body {
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  stroke: #aab0be;
+ stroke: #6b7280;
   pointer-events: none;
 }
 
@@ -237,7 +237,7 @@ body {
 }
 
 .search-input::placeholder {
-  color: #b0b5c8;
+  color: #6b7280;
 }
 
 .search-input:focus {
@@ -314,7 +314,7 @@ body {
 
 .conv-date {
   font-size: 11.5px;
-  color: #aab0be;
+  color: #6b7280;
   white-space: nowrap;
   margin-left: 8px;
   flex-shrink: 0;
@@ -380,7 +380,7 @@ body {
 .empty-icon svg {
   width: 40px;
   height: 40px;
-  stroke: #b0b5c8;
+  stroke: #6b7280;
 }
 
 .empty-title {
@@ -391,7 +391,7 @@ body {
 
 .empty-sub {
   font-size: 14px;
-  color: #9499b0;
+   color: #4b5563;
   max-width: 300px;
 }
 
@@ -673,5 +673,9 @@ body {
   .chat-view {
     height: 100%;
   }
+}
+.conversation-item:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 

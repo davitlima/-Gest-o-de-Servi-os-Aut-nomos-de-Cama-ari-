@@ -1,4 +1,3 @@
-
 function maskDate(input) {
   let v = input.value.replace(/\D/g, '').slice(0, 8);
   if (v.length >= 5)      v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4);
@@ -38,7 +37,6 @@ function isValidCPF(cpf) {
   return rest === parseInt(nums[10]);
 }
  
-
 function isValidDate(str) {
   if (!/^\d{2}\/\d{2}\/\d{4}$/.test(str)) return false;
   const [d, m, y] = str.split('/').map(Number);
@@ -50,12 +48,12 @@ let toastTimer = null;
  
 /**
  * Exibe uma mensagem temporária no topo da tela.
-  @param {string} msg  
-  @param {number} duration 
+ * @param {string} msg  
+ * @param {number} duration 
  */
-
 function showToast(msg, duration = 3000) {
   const toast = document.getElementById('toast');
+  if (!toast) return; // Evita erros caso a div #toast não exista no HTML
   toast.textContent = msg;
   toast.classList.add('show');
   clearTimeout(toastTimer);
@@ -106,7 +104,6 @@ function handleSubmit() {
     return;
   }
  
-
   const btn = document.getElementById('btnContinuar');
   btn.disabled = true;
   btn.textContent = 'Processando…';
@@ -115,6 +112,7 @@ function handleSubmit() {
     showToast('✅ Cadastro realizado com sucesso!', 4000);
     btn.textContent = 'Continuar';
     btn.disabled = false;
+    resetForm(); // Limpa o formulário após o sucesso
   }, 1500);
 }
  
@@ -133,20 +131,23 @@ function focusField(id) {
  
 function resetForm() {
   ['nome','nascimento','cpf','contato','senha'].forEach(id => {
-    document.getElementById(id).value = '';
+    const el = document.getElementById(id);
+    if (el) el.value = '';
   });
-  document.getElementById('termos').checked = false;
+  const checkbox = document.getElementById('termos');
+  if (checkbox) checkbox.checked = false;
 }
  
 function showHelp() {
   showToast('💡 Preencha todos os campos para criar sua conta Nexlar.', 4000);
 }
 
+// Escuta o carregamento do DOM para interceptar o submit do formulário
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   if (form) {
     form.addEventListener('submit', (e) => {
-      e.preventDefault(); 
+      e.preventDefault(); // Impede o recarregamento da página
       handleSubmit();
     });
   }
