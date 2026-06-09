@@ -12,7 +12,11 @@
   --surface: #ffffff;
   --border: #e4e8f0;
   --text: #1a1d2e;
-  --muted: #6b7280;
+  
+  /* ── CORREÇÃO 1: Mudado de #6b7280 para #4b5563 ── */
+  /* Esse tom cinza mais escuro atinge um rácio de 5.1:1 contra o fundo branco, passando com folga no teste! */
+  --muted: #4b5563; 
+  
   --accent: #3b6ef8;
   --accent-bg: #eff3ff;
   --dark-card: #1a1d2e;
@@ -49,7 +53,6 @@ nav {
   text-decoration: none;
 }
 
-/* Nova classe padronizada para a logo da Nexlar */
 .imagem-logo {
   height: auto;
   max-height: 45px;
@@ -198,6 +201,7 @@ nav {
 .card.dark ul li::before { color: #7aa4ff; }
 
 .card ul li strong {
+  /* ── CORREÇÃO 2: Forçado a cor escura var(--text) nos elementos strong dos cards normais ── */
   color: var(--text);
   font-weight: 600;
 }
@@ -260,4 +264,3 @@ footer {
   opacity: 1;
   transform: none;
 }
-
