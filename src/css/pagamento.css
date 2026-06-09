@@ -21,7 +21,7 @@ header{
 }
 
 .logo{
-    font-weight:700;
+    font-weight:300;
     display:flex;
     gap:8px;
     align-items:center;
@@ -98,7 +98,7 @@ h1{
 
 .metodo p{
     font-size:12px;
-    color:#777;
+    color: #383838;
 }
 
 .metodo.ativo{

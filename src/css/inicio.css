@@ -23,8 +23,9 @@
 body { 
   font-family: Inter, sans-serif; 
   min-height: 100vh; 
-  max-width: none;
+  max-width: 1600px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .navbar {
@@ -135,8 +136,9 @@ body {
 }
 
 main {
-  max-width: none; 
+  max-width: 1300px; 
   width: 100%;
+  margin: 0 auto;
   padding: 28px 16px 48px;
   display: flex; 
   flex-direction: column; 

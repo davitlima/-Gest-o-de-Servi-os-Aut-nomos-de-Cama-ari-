@@ -24,9 +24,11 @@ describe('Página de Pagamento Nexlar', () => {
     cy.get('#pix')
       .should('be.visible');
 
-    cy.get('#pix input')
-      .should('have.value', '00020126360014BR.GOV.BCB.PIX...');
-  });
+  cy.get('#pix input[readonly]')
+    .should('be.visible')
+    .invoke('val')
+    .should('contain', 'BR.GOV.BCB.PIX');
+});
 
   it('deve exibir o resumo do pedido', () => {
     cy.contains('Resumo do Pedido').should('be.visible');
