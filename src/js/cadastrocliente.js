@@ -104,18 +104,13 @@ function handleSubmit() {
     return;
   }
  
-  const btn = document.getElementById('btnContinuar');
-  btn.disabled = true;
-  btn.textContent = 'Processando…';
+ setTimeout(() => {
+    showToast('✅ Cadastro realizado com sucesso!', 2000);
+    window.location.href = "/src/pages/inicio.html";
+}, 1500);
  
-  setTimeout(() => {
-    showToast('✅ Cadastro realizado com sucesso!', 4000);
-    btn.textContent = 'Continuar';
-    btn.disabled = false;
-    resetForm(); // Limpa o formulário após o sucesso
-  }, 1500);
 }
- 
+
 function focusField(id) {
   const el = document.getElementById(id);
   if (!el) return;
