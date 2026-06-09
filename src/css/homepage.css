@@ -759,3 +759,238 @@ footer {
 .rodape a:hover {
     color: white;
 }
+
+
+
+/*Responsividade para tablets*/
+@media (max-width: 900px) {
+
+    .nav-container {
+        padding: 0 20px;
+    }
+
+    .menu-links {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    main {
+        padding: 40px 20px;
+    }
+
+    main h1 {
+        font-size: 42px;
+    }
+
+    main p {
+        font-size: 18px;
+    }
+
+    .objetivos article,
+    .passo-card {
+        width: calc(50% - 15px);
+        min-width: 280px;
+    }
+
+    .painel-container {
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .painel-texto,
+    .painel-card {
+        width: 100%;
+    }
+
+    .campos {
+        flex-direction: column;
+    }
+
+    .campo,
+    .resultado {
+        width: 100%;
+    }
+
+    .cards-sobre {
+        gap: 30px;
+    }
+
+    .card-sobre {
+        max-width: 45%;
+    }
+
+    footer {
+        padding: 50px 30px 20px;
+    }
+
+    .footer-container {
+        justify-content: center;
+        text-align: center;
+    }
+} 
+
+
+/*Responsividade para CELULARES (até 768px)*/
+@media (max-width: 768px) {
+
+    header {
+        padding: 15px;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .menu-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .menu-links a {
+        font-size: 14px;
+    }
+
+    .logo-box img {
+        width: 120px;
+    }
+
+    main {
+        padding: 40px 20px;
+    }
+
+    main h1 {
+        font-size: 34px;
+        line-height: 1.2;
+    }
+
+    main p {
+        font-size: 16px;
+        margin-bottom: 35px;
+    }
+
+    main section div a {
+        width: 100%;
+        max-width: 320px;
+        padding: 16px;
+        font-size: 18px;
+    }
+
+    .objetivos,
+    .passos,
+    .calculadora,
+    .sobre {
+        padding: 60px 20px;
+    }
+
+    .objetivos h2,
+    .passos h2,
+    .calculadora h2,
+    .título-sobre h2 {
+        font-size: 30px;
+    }
+
+    .objetivos article,
+    .passo-card {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .painel {
+        padding: 60px 20px;
+    }
+
+    .painel-texto h2 {
+        font-size: 2rem;
+    }
+
+    .descricao {
+        margin-bottom: 30px;
+    }
+
+    .painel-card {
+        padding: 20px;
+    }
+
+    .card-calculadora {
+        padding: 20px;
+    }
+
+    .campo input {
+        font-size: 1.3rem;
+        padding: 18px 12px;
+    }
+
+    .resultado-box h3 {
+        font-size: 1.8rem;
+    }
+
+    .cta-sobre {
+        padding: 35px 20px;
+    }
+
+    .cta-sobre h3 {
+        font-size: 24px;
+    }
+
+    .botoes-area {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn-white,
+    .btn-outline {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    footer {
+        padding: 50px 20px 20px;
+    }
+
+    .rodape {
+        width: 100%;
+        text-align: center;
+    }
+
+    .rodape img {
+        margin: 0 auto;
+    }
+}
+
+/*Responsividade para CELULARES PEQUENOS*/
+@media (max-width: 480px) {
+
+    main h1 {
+        font-size: 28px;
+    }
+
+    main p {
+        font-size: 15px;
+    }
+
+    .objetivos h2,
+    .passos h2,
+    .calculadora h2,
+    .título-sobre h2 {
+        font-size: 26px;
+    }
+
+    .objetivos article h3 {
+        font-size: 24px;
+    }
+
+    .painel-texto h2 {
+        font-size: 1.8rem;
+    }
+
+    .cta-sobre h3 {
+        font-size: 22px;
+    }
+
+    .footer-bottom {
+        font-size: 14px;
+    }
+}

@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+
 :root {
   --bg: #f0f2f5;
   --white: #ffffff;
@@ -32,7 +35,7 @@ html {
 }
 
 body {
-  font-family: var(--font-body);
+  font-family:Inter, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;

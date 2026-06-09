@@ -51,7 +51,8 @@
 }
 
 .menu-home {
-  width: 1600px;
+  max-width: 1600px;
+  width: 100%;
   margin: auto;
   padding: 28px 16px 48px;
   display: flex; 
@@ -285,4 +286,123 @@
 
 .btn-profissionais:hover {
     transform: translateY(-3px);
+}
+
+/*Responsividade para tablets*/
+@media (max-width: 900px) {
+
+    .menu-home {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .menu-home .categories {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .menu-home .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .menu-home .filters {
+        flex-wrap: wrap;
+    }
+
+    .menu-home .filters select {
+        min-width: 200px;
+    }
+
+    .search-bar {
+        max-width: 100%;
+    }
+}
+
+/*Responsividade para celulares*/
+@media (max-width: 768px) {
+
+    .menu-home {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .menu-home .hero {
+        padding: 24px 20px;
+    }
+
+    .menu-home .hero h1 {
+        font-size: 22px;
+        text-align: center;
+    }
+
+    .menu-home .hero p {
+        text-align: center;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+
+    .menu-home .filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .menu-home .filters select {
+        width: 100%;
+    }
+
+    .menu-home .categories {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-home .cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .menu-home .card {
+        padding: 14px;
+    }
+
+    .menu-home .card-info strong {
+        font-size: 13px;
+    }
+
+    .menu-home .card > p {
+        font-size: 11px;
+    }
+
+    .menu-home .btn-msg {
+        padding: 8px;
+        font-size: 12px;
+    }
+}
+
+/*Responsividade para celulares pequenos*/
+@media (max-width: 480px) {
+
+    .menu-home .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-home .hero h1 {
+        font-size: 20px;
+    }
+
+    .menu-home .hero p {
+        font-size: 12px;
+    }
+
+    .menu-home .cat {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .menu-home .card-info strong {
+        font-size: 13px;
+    }
+
+    .menu-home .btn-msg {
+        font-size: 12px;
+    }
 }
