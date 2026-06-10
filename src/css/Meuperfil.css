@@ -1,12 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
 
 :root {
   --sidebar-bg: #050520;
@@ -29,7 +27,6 @@
   --radius: 12px;
 }
 
-
 html, body {
   height: 100%;
   font-family: Inter, system-ui, sans-serif;
@@ -37,13 +34,13 @@ html, body {
   color: var(--text);
 }
 
-
 body {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
+/* ===== SIDEBAR ===== */
 .sidebar {
   width: 210px;
   min-width: 210px;
@@ -56,14 +53,12 @@ body {
   transition: transform 0.3s ease;
 }
 
-
 .sidebar-logo {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 0 20px 28px;
 }
-
 
 .imagem-logo {
   height: auto;
@@ -72,7 +67,6 @@ body {
   display: block;
   object-fit: contain;
 }
-
 
 .logo-sub {
   display: block;
@@ -103,19 +97,16 @@ body {
   box-sizing: border-box;
 }
 
-
 .nav-item:hover, .nav-link:hover {
   background: var(--sidebar-hover);
   color: #ffffff;
 }
-
 
 .nav-item.active, .nav-link.active {
   background: var(--sidebar-hover);
   color: #ffffff;
   border-left-color: var(--accent);
 }
-
 
 .nav-icon, .nav-link svg {
   width: 16px;
@@ -125,6 +116,7 @@ body {
   fill: none;
 }
 
+/* ===== SIDEBAR CLOSE ===== */
 .sidebar-close {
   display: none;
   position: absolute;
@@ -132,16 +124,64 @@ body {
   right: 14px;
   background: none;
   border: none;
-  color: var(--muted);
-  font-size: 18px;
+  color: #94a3b8;
+  font-size: 20px;
   cursor: pointer;
+  line-height: 1;
 }
 
+/* ===== OVERLAY ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 25, 45, .55);
+  backdrop-filter: blur(3px);
+  z-index: 90;
+}
+.overlay.visible {
+  display: block;
+}
+
+/* ===== MOBILE HEADER ===== */
+.mobile-header {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 0 0 20px;
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #333;
+  border-radius: 2px;
+}
+
+.mobile-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ===== CONTAINER PRINCIPAL ===== */
 .container {
-  margin-left: 230px;
-  width: calc(100% - 230px);
+  flex: 1;
   padding: 34px 42px;
   overflow-y: auto;
+  min-width: 0;
 }
 
 .top-header {
@@ -152,7 +192,6 @@ body {
   max-width: 1000px;
 }
 
-
 .top-header h1 {
   font-size: 34px;
   margin-bottom: 6px;
@@ -160,16 +199,15 @@ body {
   font-weight: 700;
 }
 
-
 .top-header p {
   color: #6b7280;
   font-size: 15px;
 }
 
-
 .header-actions {
   display: flex;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .btn {
@@ -186,21 +224,19 @@ body {
   transition: 0.2s;
 }
 
-
 .btn-outline:hover { background: #f3f4f6; }
-
 
 .btn-danger {
   border: 1px solid #ef4444;
   color: #ef4444;
 }
 
-
 .btn-danger:hover {
   background: #fef2f2;
   color: #dc2626;
 }
 
+/* ===== TABS ===== */
 .tabs {
   display: flex;
   gap: 30px;
@@ -208,7 +244,6 @@ body {
   margin-bottom: 28px;
   max-width: 1000px;
 }
-
 
 .tab {
   background: none;
@@ -221,12 +256,10 @@ body {
   font-weight: 500;
 }
 
-
 .tab.active {
   color: #4f46e5;
   font-weight: 600;
 }
-
 
 .tab.active::after {
   content: "";
@@ -238,12 +271,12 @@ body {
   background: #4f46e5;
 }
 
-
+/* ===== PROFILE CARD ===== */
 .profile-card {
   background: white;
   border-radius: 18px;
   padding: 32px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
   max-width: 1000px;
   width: 100%;
 }
@@ -254,7 +287,6 @@ body {
   gap: 18px;
   margin-bottom: 30px;
 }
-
 
 .avatar {
   width: 72px;
@@ -267,8 +299,8 @@ body {
   justify-content: center;
   font-size: 24px;
   font-weight: bold;
+  flex-shrink: 0;
 }
-
 
 .btn-photo {
   display: flex;
@@ -285,11 +317,7 @@ body {
   color: #374151;
 }
 
-
-.btn-photo:hover {
-  background: #f9fafb;
-}
-
+.btn-photo:hover { background: #f9fafb; }
 
 .btn-photo svg {
   width: 16px;
@@ -302,19 +330,16 @@ body {
   color: #111827;
 }
 
-
 .profile-form {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-
 .form-row {
   display: flex;
   gap: 20px;
 }
-
 
 .form-group {
   display: flex;
@@ -322,14 +347,12 @@ body {
   flex: 1;
 }
 
-
 .form-group label {
   margin-bottom: 8px;
   font-size: 14px;
   color: #374151;
   font-weight: 500;
 }
-
 
 .form-group input,
 .form-group textarea {
@@ -340,20 +363,18 @@ body {
   font-size: 14px;
   transition: border 0.2s;
   background: white;
+  font-family: inherit;
 }
-
 
 .form-group input:focus,
 .form-group textarea:focus {
   border-color: #6366f1;
 }
 
-
 textarea {
   resize: none;
   min-height: 140px;
 }
-
 
 .btn-save {
   width: fit-content;
@@ -369,7 +390,84 @@ textarea {
   font-size: 14px;
 }
 
+.btn-save:hover { background: #0b1450; }
 
-.btn-save:hover {
-  background: #0b1450;
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 860px) {
+  body { overflow: auto; }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-close {
+    display: block;
+  }
+
+  .mobile-header {
+    display: flex;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .top-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .top-header h1 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 16px;
+  }
+
+  .top-header h1 {
+    font-size: 22px;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-size: 13px;
+    padding: 9px 14px;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .profile-card {
+    padding: 20px;
+  }
+
+  .profile-card h3 {
+    font-size: 18px;
+  }
+
+  .tabs {
+    gap: 18px;
+  }
+
+  .tab {
+    font-size: 14px;
+  }
 }

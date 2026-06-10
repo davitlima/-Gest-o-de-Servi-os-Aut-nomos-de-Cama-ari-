@@ -2,36 +2,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll(".tabs .tab");
   const profileCard = document.querySelector(".profile-card");
 
-  // Cria dinamicamente o container de Portfólio caso ele não exista no HTML
   let portfolioSection = document.getElementById("portfolio-content");
   if (!portfolioSection) {
     portfolioSection = document.createElement("div");
     portfolioSection.id = "portfolio-content";
     portfolioSection.style.display = "none";
     portfolioSection.innerHTML = `
-            <h3>Meu Portfólio</h3>
-            <p style="color: var(--muted); margin-bottom: 20px;">Adicione fotos e detalhes dos seus melhores trabalhos executados.</p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px;">
-                <div style="border: 2px dashed var(--border); border-radius: var(--radius); height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 8px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    <span style="font-size: 0.8rem; font-weight: 600;">Adicionar Foto</span>
-                </div>
-            </div>
-        `;
+      <h3>Meu Portfólio</h3>
+      <p style="color: var(--muted); margin-bottom: 20px;">Adicione fotos e detalhes dos seus melhores trabalhos executados.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px;">
+        <div style="border: 2px dashed var(--border); border-radius: var(--radius); height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); transition: border-color 0.2s;"
+          onmouseover="this.style.borderColor='var(--accent)'"
+          onmouseout="this.style.borderColor='var(--border)'">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 8px;">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span style="font-size: 0.8rem; font-weight: 600;">Adicionar Foto</span>
+        </div>
+      </div>
+    `;
     profileCard.appendChild(portfolioSection);
   }
 
-  // Seleciona o formulário de dados pessoais para podermos escondê-lo/mostrá-lo
   const profileForm = document.querySelector(".profile-form");
   const profileTitle = profileCard.querySelector("h3");
 
   tabs.forEach((tab, index) => {
     tab.addEventListener("click", () => {
-      // Remove classe ativa de todas as abas e adiciona na clicada
-      tabs.forEach((t) => t.classList.remove("active"));
+      tabs.forEach(t => t.classList.remove("active"));
       tab.classList.add("active");
 
-      // Index 0 = Informações Pessoais, Index 1 = Portfólio
       if (index === 0) {
         profileForm.style.display = "flex";
         profileTitle.style.display = "block";
@@ -47,19 +48,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnPhoto = document.querySelector(".btn-photo");
   const avatarDiv = document.querySelector(".profile-photo .avatar");
 
-  // Cria um input de arquivo oculto para abrir a galeria do dispositivo
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = "image/*";
   fileInput.style.display = "none";
-
   document.body.appendChild(fileInput);
+
+  btnPhoto.addEventListener("click", () => fileInput.click());
+
   fileInput.addEventListener("change", (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        // Remove o texto (JS) e insere a imagem selecionada no avatar
         avatarDiv.textContent = "";
         avatarDiv.style.backgroundImage = `url('${e.target.result}')`;
         avatarDiv.style.backgroundSize = "cover";
@@ -71,12 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const form = document.querySelector(".profile-form");
   form.addEventListener("submit", (e) => {
-    e.preventDefault(); // Impede o recarregamento da página
-
+    e.preventDefault();
     const btnSave = document.querySelector(".btn-save");
     const originalText = btnSave.textContent;
 
-    // Efeito visual de carregamento (Loading)
     btnSave.textContent = "Salvando...";
     btnSave.disabled = true;
     btnSave.style.opacity = "0.7";
@@ -85,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
       btnSave.textContent = "Anotações Salvas com Sucesso! ✓";
       btnSave.style.background = "var(--green)";
 
-      // Restaura o botão após 2 segundos
       setTimeout(() => {
         btnSave.textContent = originalText;
         btnSave.style.background = "";
@@ -94,22 +92,21 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 2000);
     }, 1200);
   });
+
   const btnLogout = document.querySelector(".btn-outline");
   const btnDelete = document.querySelector(".btn-danger");
 
   if (btnLogout) {
     btnLogout.addEventListener("click", () => {
       if (confirm("Tem certeza que deseja sair do sistema Nexlar?")) {
-        window.location.href = "index.html"; // Altere para a sua página de login
+        window.location.href = "index.html";
       }
     });
   }
 
   if (btnDelete) {
     btnDelete.addEventListener("click", () => {
-      const confirmacao = prompt(
-        'Para excluir sua conta definitivamente, digite "DELETAR":',
-      );
+      const confirmacao = prompt('Para excluir sua conta definitivamente, digite "DELETAR":');
       if (confirmacao === "DELETAR") {
         alert("Sua conta foi removida de nossa base de dados.");
         window.location.href = "index.html";
@@ -118,4 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // Marca o nav-item correto como active e permite navegação normal
+  document.querySelectorAll('.nav-item').forEach(link => {
+    link.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
 });
