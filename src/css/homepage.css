@@ -11,7 +11,6 @@ body {
   color: #0a1f44;
 }
 
-/* Container principal que encosta nas bordas da tela */
 header {
     width: 100%;
     background-color: #ffffff;
@@ -19,17 +18,15 @@ header {
     padding: 15px 0;
 }
 
-/* O "miolo" que centraliza o conteúdo e separa os lados */
 .nav-container {
     max-width: 1500px;
     margin: 0 auto;
     padding: 0 30px;
-    display: flex;             /* Mágica acontece aqui: coloca um do lado do outro */
-    justify-content: space-between; /* Empurra logo pra esquerda e menu pra direita */
-    align-items: center;       /* Alinha todo mundo no meio (altura) */
+    display: flex;             
+    justify-content: space-between; 
+    align-items: center;       
 }
 
-/* Lado Esquerdo: Logo */
 .logo-box {
     display: flex;
     align-items: center;
@@ -40,11 +37,10 @@ header {
     height: auto;
 }
 
-/* Lado Direito: Grupo de Links */
 .menu-links {
-    display: flex;             /* Faz os links ficarem um ao lado do outro */
+    display: flex;            
     align-items: center;
-    gap: 30px;                 /* Espaço entre os links */
+    gap: 30px;               
 }
 
 .menu-links a {
@@ -52,10 +48,9 @@ header {
     color: #0a1f44;
     font-size: 15px;
     font-weight: 500;
-    white-space: nowrap;       /* Impede que o texto quebre linha */
+    white-space: nowrap;       
 }
 
-/* O botão 'Entrar' */
 .btn-entrar {
     border: 2px solid #1d4cff;
     color: #1d4cff !important;
@@ -220,20 +215,18 @@ main section.main {
 .passos .paragrafo {
   color: #4f5d75;
   font-size: 18px;
-  margin-bottom: 40px; /* Aumentei um pouco o espaço antes dos cards */
+  margin-bottom: 40px; 
 }
 
-/* O segredo está aqui: Nome corrigido para bater com o HTML */
 .passos-card {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   gap: 30px;
-  flex-wrap: wrap; /* Garante que no celular eles fiquem um embaixo do outro */
+  flex-wrap: wrap; 
 }
 
-/* Seletor específico para o card */
 .passo-card {
   width: 330px;
   min-height: 260px;
@@ -245,7 +238,7 @@ main section.main {
   flex-direction: column;
   align-items: center;
   box-shadow: 0 4px 12px rgba(0,0,0,.04);
-  transition: transform 0.3s ease; /* Efeito de hover opcional */
+  transition: transform 0.3s ease; 
 }
 
 .passo-card:hover {
@@ -267,8 +260,7 @@ main section.main {
   font-size: 16px;
   color: #4f5d75;
   line-height: 1.5;
-  margin-bottom: 0; /* Remove a margem inferior para não quebrar o flex */
-}
+  margin-bottom: 0; 
 
 /*Seção Painel*/
 .painel {
