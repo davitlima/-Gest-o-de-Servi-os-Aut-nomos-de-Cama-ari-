@@ -21,7 +21,7 @@ const classeBadgeStatus = status => status === 'Concluído' ? 'badge badge-green
 const MARCA_EIXO = { color: '#94a3b8', font: { size: 10 } };
 const LINHA_GRADE = { color: '#f1f5f9' };
 
-// Configuração padrão de Tooltip para exibir em formato de Moeda (R$) ao passar o mouse
+
 const CONFIG_TOOLTIP = {
   plugins: {
     legend: { display: false },
@@ -70,22 +70,21 @@ const graficoLinhas = new Chart($('lineChart'), {
 function abrirJanela() {} // Mantida vazia caso use em escopos externos
 
 function atualizacaoCompleta() {
-  // Inicializa o array limpando os meses para o recálculo somatório
+
   const valoresMensais = new Array(12).fill(0);
   
-  // Agora calcula somando o valor real (s.valor) guardado no objeto do serviço
+
   estado.servicos.forEach(s => { 
     valoresMensais[s.mes] += s.valor; 
   });
   
-  // Atualiza os conjuntos de dados de ambos os gráficos com os valores somados corretos
+
   graficoBarras.data.datasets[0].data = [...valoresMensais];
   graficoLinhas.data.datasets[0].data = [...valoresMensais];
   
   graficoBarras.update(); 
   graficoLinhas.update();
 
-  // Calcular KPIs globais baseados no histórico total carregado
   const total = estado.servicos.reduce((acumulador, s) => acumulador + s.valor, 0);
   const media = estado.servicos.length ? total / estado.servicos.length : 0;
   const porcentagem = Math.min(Math.round((total / META) * 100), 100);
@@ -112,7 +111,7 @@ function atualizacaoCompleta() {
   });
 }
 
-/* ---------- CONTROLADORES DE MODAL (CRUD) ---------- */
+
 function abrirModal(idParaEditar = null) {
   estado.idEditando = idParaEditar;
   $('modalTitle').textContent = idParaEditar ? 'Editar Registro' : 'Adicionar Registro';
@@ -187,7 +186,6 @@ function exibirAviso(mensagem, ehAviso = false) {
   setTimeout(() => $('toast').classList.remove('show'), 3000);
 }
 
-/* ---------- GERENCIAMENTO DE EVENTOS ---------- */
 $('openModal').addEventListener('click', () => abrirModal());
 $('closeModal').addEventListener('click', fecharModal);
 $('cancelModal').addEventListener('click', fecharModal);

@@ -1,4 +1,4 @@
-/* Reset */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 *, *::before, *::after {
@@ -7,7 +7,6 @@
   padding: 0;
 }
 
-/* ── Design Tokens ── */
 :root {
   --bg:          #0d1120;
   --card:        #ffffff;
@@ -22,7 +21,6 @@
                  0 4px 16px  rgba(0,0,0,0.2);
 }
 
-/* ── Base ── */
 html, body {
   min-height: 100%;
   background-color: var(--bg);
@@ -54,7 +52,7 @@ body {
   width: auto;
 }
 
-/* ── Card ── */
+
 .card {
   background: var(--card);
   border-radius: var(--radius);
@@ -66,7 +64,7 @@ body {
   animation: fadeUp 0.55s ease 0.1s both;
 }
 
-/* ── Card Header ── */
+
 .card-header {
   text-align: center;
   margin-bottom: 28px;
@@ -148,7 +146,6 @@ body {
   cursor: pointer;
 }
 
-/* ── Botão Continuar ── */
 .btn-continuar {
   width: 100%;
   padding: 16px;
@@ -168,7 +165,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* ── Responsividade (Celular) ── */
 @media (max-width: 600px) {
   .logo-container {
     position: relative;

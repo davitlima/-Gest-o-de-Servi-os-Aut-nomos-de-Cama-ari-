@@ -6,14 +6,14 @@
   --white: #ffffff;
   --dark: #0f1117;
   --dark-card: #141824;
-  --primary: #1d4ed8; /* CORRIGIDO: Tom de azul mais forte para garantir contraste do botão principal */
+  --primary: #1d4ed8; 
   --primary-hover: #1e40af;
   --text: #1a1d2e;
-  --text-muted: #555e6d; /* CORRIGIDO: Cinza escurecido para passar no contraste sobre fundos claros */
+  --text-muted: #555e6d; 
   --border: #e5e7eb;
   --star-gold: #f59e0b;
-  --tag-bg: #e0e7ff; /* CORRIGIDO: Ajustado para combinar com o novo tom do texto da tag */
-  --tag-color: #3730a3; /* CORRIGIDO: Roxo escuro para dar contraste perfeito dentro da tag clara */
+  --tag-bg: #e0e7ff;
+  --tag-color: #3730a3;
   --available-bg: #f0fdf4;
   --available-dot: #22c55e;
   --stat-bg: #f5f7ff;
@@ -218,12 +218,12 @@ body {
 }
 
 .hero-card__reviews {
-  color: #b2b9c4; /* CORRIGIDO: Contraste ajustado para o fundo escuro do card principal */
+  color: #b2b9c4; 
   font-size: 0.88rem;
 }
 
 .hero-card__location {
-  color: #b2b9c4; /* CORRIGIDO: Contraste ajustado para o fundo escuro do card principal */
+  color: #b2b9c4; 
   font-size: 0.85rem;
   display: flex;
   align-items: center;
@@ -293,7 +293,7 @@ body {
 .stat-value {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #1e40af !important; /* CORRIGIDO: Azul forte forçado para zerar o erro do "15+ anos" e "200+" */
+  color: #1e40af !important; 
   font-family: var(--font-head);
 }
 
@@ -500,7 +500,7 @@ body {
 }
 
 .available-sub {
-  color: #2b573a !important; /* CORRIGIDO: Verde escuro para garantir leitura perfeita da resposta */
+  color: #2b573a !important;
   font-size: 0.82rem;
 }
 
@@ -517,7 +517,7 @@ body {
   border: 0;
 }
 
-/* ANIMAÇÕES */
+
 @keyframes fadeSlideDown {
   from { opacity: 0; transform: translateY(-18px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -533,7 +533,6 @@ body {
   50%       { box-shadow: 0 0 0 6px rgba(34,197,94,0.08); }
 }
 
-/* RESPONSIVIDADE */
 @media (max-width: 768px) {
   .navbar { padding: 12px 18px; }
   .hero-card { flex-direction: column; align-items: flex-start; padding: 22px 20px; }

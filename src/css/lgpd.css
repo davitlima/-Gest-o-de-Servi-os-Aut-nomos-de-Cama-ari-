@@ -13,8 +13,6 @@
   --border: #e4e8f0;
   --text: #1a1d2e;
   
-  /* ── CORREÇÃO 1: Mudado de #6b7280 para #4b5563 ── */
-  /* Esse tom cinza mais escuro atinge um rácio de 5.1:1 contra o fundo branco, passando com folga no teste! */
   --muted: #4b5563; 
   
   --accent: #3b6ef8;
@@ -113,14 +111,13 @@ nav {
 
 .hero .intro strong { color: var(--text); font-weight: 600; }
 
-/* ── CONTENT ── */
+
 .content {
   max-width: 740px;
   margin: 0 auto;
   padding: 0 20px 80px;
 }
 
-/* ── CARD ── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -201,7 +198,7 @@ nav {
 .card.dark ul li::before { color: #7aa4ff; }
 
 .card ul li strong {
-  /* ── CORREÇÃO 2: Forçado a cor escura var(--text) nos elementos strong dos cards normais ── */
+
   color: var(--text);
   font-weight: 600;
 }
@@ -215,7 +212,6 @@ nav {
 
 .card a:hover { text-decoration: underline; }
 
-/* ── SECTION TITLE ── */
 .section-title {
   text-align: center;
   font-family: 'DM Serif Display', serif;
@@ -223,9 +219,7 @@ nav {
   font-weight: 400;
   margin: 48px 0 20px;
   letter-spacing: -.2px;
-}
 
-/* ── BACK BUTTON (bottom) ── */
 .btn-home {
   display: block;
   width: fit-content;
@@ -244,7 +238,7 @@ nav {
 
 .btn-home:hover { opacity: .85; }
 
-/* ── FOOTER ── */
+
 footer {
   background: var(--text);
   color: rgba(255,255,255,.5);
@@ -253,7 +247,6 @@ footer {
   padding: 20px;
 }
 
-/* ── SCROLL REVEAL ── */
 .reveal {
   opacity: 0;
   transform: translateY(18px);
@@ -263,4 +256,4 @@ footer {
 .reveal.visible {
   opacity: 1;
   transform: none;
-}
+}}
