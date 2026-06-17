@@ -287,3 +287,14 @@
 .btn-profissionais:hover {
     transform: translateY(-3px);
 }
+
+/* --- ALINHAMENTO DAS APIS DE ACESSIBILIDADE --- */
+
+/* Garante que o container do VLibras fique fixo no canto superior ou inferior direito */
+.enabled {
+    position: fixed !important;
+    right: 20px !important;
+    top: 50% !important; /* Centralizado verticalmente na direita */
+    transform: translateY(-50%) !important;
+    z-index: 999999 !important;
+}
