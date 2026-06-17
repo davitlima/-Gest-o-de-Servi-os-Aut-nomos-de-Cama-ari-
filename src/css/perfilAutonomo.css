@@ -6,7 +6,7 @@
   --white: #ffffff;
   --dark: #0f1117;
   --dark-card: #141824;
-  --primary: #1d4ed8; /* CORRIGIDO: Tom de azul mais forte para garantir contraste do botão principal */
+  --primary: #1d4ed8; 
   --primary-hover: #1e40af;
   --text: #1a1d2e;
   --text-muted: #555e6d; /* CORRIGIDO: Cinza escurecido para passar no contraste sobre fundos claros */

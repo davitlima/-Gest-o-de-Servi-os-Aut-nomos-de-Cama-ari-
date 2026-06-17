@@ -5,11 +5,12 @@ function maskDate(input) {
   input.value = v;
 }
  
-function maskCPF(input) {
-  let v = input.value.replace(/\D/g, '').slice(0, 11);
-  if (v.length > 9)      v = v.slice(0,3) + '.' + v.slice(3,6) + '.' + v.slice(6,9) + '-' + v.slice(9);
-  else if (v.length > 6) v = v.slice(0,3) + '.' + v.slice(3,6) + '.' + v.slice(6);
-  else if (v.length > 3) v = v.slice(0,3) + '.' + v.slice(3);
+function maskCNPJ(input) {
+  let v = input.value.replace(/\D/g, '').slice(0, 14);
+  if (v.length > 12)     v = v.slice(0,2) + '.' + v.slice(2,5) + '.' + v.slice(5,8) + '/' + v.slice(8,12) + '-' + v.slice(12);
+  else if (v.length > 8) v = v.slice(0,2) + '.' + v.slice(2,5) + '.' + v.slice(5,8) + '/' + v.slice(8);
+  else if (v.length > 5) v = v.slice(0,2) + '.' + v.slice(2,5) + '.' + v.slice(5);
+  else if (v.length > 2) v = v.slice(0,2) + '.' + v.slice(2);
   input.value = v;
 }
  
@@ -22,19 +23,10 @@ function maskPhone(input) {
   input.value = v;
 }
  
-function isValidCPF(cpf) {
-  const nums = cpf.replace(/\D/g, '');
-  if (nums.length !== 11 || /^(\d)\1+$/.test(nums)) return false;
-  let sum = 0;
-  for (let i = 0; i < 9; i++) sum += parseInt(nums[i]) * (10 - i);
-  let rest = (sum * 10) % 11;
-  if (rest === 10 || rest === 11) rest = 0;
-  if (rest !== parseInt(nums[9])) return false;
-  sum = 0;
-  for (let i = 0; i < 10; i++) sum += parseInt(nums[i]) * (11 - i);
-  rest = (sum * 10) % 11;
-  if (rest === 10 || rest === 11) rest = 0;
-  return rest === parseInt(nums[10]);
+// Nova função simplificada: apenas garante que o número tem 14 dígitos
+function isValidCNPJ(cnpj) {
+  const nums = cnpj.replace(/\D/g, '');
+  return nums.length === 14;
 }
  
 function isValidDate(str) {
@@ -46,24 +38,33 @@ function isValidDate(str) {
  
 let toastTimer = null;
  
-/**
- * Exibe uma mensagem temporária no topo da tela.
- * @param {string} msg  
- * @param {number} duration 
- */
 function showToast(msg, duration = 3000) {
   const toast = document.getElementById('toast');
-  if (!toast) return; // Evita erros caso a div #toast não exista no HTML
+  if (!toast) return; 
   toast.textContent = msg;
   toast.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
 }
 
+function focusField(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.focus();
+  el.style.borderColor = '#ef4444';
+  el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.15)';
+  
+  el.addEventListener('input', function clearError() {
+    el.style.borderColor = '';
+    el.style.boxShadow   = '';
+    el.removeEventListener('input', clearError);
+  });
+}
+
 function handleSubmit() {
   const nome      = document.getElementById('nome').value.trim();
   const nasc      = document.getElementById('nascimento').value.trim();
-  const cpf       = document.getElementById('cpf').value.trim();
+  const cnpj      = document.getElementById('cnpj').value.trim();
   const contato   = document.getElementById('contato').value.trim();
   const senha     = document.getElementById('senha').value;
   const termos    = document.getElementById('termos').checked;
@@ -80,9 +81,9 @@ function handleSubmit() {
     return;
   }
  
-  if (!isValidCPF(cpf)) {
-    showToast('⚠️ CPF inválido. Verifique o número informado.');
-    focusField('cpf');
+  if (!isValidCNPJ(cnpj)) {
+    showToast('⚠️ O campo deve conter um número de 14 dígitos.');
+    focusField('cnpj');
     return;
   }
  
@@ -104,46 +105,39 @@ function handleSubmit() {
     return;
   }
  
- setTimeout(() => {
-    showToast('✅ Cadastro realizado com sucesso!', 2000);
-    window.location.href = "/src/pages/inicio.html";
-}, 1500);
- 
-}
+  showToast('⌛ Processando cadastro...', 1500);
 
-function focusField(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.focus();
-  el.style.borderColor = '#ef4444';
-  el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.15)';
-  el.addEventListener('input', function clearError() {
-    el.style.borderColor = '';
-    el.style.boxShadow   = '';
-    el.removeEventListener('input', clearError);
-  }, { once: true });
-}
- 
-function resetForm() {
-  ['nome','nascimento','cpf','contato','senha'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  const checkbox = document.getElementById('termos');
-  if (checkbox) checkbox.checked = false;
+  setTimeout(() => {
+     showToast('✅ Cadastro realizado com sucesso!', 2000);
+     window.location.href = "inicio.html";
+  }, 1500);
 }
  
 function showHelp() {
   showToast('💡 Preencha todos os campos para criar sua conta Nexlar.', 4000);
 }
 
-// Escuta o carregamento do DOM para interceptar o submit do formulário
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('form');
+  const form = document.getElementById('formCadastroEmpresa');
   if (form) {
     form.addEventListener('submit', (e) => {
-      e.preventDefault(); // Impede o recarregamento da página
+      e.preventDefault(); 
       handleSubmit();
     });
+  }
+
+  const nascInput = document.getElementById('nascimento');
+  if (nascInput) {
+    nascInput.addEventListener('input', () => maskDate(nascInput));
+  }
+
+  const cnpjInput = document.getElementById('cnpj');
+  if (cnpjInput) {
+    cnpjInput.addEventListener('input', () => maskCNPJ(cnpjInput));
+  }
+
+  const contatoInput = document.getElementById('contato');
+  if (contatoInput) {
+    contatoInput.addEventListener('input', () => maskPhone(contatoInput));
   }
 });
