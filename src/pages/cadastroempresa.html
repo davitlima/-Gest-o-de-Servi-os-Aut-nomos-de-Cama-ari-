@@ -1,58 +1,96 @@
-
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexlar - Cadastro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/src/css/cadastroempresa.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexlar — Cadastro da Empresa</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/css/cadastroempresa.css" />
 </head>
 <body>
+ 
+  <div class="toast" id="toast"></div>
 
-    <div class="container">
-        <header class="logo-header">
-              <div class="logo-container">
+  <div class="logo-container">
       <img src="/src/images/logobranca.png" alt="Nexlar" class="logo-img" />
   </div>
-        </header>
 
-        <main class="card">
-            <h3>Bem-vindos ao Nexlar!</h3>
-            <h2>Cadastro da Empresa</h2>
-
-            <form>
-                <div class="input-group">
-                    <i class="fa-regular fa-building"></i>
-                    <input type="text" placeholder="Nome da Empresa" required>
-                </div>
-
-                <div class="input-group">
-                    <i class="fa-regular fa-id-card"></i>
-                    <input type="text" placeholder="CNPJ" required>
-                </div>
-
-                <div class="input-group">
-                    <i class="fa-solid fa-phone"></i>
-                    <input type="tel" placeholder="Contato" required>
-                </div>
-
-                <div class="input-group">
-                    <i class="fa-solid fa-location-dot"></i>
-                    <input type="password" placeholder="Senha" required>
-                </div>
-
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms" required>
-                    <label for="terms">Aceito os Termos de Uso</label>
-                </div>
-
-                <button type="submit" class="btn-continue">Continuar</button>
-            </form>
-        </main>
+  <div class="card">
+    <div class="card-header">
+      <p class="welcome">Bem-vindos ao Nexlar!</p>
+      <h1>Cadastro da Empresa</h1>
     </div>
+ 
+    <form id="formCadastroEmpresa">
+      <div class="fields">
+  
+        <div class="field">
+          <span class="field-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+              <polyline points="9 21 9 12 15 12 15 21"/>
+            </svg>
+          </span>
+          <input type="text" id="nome" placeholder="Nome completo" autocomplete="name" required />
+        </div>
+  
+        <div class="field">
+          <span class="field-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8"  y1="2" x2="8"  y2="6"/>
+              <line x1="3"  y1="10" x2="21" y2="10"/>
+            </svg>
+          </span>
+          <input type="text" id="nascimento" placeholder="Data de nascimento" maxlength="10" required />
+        </div>
+  
+        <div class="field">
+          <span class="field-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="2" width="16" height="20" rx="2"/>
+              <line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/>
+            </svg>
+          </span>
+          <input type="text" id="cnpj" placeholder="CNPJ" maxlength="18" required />
+        </div>
+  
+        <div class="field">
+          <span class="field-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2A19.86 19.86 0 013.09 4.18 2 2 0 015.06 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 9.91a16 16 0 006.99 6.99l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+          </span>
+          <input type="tel" id="contato" placeholder="Contato" maxlength="15" required />
+        </div>
+  
+        <div class="field">
+          <span class="field-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+          </span>
+          <input type="password" id="senha" placeholder="Senha" required />
+        </div>
+  
+      </div>
 
-        <div vw class="enabled">
+      <div class="terms-wrap">
+        <input type="checkbox" id="termos" required />
+        <label for="termos">Aceito os Termos de Uso</label>
+      </div>
+  
+      <button type="submit" class="btn-continuar" id="btnContinuar">
+        Continuar
+      </button>
+    </form>
+ 
+  </div>
+
+  <button class="btn-help" onclick="showHelp()" title="Ajuda">?</button>
+ 
+  <div vw class="enabled">
     <div vw-access-button class="active"></div>
     <div vw-plugin-wrapper>
         <div class="vw-plugin-top-wrapper"></div>
@@ -71,5 +109,10 @@
     (d.body || d.head).appendChild(s);
 })(document);
 </script>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+      new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+  <script src="/src/js/cadastroempresa.js"></script>
 </body>
 </html>
