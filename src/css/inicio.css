@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-
 *, *::before, *::after { 
   box-sizing: border-box; 
   margin: 0; 
@@ -27,6 +26,7 @@ body {
   width: 100%;
   margin: 0 auto;
 }
+
 
 .navbar {
   display: flex; 
@@ -189,6 +189,7 @@ main {
   border-color: var(--accent); 
 }
 
+/* --- CATEGORIAS --- */
 .categories {
   display: grid; 
   grid-template-columns: repeat(4, 1fr); 
@@ -214,6 +215,7 @@ main {
   transform: translateY(-1px); 
 }
 
+/* --- CARDS --- */
 .cards { 
   display: grid; 
   grid-template-columns: repeat(3, 1fr); 
@@ -296,9 +298,24 @@ main {
 }
 
 .stars { 
-  display: inline-flex; 
-  gap: 2px; 
+  display: inline-block;
+  line-height: 1;
 }
+
+.stars::before {
+  content: "★★★★★";
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #f5a623 var(--percent), #444 var(--percent));
+  -webkit-background-clip: text;
+  background-clip: text;        
+  -webkit-text-fill-color: transparent;
+  font-size: 16px;
+}
+
+.stars[data-r="3.5"] { --percent: 70%; }
+.stars[data-r="4.0"] { --percent: 80%; }
+.stars[data-r="4.5"] { --percent: 90%; }
+.stars[data-r="5.0"] { --percent: 100%; }
 
 .rating small { 
   font-size: 11px; 
@@ -306,18 +323,48 @@ main {
   font-family: var(--font); 
 }
 
+/* --- BOTÕES DOS CARDS --- */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.card-actions a {
+  flex: 1;
+  text-decoration: none;
+}
+
+.btn-perfil,
 .btn-msg {
   width: 100%; 
+  border-radius: 8px;
+  padding: 10px 8px; 
+  font-family: var(--font); 
+  font-size: 12px;
+  font-weight: 600; 
+  cursor: pointer; 
+  transition: background .2s, border-color .2s;
+}
+
+/* Botão Ver Perfil (Estilo Outline) */
+.btn-perfil {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.btn-perfil:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+
+.btn-msg {
   background: var(--accent); 
   border: none; 
-  border-radius: 8px;
-  padding: 10px; 
-  font-family: var(--font); 
-  font-size: 13px;
-  font-weight: 600; 
   color: #fff; 
-  cursor: pointer; 
-  margin-top: auto;
 }
 
 .btn-msg:hover { 
@@ -338,22 +385,3 @@ main {
     padding: 0 16px; 
   }
 }
-.stars {
-  display: inline-block;
-  line-height: 1;
-}
-
-.stars::before {
-  content: "★★★★★";
-  letter-spacing: 2px;
-  background: linear-gradient(90deg, #f5a623 var(--percent), #444 var(--percent));
-  -webkit-background-clip: text;
-  background-clip: text;        
-  -webkit-text-fill-color: transparent;
-  font-size: 16px;
-}
-
-.stars[data-r="3.5"] { --percent: 70%; }
-.stars[data-r="4.0"] { --percent: 80%; }
-.stars[data-r="4.5"] { --percent: 90%; }
-.stars[data-r="5.0"] { --percent: 100%; }
