@@ -71,35 +71,39 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const form = document.querySelector(".profile-form");
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const btnSave = document.querySelector(".btn-save");
-    const originalText = btnSave.textContent;
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const btnSave = document.querySelector(".btn-save");
+      const originalText = btnSave.textContent;
 
-    btnSave.textContent = "Salvando...";
-    btnSave.disabled = true;
-    btnSave.style.opacity = "0.7";
-
-    setTimeout(() => {
-      btnSave.textContent = "Anotações Salvas com Sucesso! ✓";
-      btnSave.style.background = "var(--green)";
+      btnSave.textContent = "Salvando...";
+      btnSave.disabled = true;
+      btnSave.style.opacity = "0.7";
 
       setTimeout(() => {
-        btnSave.textContent = originalText;
-        btnSave.style.background = "";
-        btnSave.disabled = false;
-        btnSave.style.opacity = "";
-      }, 2000);
-    }, 1200);
-  });
+        btnSave.textContent = "Anotações Salvas com Sucesso! ✓";
+        btnSave.style.background = "var(--green)";
+
+        setTimeout(() => {
+          btnSave.textContent = originalText;
+          btnSave.style.background = "";
+          btnSave.disabled = false;
+          btnSave.style.opacity = "";
+        }, 2000);
+      }, 1200);
+    });
+  }
 
   const btnLogout = document.querySelector(".btn-outline");
   const btnDelete = document.querySelector(".btn-danger");
 
+  const homePath = "../../index.html";
+
   if (btnLogout) {
     btnLogout.addEventListener("click", () => {
       if (confirm("Tem certeza que deseja sair do sistema Nexlar?")) {
-        window.location.href = "index.html";
+        window.location.href = homePath;
       }
     });
   }
@@ -107,16 +111,19 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnDelete) {
     btnDelete.addEventListener("click", () => {
       const confirmacao = prompt('Para excluir sua conta definitivamente, digite "DELETAR":');
-      if (confirmacao === "DELETAR") {
-        alert("Sua conta foi removida de nossa base de dados.");
-        window.location.href = "index.html";
-      } else if (confirmacao !== null) {
-        alert("Palavra incorreta. A exclusão foi cancelada.");
+
+      if (confirmacao !== null) {
+
+        if (confirmacao.trim() === "DELETAR") {
+          alert("Sua conta foi removida de nossa base de dados.");
+          window.location.href = homePath;
+        } else {
+          alert("Palavra incorreta. A exclusão foi cancelada.");
+        }
       }
     });
   }
 
-  // Marca o nav-item correto como active e permite navegação normal
   document.querySelectorAll('.nav-item').forEach(link => {
     link.addEventListener('click', () => {
       document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
