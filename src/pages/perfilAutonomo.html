@@ -168,17 +168,27 @@
   </div>
 
 <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-
 <script>
-    new window.VLibras.Widget('https://vlibras.gov.br/app');
+    new window.VLibras.Widget({
+        rootPath: 'https://vlibras.gov.br/app',
+        position: 'R' 
+    });
 </script>
-<script>
+
+
+<script type="text/javascript">
 (function(d){
     var s = d.createElement("script");
+    s.setAttribute("data-account", "S9u6Q9zXrg"); 
+    s.setAttribute("data-size", "small"); 
+    s.setAttribute("data-position", 6); 
+
     s.src = "https://cdn.userway.org/widget.js";
     (d.body || d.head).appendChild(s);
 })(document);
 </script>
+
   <script src="/src/js/perfilAutonomo.js"></script>
+
 </body>
 </html>
