@@ -250,14 +250,13 @@
 .stars::before {
   content: "★★★★★";
   letter-spacing: 2px;
-  /* Cria o efeito de preenchimento dourado */
   background: linear-gradient(90deg, #f5a623 var(--percent), #444 var(--percent));
   -webkit-background-clip: text;
   background-clip: text;        
   -webkit-text-fill-color: transparent;
   font-size: 16px;
 }
-/* Define quanto da estrela será pintado de dourado */
+
 .stars[data-r="3.5"] { --percent: 70%; }
 .stars[data-r="4.0"] { --percent: 80%; }
 .stars[data-r="4.5"] { --percent: 90%; }
@@ -288,13 +287,3 @@
     transform: translateY(-3px);
 }
 
-/* --- ALINHAMENTO DAS APIS DE ACESSIBILIDADE --- */
-
-/* Garante que o container do VLibras fique fixo no canto superior ou inferior direito */
-.enabled {
-    position: fixed !important;
-    right: 20px !important;
-    top: 50% !important; /* Centralizado verticalmente na direita */
-    transform: translateY(-50%) !important;
-    z-index: 999999 !important;
-}
