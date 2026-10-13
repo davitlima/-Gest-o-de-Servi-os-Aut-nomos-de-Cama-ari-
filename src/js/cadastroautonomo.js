@@ -53,7 +53,7 @@ let toastTimer = null;
  */
 function showToast(msg, duration = 3000) {
   const toast = document.getElementById('toast');
-  if (!toast) return; // Evita erros caso a div #toast não exista no HTML
+  if (!toast) return; 
   toast.textContent = msg;
   toast.classList.add('show');
   clearTimeout(toastTimer);
@@ -93,8 +93,9 @@ function handleSubmit() {
     return;
   }
  
-  if (senha.length < 6) {
-    showToast('⚠️ A senha deve ter pelo menos 6 caracteres.');
+  // Validação do padrão forte de senha integrado
+  if (!isValidPassword(senha)) {
+    showToast('⚠️ A senha deve ter ao menos 8 caracteres, contendo letra maiúscula, minúscula, número e caractere especial.');
     focusField('senha');
     return;
   }
@@ -137,13 +138,22 @@ function showHelp() {
   showToast('💡 Preencha todos os campos para criar sua conta Nexlar.', 4000);
 }
 
-// Escuta o carregamento do DOM para interceptar o submit do formulário
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   if (form) {
     form.addEventListener('submit', (e) => {
-      e.preventDefault(); // Impede o recarregamento da página
+      e.preventDefault();
       handleSubmit();
     });
   }
 });
+
+/**
+ * Requisitos: Mínimo 8 caracteres, 1 maiúscula, 1 minúscula, 1 número e 1 símbolo.
+ * @param {string} senha 
+ * @returns {boolean}
+ */
+function isValidPassword(senha) {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._\-])[A-Za-z\d@$!%*?&._\-]{8,}$/;
+  return regex.test(senha);
+}
