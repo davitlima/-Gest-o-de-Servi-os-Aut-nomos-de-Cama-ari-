@@ -92,11 +92,13 @@ function handleSubmit() {
     focusField('contato');
     return;
   }
- 
-  if (senha.length < 6) {
-    showToast('⚠️ A senha deve ter pelo menos 6 caracteres.');
-    focusField('senha');
-    return;
+
+ {
+if (!isValidPassword(senha)) {
+  showToast('⚠️ A senha deve ter ao menos 8 caracteres, contendo letra maiúscula, minúscula, número e caractere especial.');
+  focusField('senha');
+  return;
+}
   }
  
   if (!termos) {
@@ -147,3 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+/**
+ * Requisitos: Mínimo 8 caracteres, 1 maiúscula, 1 minúscula, 1 número e 1 símbolo.
+ * @param {string} senha
+ * @returns {boolean}
+ */
+function isValidPassword(senha) {
+  const regex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&.\-])[A-Za-z\d@$!%?&.\-]{8,}$/;
+  return regex.test(senha);
+}
