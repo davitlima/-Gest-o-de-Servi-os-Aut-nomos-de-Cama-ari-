@@ -9,21 +9,33 @@ class Connection {
 
     private static $instance = null;
 
-    public static function getConnection() {
+    public static function getInstance() {
     
         if (self::$instance === null) {
-            try {
-                $host = 'localhost';
-                $db   = 'gestao_autonomos';
-                $user = 'root';
-                $pass = '';
+      
+            $host = 'aws-1-ca-central-1.pooler.supabase.com';
+            $port = '5432';
+            $db   = 'postgres';
+            $user = 'postgres.tvmeyljjmfmaaookwhyk';
+            $pass = 'Linda@101108202'; 
 
-                self::$instance = new PDO("mysql:host={$host};dbname={$db};charset=utf8", $user, $pass);
-                self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $dsn = "pgsql:host=$host;port=$port;dbname=$db;options='--search_path=public'";
+
+            try {
+                self::$instance = new PDO($dsn, $user, $pass, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_TIMEOUT => 10
+                ]);
             } catch (PDOException $e) {
-                die("Erro na Conexão: " . $e->getMessage());
+                die("Erro na Conexão com Supabase: " . $e->getMessage());
             }
         }
         return self::$instance;
+    }
+
+    public static function getConnection()
+    {
+        return self::getInstance();
     }
 }

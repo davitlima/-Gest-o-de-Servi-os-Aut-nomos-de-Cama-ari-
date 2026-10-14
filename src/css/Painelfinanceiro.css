@@ -372,3 +372,100 @@ body {
     flex-direction: column;
   }
 }
+
+/* ===== AJUSTES EXCLUSIVOS DO PAINEL FINANCEIRO ===== */
+
+.container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 32px;
+    color: var(--text, #1e293b);
+}
+
+.container > h2 {
+    margin-bottom: 24px;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.cards-resumo {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.cards-resumo .card {
+    padding: 22px;
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: var(--radius, 12px);
+    background: var(--card-bg, #fff);
+    box-shadow: var(--shadow, 0 2px 8px rgba(0,0,0,.07));
+}
+
+.cards-resumo .card h3 {
+    margin-bottom: 10px;
+    color: var(--muted, #64748b);
+    font-size: 0.9rem;
+}
+
+.cards-resumo .card p {
+    color: var(--text, #1e293b);
+    font-size: 1.65rem;
+    font-weight: 700;
+}
+
+.container > h3 {
+    margin: 26px 0 14px;
+    font-size: 1rem;
+}
+
+.tabela-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: var(--radius, 12px);
+    background: var(--card-bg, #fff);
+    box-shadow: var(--shadow, 0 2px 8px rgba(0,0,0,.07));
+}
+
+.tabela-financeira {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tabela-financeira th,
+.tabela-financeira td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border, #e2e8f0);
+}
+
+.tabela-financeira th {
+    background: #f8fafc;
+    color: var(--muted, #64748b);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+}
+
+.tabela-financeira td {
+    font-size: 0.88rem;
+}
+
+.tabela-financeira tbody tr:hover {
+    background: #f8fafc;
+}
+
+.tabela-financeira tbody tr:last-child td {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 14px;
+    }
+
+    .cards-resumo {
+        grid-template-columns: 1fr;
+    }
+}
