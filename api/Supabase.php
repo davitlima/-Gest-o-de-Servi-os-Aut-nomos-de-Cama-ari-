@@ -60,8 +60,6 @@ final class Supabase
         $response = curl_exec($handle);
         $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
         $error = curl_error($handle);
-        curl_close($handle);
-
         if ($response === false) {
             throw new \RuntimeException('Falha de conexão com o Supabase: ' . $error);
         }
@@ -83,3 +81,4 @@ final class HttpError extends \RuntimeException
         parent::__construct($message);
     }
 }
+

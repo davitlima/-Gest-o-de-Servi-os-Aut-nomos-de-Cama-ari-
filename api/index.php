@@ -77,7 +77,6 @@ function mercadoPago(string $method, string $path, ?array $body = null, ?string 
     }
     $response = curl_exec($handle);
     $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
-    curl_close($handle);
     $decoded = is_string($response) ? json_decode($response, true) : null;
     if ($status < 200 || $status >= 300 || !is_array($decoded)) {
         throw new HttpError(502, 'Não foi possível comunicar com o Mercado Pago.');
@@ -100,13 +99,13 @@ try {
     if ($route === 'public/profile' && $method === 'GET') {
         $profileId = query('id');
         if ($profileId === '') throw new HttpError(422, 'Perfil não informado.');
-        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*),reviews(rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
+        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*),reviews!reviews_provider_id_fkey(rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
         if (!isset($profiles[0])) throw new HttpError(404, 'Perfil não encontrado.');
         respond($profiles[0]);
     }
 
     if ($route === 'public/profiles' && $method === 'GET') {
-        respond($db->rest('GET', 'profiles?role=in.(autonomo,empresa)&select=id,full_name,company_name,service_category,neighborhood,bio,avatar_url,reviews(rating)&order=created_at.desc', null, Config::get('SUPABASE_PUBLISHABLE_KEY')));
+        respond($db->rest('GET', 'profiles?role=in.(autonomo,empresa)&select=id,full_name,company_name,service_category,neighborhood,bio,avatar_url,reviews!reviews_provider_id_fkey(rating)&order=created_at.desc', null, Config::get('SUPABASE_PUBLISHABLE_KEY')));
     }
 
     if ($route === 'payments/webhook' && $method === 'POST') {
@@ -331,3 +330,4 @@ try {
     error_log($error->getMessage());
     respond(['error' => 'Erro interno do servidor.'], 500);
 }
+

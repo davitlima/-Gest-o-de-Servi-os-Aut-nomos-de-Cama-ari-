@@ -30,4 +30,11 @@ expect(Domain::canReview('concluido', true) === false, 'Avaliação duplicada é
 expect(Domain::jwtAssuranceLevel('eyJhbGciOiJub25lIn0.' . rtrim(strtr(base64_encode('{"aal":"aal2"}'), '+/', '-_'), '=') . '.x') === 'aal2', 'Extrai aal2 do token');
 expect(Domain::jwtAssuranceLevel('token-invalido') === null, 'Token inválido não possui AAL');
 
+$apiSource = file_get_contents(__DIR__ . '/../api/index.php');
+$supabaseSource = file_get_contents(__DIR__ . '/../api/Supabase.php');
+expect(str_contains($apiSource, 'reviews!reviews_provider_id_fkey'), 'Consultas públicas devem indicar a relação de avaliações recebidas');
+expect(!str_contains($apiSource, 'curl_close('), 'API deve ser compatível com PHP 8.5 sem curl_close obsoleto');
+expect(!str_contains($supabaseSource, 'curl_close('), 'Cliente Supabase deve ser compatível com PHP 8.5 sem curl_close obsoleto');
+
 fwrite(STDOUT, "Todos os testes passaram.\n");
+
