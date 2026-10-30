@@ -261,6 +261,7 @@ main section.main {
   color: #4f5d75;
   line-height: 1.5;
   margin-bottom: 0; 
+}
 
 /*Seção Painel*/
 .painel {
@@ -751,3 +752,4 @@ footer {
 .rodape a:hover {
     color: white;
 }
+

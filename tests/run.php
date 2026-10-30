@@ -36,5 +36,8 @@ expect(str_contains($apiSource, 'reviews!reviews_provider_id_fkey'), 'Consultas 
 expect(!str_contains($apiSource, 'curl_close('), 'API deve ser compatível com PHP 8.5 sem curl_close obsoleto');
 expect(!str_contains($supabaseSource, 'curl_close('), 'Cliente Supabase deve ser compatível com PHP 8.5 sem curl_close obsoleto');
 
+$homepageCss = file_get_contents(__DIR__ . '/../src/css/homepage.css');
+expect(substr_count($homepageCss, '{') === substr_count($homepageCss, '}'), 'CSS da homepage deve ter blocos balanceados');
+
 fwrite(STDOUT, "Todos os testes passaram.\n");
 
