@@ -34,7 +34,7 @@
                 <span>Meu Perfil</span>
             </a>
 
-            <a href="Painelfinanceiro.html" onclick="window.location.href='Painelfinanceiro.html';" class="nav-link">
+            <a href="Painelfinanceiro.html" onclick="window.location.href='Painelfinanceiro.html';" class="nav-link" id="financeNav">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="12" y1="1" x2="12" y2="23"></line>
                     <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
@@ -80,7 +80,7 @@
 
         <nav class="tabs">
             <button class="tab active">Informações Pessoais</button>
-            <button class="tab">Portfólio</button>
+            <button class="tab" id="portfolioTab">Portfólio</button>
         </nav>
 
         <section class="profile-card">
@@ -102,28 +102,28 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Nome Completo</label>
-                        <input type="text" value="João Pedro Silva">
+                        <input type="text" id="profileName" required>
                     </div>
 
                     <div class="form-group">
                         <label>Telefone</label>
-                        <input type="text" value="(71) 98856-2546">
+                        <input type="text" id="profilePhone">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" value="joaopedro@email.com">
+                    <input type="email" id="profileEmail" readonly>
                 </div>
 
                 <div class="form-group">
                     <label>Endereço / Bairro</label>
-                    <input type="text" value="Centro, Campinas - SA">
+                    <input type="text" id="profileNeighborhood">
                 </div>
 
                 <div class="form-group">
                     <label>Sobre você</label>
-                    <textarea rows="5">Eletricista com 10 anos de experiência.</textarea>
+                    <textarea rows="5" id="profileBio"></textarea>
                 </div>
 
                 <button type="submit" class="btn-save">
@@ -135,6 +135,8 @@
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/src/js/api.js"></script>
     <script src="/src/js/Meuperfil.js"></script>
 </body>
 

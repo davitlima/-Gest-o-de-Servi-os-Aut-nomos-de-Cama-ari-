@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cadastro — Nexlar</title><link rel="stylesheet" href="/src/css/auth.css">
+</head>
+<body>
+  <main class="auth-card">
+    <a href="/"><img class="logo" src="/src/images/Logo.png" alt="Nexlar"></a>
+    <h1>Crie sua conta</h1><p class="subtitle">Escolha como você vai usar a Nexlar.</p>
+    <form id="signupForm">
+      <div class="role-grid" aria-label="Tipo de conta">
+        <label><input type="radio" name="role" value="cliente" checked>Cliente</label>
+        <label><input type="radio" name="role" value="autonomo">Autônomo</label>
+        <label><input type="radio" name="role" value="empresa">Empresa</label>
+      </div>
+      <div class="field"><label for="fullName">Nome completo</label><input id="fullName" required minlength="2" autocomplete="name"></div>
+      <div class="company-fields" id="companyFields" hidden>
+        <div class="field"><label for="companyName">Razão social</label><input id="companyName"></div>
+        <div class="field"><label for="document">CNPJ</label><input id="document" inputmode="numeric"></div>
+      </div>
+      <div class="field"><label for="phone">Telefone</label><input id="phone" type="tel" autocomplete="tel"></div>
+      <div class="field"><label for="email">E-mail</label><input id="email" type="email" required autocomplete="email"></div>
+      <div class="field"><label for="password">Senha</label><input id="password" type="password" required minlength="8" autocomplete="new-password"></div>
+      <div class="field"><label for="confirmPassword">Confirme a senha</label><input id="confirmPassword" type="password" required minlength="8" autocomplete="new-password"></div>
+      <button type="submit">Criar conta</button><p class="message" id="message" role="status"></p>
+    </form>
+    <p class="switch">Já tem uma conta? <a href="login.html">Entrar</a></p>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/src/js/api.js"></script><script src="/src/js/auth.js"></script>
+</body></html>

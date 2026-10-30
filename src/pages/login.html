@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Entrar — Nexlar</title><link rel="stylesheet" href="/src/css/auth.css">
+</head>
+<body>
+  <main class="auth-card">
+    <a href="/"><img class="logo" src="/src/images/Logo.png" alt="Nexlar"></a>
+    <h1>Entre na Nexlar</h1><p class="subtitle">Use seu e-mail, senha e segundo fator de segurança.</p>
+    <form id="loginForm">
+      <div class="field"><label for="email">E-mail</label><input id="email" type="email" required autocomplete="email"></div>
+      <div class="field"><label for="password">Senha</label><input id="password" type="password" required autocomplete="current-password"></div>
+      <button type="submit">Entrar</button><p class="message" id="message" role="status"></p>
+    </form>
+    <section class="mfa" id="mfaSetup" hidden>
+      <h2>Proteja sua conta</h2><p>Leia o QR Code no seu aplicativo autenticador e informe o código.</p>
+      <img id="mfaQr" alt="QR Code para aplicativo autenticador">
+      <div class="field"><label for="mfaCode">Código de 6 dígitos</label><input id="mfaCode" inputmode="numeric" maxlength="6"></div>
+      <button id="verifyMfa" type="button">Verificar e continuar</button>
+    </section>
+    <p class="switch">Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/src/js/api.js"></script><script src="/src/js/auth.js"></script>
+</body></html>

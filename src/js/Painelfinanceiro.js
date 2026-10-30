@@ -74,7 +74,9 @@ function atualizacaoCompleta() {
   const valoresMensais = new Array(12).fill(0);
   
   // Agora calcula somando o valor real (s.valor) guardado no objeto do serviço
-  estado.servicos.forEach(s => { 
+  const anoAtual = new Date().getFullYear();
+  const servicosAno = estado.servicos.filter(s => new Date(`${s.data}T00:00:00`).getFullYear() === anoAtual);
+  servicosAno.forEach(s => {
     valoresMensais[s.mes] += s.valor; 
   });
   
@@ -85,15 +87,17 @@ function atualizacaoCompleta() {
   graficoBarras.update(); 
   graficoLinhas.update();
 
-  // Calcular KPIs globais baseados no histórico total carregado
-  const total = estado.servicos.reduce((acumulador, s) => acumulador + s.valor, 0);
-  const media = estado.servicos.length ? total / estado.servicos.length : 0;
-  const porcentagem = Math.min(Math.round((total / META) * 100), 100);
+  // Calcular KPIs do ano corrente e destacar o mês atual.
+  const total = servicosAno.reduce((acumulador, s) => acumulador + s.valor, 0);
+  const mesesComGanhos = valoresMensais.filter(valor => valor > 0).length;
+  const media = mesesComGanhos ? total / mesesComGanhos : 0;
+  const ganhoAtual = valoresMensais[new Date().getMonth()];
+  const porcentagem = Math.min(Math.round((ganhoAtual / META) * 100), 100);
 
-  $('ganhoMes').textContent = formatarMoeda(total);
+  $('ganhoMes').textContent = formatarMoeda(ganhoAtual);
   $('mediaMensal').textContent = formatarMoeda(media);
   $('progressFill').style.width = porcentagem + '%';
-  $('progressLabel').textContent = `${formatarMoeda(total)} / ${formatarMoeda(META)}`;
+  $('progressLabel').textContent = `${formatarMoeda(ganhoAtual)} / ${formatarMoeda(META)}`;
   $('progressPct').textContent = porcentagem + '%';
 
   // Renderizar a lista do Histórico visual
@@ -132,7 +136,7 @@ function abrirModal(idParaEditar = null) {
 
 function fecharModal() { $('modalOverlay').classList.remove('open'); estado.idEditando = null; }
 
-function salvarRegistro() {
+async function salvarRegistro() {
   const dados = {
     nome: $('fNome').value.trim(), 
     categoria: $('fCategoria').value, 
@@ -147,16 +151,25 @@ function salvarRegistro() {
   if (!dados.nome) return exibirAviso('⚠ Informe o nome do serviço.', true);
   if (isNaN(dados.valor) || dados.valor <= 0) return exibirAviso('⚠ Informe um valor válido.', true);
 
-  if (estado.idEditando) {
-    const indice = estado.servicos.findIndex(x => x.id === estado.idEditando);
-    estado.servicos[indice] = { ...estado.servicos[indice], ...dados };
-    exibirAviso('✓ Registro atualizado!');
-  } else {
-    estado.servicos.push({ id: gerarIdUnico(), ...dados });
-    exibirAviso('✓ Registro adicionado com sucesso!');
+  const payload = {
+    name: dados.nome, category: dados.categoria, amount: dados.valor,
+    service_date: dados.data, client_name: dados.cliente,
+    status: dados.status, notes: dados.obs
+  };
+  try {
+    const { request } = await window.nexlarReady;
+    if (estado.idEditando) {
+      await request(`finance/${estado.idEditando}`, { method: 'PATCH', body: JSON.stringify(payload) });
+      exibirAviso('✓ Registro atualizado!');
+    } else {
+      await request('finance', { method: 'POST', body: JSON.stringify(payload) });
+      exibirAviso('✓ Registro adicionado com sucesso!');
+    }
+    fecharModal();
+    await carregarRegistros();
+  } catch (error) {
+    exibirAviso(error.message, true);
   }
-  fecharModal(); 
-  atualizacaoCompleta();
 }
 
 function abrirInspecao(id) {
@@ -200,20 +213,36 @@ $('inspectOverlay').addEventListener('click', e => { if (e.target === $('inspect
 
 $('editRecord').addEventListener('click', () => { const id = estado.idInspecionando; fecharInspecao(); abrirModal(id); });
 
-$('deleteRecord').addEventListener('click', () => {
+$('deleteRecord').addEventListener('click', async () => {
   if (!confirm('Deseja excluir este registro?')) return;
-  estado.servicos = estado.servicos.filter(x => x.id !== estado.idInspecionando);
-  fecharInspecao(); 
-  atualizacaoCompleta(); 
-  exibirAviso('🗑 Registro excluído.');
+  try {
+    const { request } = await window.nexlarReady;
+    await request(`finance/${estado.idInspecionando}`, { method: 'DELETE' });
+    fecharInspecao();
+    await carregarRegistros();
+    exibirAviso('🗑 Registro excluído.');
+  } catch (error) {
+    exibirAviso(error.message, true);
+  }
 });
 
-document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    link.classList.add('active');
-  });
-});
-// Inicialização Automática
-atualizacaoCompleta();
+async function carregarRegistros() {
+  const { request, requireSession } = await window.nexlarReady;
+  await requireSession();
+  const registros = await request('finance');
+  estado.servicos = registros.map(item => ({
+    id: item.id,
+    nome: item.name,
+    categoria: item.category || '',
+    mes: new Date(`${item.service_date}T00:00:00`).getMonth(),
+    valor: Number(item.amount),
+    data: item.service_date,
+    cliente: item.client_name || '',
+    status: item.status,
+    obs: item.notes || '',
+    source: item.source
+  }));
+  atualizacaoCompleta();
+}
+
+carregarRegistros().catch(error => exibirAviso(error.message, true));

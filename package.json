@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "test": "php tests/run.php",
+    "test:e2e": "cypress run"
+  },
   "devDependencies": {
     "cypress": "^15.15.0"
   }
