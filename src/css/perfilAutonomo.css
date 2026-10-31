@@ -301,6 +301,13 @@ body {
   gap: 10px;
 }
 
+.portfolio-grid:not(:has(.portfolio-item)) {
+  display: block;
+  width: 100%;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
 .portfolio-item {
   aspect-ratio: 1;
   border-radius: var(--radius-sm);
@@ -429,7 +436,9 @@ body {
   transition: color 0.15s, transform 0.1s;
   user-select: none;
   line-height: 1 !important;
-  padding: 0 !important;
+  padding: 8px !important;
+  min-width: 44px;
+  min-height: 44px;
   margin: 0 !important;
   display: inline-block;
 }
@@ -524,6 +533,21 @@ body {
     padding: 22px 20px;
   }
 
+  .hero-card__left,
+  .hero-card__info {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .hero-card__meta {
+    flex-wrap: wrap;
+  }
+
+  .hero-card > .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .two-col {
     grid-template-columns: 1fr;
   }
@@ -536,5 +560,12 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
   }
+}
+
+@media (max-width: 380px) {
+  .main-content { padding-inline: 16px; }
+  .hero-card__left { gap: 16px; }
+  .avatar { width: 64px; height: 64px; }
+  .hero-card__reviews { flex-basis: 100%; }
 }
 

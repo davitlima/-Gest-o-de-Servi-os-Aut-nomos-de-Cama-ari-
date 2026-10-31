@@ -298,6 +298,7 @@ main {
   display: flex; 
   align-items: center; 
   gap: 7px; 
+  color: #f3f4ff;
 }
 
 .stars { 
@@ -311,7 +312,15 @@ main {
   font-family: var(--font); 
 }
 
-.btn-msg {
+.card-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: auto;
+}
+
+.btn-msg,
+.btn-perfil {
   width: 100%; 
   background: var(--accent); 
   border: none; 
@@ -322,11 +331,21 @@ main {
   font-weight: 600; 
   color: #fff; 
   cursor: pointer; 
-  margin-top: auto;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-msg:hover { 
+.btn-msg:hover,
+.btn-perfil:hover {
   background: #4a4abf; 
+}
+
+.btn-perfil {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, .42);
 }
 
 /* RESPONSIVE */

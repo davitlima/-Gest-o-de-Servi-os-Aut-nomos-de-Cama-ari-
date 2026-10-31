@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelector('.hero-card__location').lastChild.textContent = ` ${profile.neighborhood || 'Camaçari - BA'}`;
     document.querySelector('.about-text').textContent = profile.bio || 'Profissional cadastrado na Nexlar.';
     document.querySelector('.hero-card .avatar').textContent = (profile.company_name || profile.full_name).split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
-    const messageLink = document.querySelector('.hero-card .btn--primary'); messageLink.href = `painelmensagens.html?provider_id=${encodeURIComponent(providerId)}`;
+    const messageLink = document.querySelector('.hero-card .btn--primary'); messageLink.href = window.NexlarChat.professionalChatUrl(providerId);
 
     const portfolio = document.querySelector('.portfolio-grid'); portfolio.innerHTML = '';
     (profile.portfolio_items || []).forEach(item => {

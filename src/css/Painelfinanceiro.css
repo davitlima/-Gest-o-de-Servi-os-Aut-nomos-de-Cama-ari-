@@ -246,8 +246,11 @@ body {
 .toast.show { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 760px) {
-  body { overflow: auto; }
-  .sidebar { position: static; width: 100%; height: auto; }
+  body { overflow: auto; flex-direction: column; height: auto; min-height: 100dvh; }
+  .sidebar { position: static; width: 100%; min-width: 0; height: auto; padding: 14px; }
+  .sidebar .logo { padding: 0 0 12px; }
+  .sidebar nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .nav-link { min-height: 44px; justify-content: center; }
   .main { margin-left: 0; padding: 18px; }
   .kpi-row, .chart-row { grid-template-columns: 1fr; }
   .form-row, .inspect-grid { grid-template-columns: 1fr; flex-direction: column; }

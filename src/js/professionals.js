@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profile = document.createElement('a'); profile.className = 'btn-perfil'; profile.textContent = 'Ver perfil';
     profile.href = `/src/pages/perfilAutonomo.html?id=${encodeURIComponent(professional.id)}`;
     const message = document.createElement('a'); message.className = 'btn-msg'; message.textContent = 'Enviar mensagem';
-    message.href = `/src/pages/painelmensagens.html?provider_id=${encodeURIComponent(professional.id)}`;
+    message.href = window.NexlarChat.professionalChatUrl(professional.id);
     actions.append(profile, message); card.append(top, bio, rating, actions);
     return card;
   }

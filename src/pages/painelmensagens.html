@@ -2,11 +2,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Nexlar – Mensagens</title>
   <link rel="stylesheet" href="/src/css/painelmensagens.css" />
+  <link rel="stylesheet" href="/src/css/responsive.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="/src/js/api.js" defer></script>
+  <script src="/src/js/chat-core.js" defer></script>
+  <script src="/src/js/painelmensagens.js" defer></script>
 </head>
 <body>
 
@@ -70,7 +73,7 @@
           <circle cx="11" cy="11" r="8"/>
           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" class="search-input" placeholder="Buscar conversas..." id="searchInput" />
+        <input type="search" class="search-input" placeholder="Buscar conversas..." id="searchInput" aria-label="Buscar conversas" />
       </div>
 
       <ul class="conversation-list" id="conversationList" aria-live="polite"></ul>
@@ -97,14 +100,14 @@
           <div class="chat-header-avatar" id="chatHeaderAvatar"></div>
           <div>
             <div class="chat-header-name" id="chatHeaderName"></div>
-            <div class="chat-header-status">Conversa</div>
+            <div class="chat-header-status" id="connectionStatus" role="status" aria-live="polite">Conectando…</div>
           </div>
         </div>
 
-        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-messages" id="chatMessages" aria-live="polite" aria-relevant="additions"></div>
 
         <div class="chat-input-bar">
-          <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem..." />
+          <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem..." aria-label="Mensagem" maxlength="4000" autocomplete="off" />
           <button class="send-btn" id="sendBtn" aria-label="Enviar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="22" y1="2" x2="11" y2="13"/>
@@ -122,9 +125,6 @@
 
   <button class="help-btn" aria-label="Ajuda">?</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/src/js/api.js"></script>
-  <script src="/src/js/painelmensagens.js"></script>
 </body>
 </html>
 

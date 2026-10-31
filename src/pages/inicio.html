@@ -2,9 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
   <title>Nexlar - Início</title>
   <link rel="stylesheet" href="/src/css/inicio.css"/>
+  <link rel="stylesheet" href="/src/css/responsive.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -18,7 +19,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input type="text" id="search-input" placeholder="Buscar serviços"/>
+      <input type="text" id="search-input" placeholder="Buscar serviços" aria-label="Buscar serviços"/>
     </div>
 
     <div class="nav-actions">
@@ -30,7 +31,7 @@
         <button class="btn-solid">Meu Perfil</button>
       </a>
       
-      <button class="btn-icon">
+      <button class="btn-icon" aria-label="Sair">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16 17 21 12 16 7"/>
@@ -46,7 +47,7 @@
       <h1>Encontre quem faz direito.</h1>
       <p>Profissionais cadastrados e avaliações de serviços concluídos</p>
       <div class="filters">
-        <select id="sel-servico">
+        <select id="sel-servico" aria-label="Serviço">
           <option value="">Serviço</option>
           <option value="construcao">Construção</option>
           <option value="eletrica">Elétrica</option>
@@ -56,7 +57,7 @@
           <option value="jardinagem">Jardinagem</option>
           <option value="mudancas">Mudanças</option>
         </select>
-        <select id="sel-bairro">
+        <select id="sel-bairro" aria-label="Bairro">
           <option value="">Bairro (Todos)</option>
           
           <optgroup label="Sede">
@@ -113,6 +114,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/src/js/api.js"></script>
+  <script src="/src/js/chat-core.js"></script>
   <script src="/src/js/professionals.js"></script>
 </body>
 </html>

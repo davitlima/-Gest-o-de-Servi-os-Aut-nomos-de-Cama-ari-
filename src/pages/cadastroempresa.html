@@ -2,10 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Nexlar — Cadastro da Empresa</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/src/css/cadastroempresa.css" />
+  <link rel="stylesheet" href="/src/css/responsive.css" />
 </head>
 <body>
  
@@ -31,7 +32,7 @@
               <polyline points="9 21 9 12 15 12 15 21"/>
             </svg>
           </span>
-          <input type="text" id="nome" placeholder="Nome completo" autocomplete="name" required />
+        <input type="text" id="nome" placeholder="Nome completo" aria-label="Nome completo" autocomplete="name" required />
         </div>
   
         <div class="field">
@@ -43,7 +44,7 @@
               <line x1="3"  y1="10" x2="21" y2="10"/>
             </svg>
           </span>
-          <input type="text" id="nascimento" placeholder="DD/MM/AAAA" inputmode="numeric" autocomplete="bday" oninput="maskDate(this)" maxlength="10" required />
+        <input type="text" id="nascimento" placeholder="DD/MM/AAAA" aria-label="Data de nascimento" inputmode="numeric" autocomplete="bday" oninput="maskDate(this)" maxlength="10" required />
         </div>
   
         <div class="field">
@@ -53,7 +54,7 @@
               <line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/>
             </svg>
           </span>
-          <input type="text" id="cnpj" placeholder="00.000.000/0000-00" inputmode="numeric" oninput="maskCNPJ(this)" maxlength="18" required />
+        <input type="text" id="cnpj" placeholder="00.000.000/0000-00" aria-label="CNPJ" inputmode="numeric" oninput="maskCNPJ(this)" maxlength="18" required />
         </div>
   
         <div class="field">
@@ -62,7 +63,7 @@
               <path d="M22 16.92v3a2 2 0 01-2.18 2A19.86 19.86 0 013.09 4.18 2 2 0 015.06 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 9.91a16 16 0 006.99 6.99l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
             </svg>
           </span>
-          <input type="tel" id="contato" placeholder="(00) 00000-0000" inputmode="tel" autocomplete="tel" oninput="maskPhone(this)" maxlength="15" required />
+        <input type="tel" id="contato" placeholder="(00) 00000-0000" aria-label="Contato" inputmode="tel" autocomplete="tel" oninput="maskPhone(this)" maxlength="15" required />
         </div>
   
         <div class="field">
@@ -71,15 +72,15 @@
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>
           </span>
-          <input type="email" id="email" placeholder="E-mail corporativo" autocomplete="email" required />
+        <input type="email" id="email" placeholder="E-mail corporativo" aria-label="E-mail corporativo" autocomplete="email" required />
         </div>
 
         <div class="field">
-          <input type="password" id="senha" placeholder="Senha forte" autocomplete="new-password" required />
+        <input type="password" id="senha" placeholder="Senha forte" aria-label="Senha" autocomplete="new-password" required />
         </div>
 
         <div class="field">
-          <input type="password" id="confirmarSenha" placeholder="Confirmar senha" autocomplete="new-password" required />
+        <input type="password" id="confirmarSenha" placeholder="Confirmar senha" aria-label="Confirmar senha" autocomplete="new-password" required />
         </div>
   
       </div>

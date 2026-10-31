@@ -70,6 +70,31 @@ expect(!str_contains($api, "auth/email-step/complete"), 'API não deve concluir 
 
 $chatHtml = file_get_contents($root . '/src/pages/painelmensagens.html');
 expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença online');
+expect(substr_count($chatHtml, '/src/js/api.js') === 1, 'Chat deve carregar o cliente de API uma única vez');
+expect(str_contains($chatHtml, 'id="connectionStatus"'), 'Chat deve comunicar o estado da conexão em tempo real');
+$chatJs = file_get_contents($root . '/src/js/painelmensagens.js');
+expect(!str_contains($chatJs, 'setInterval('), 'Fallback do chat não pode sobrepor requisições lentas');
+expect(str_contains($chatJs, 'isCurrentOpen'), 'Troca rápida de conversa deve invalidar carregamentos antigos');
+
+$responsiveCss = file_get_contents($root . '/src/css/responsive.css');
+expect(str_contains($responsiveCss, 'env(safe-area-inset-bottom'), 'Layout móvel deve respeitar a safe area inferior');
+expect(str_contains($responsiveCss, 'env(safe-area-inset-top'), 'Chat móvel deve respeitar a safe area superior');
+expect(str_contains($responsiveCss, 'min-height: 44px'), 'Controles móveis devem ter alvo de toque mínimo');
+
+$financeCss = file_get_contents($root . '/src/css/Painelfinanceiro.css');
+expect(str_contains($financeCss, 'body { overflow: auto; flex-direction: column;'), 'Financeiro móvel deve empilhar navegação e conteúdo');
+$myProfileCss = file_get_contents($root . '/src/css/Meuperfil.css');
+expect(str_contains($myProfileCss, 'body { flex-direction: column;'), 'Meu Perfil móvel deve empilhar navegação e conteúdo');
+
+$clientSignup = file_get_contents($root . '/src/pages/cadastrocliente.html');
+expect(substr_count($clientSignup, 'vlibras-plugin.js') === 1, 'Cadastro de cliente deve carregar VLibras uma única vez');
+expect(str_contains($clientSignup, 'aria-label="CPF"'), 'Campo CPF precisa de nome acessível');
+
+$realtimeMigrations = glob($root . '/supabase/migrations/*realtime_chat_activity.sql') ?: [];
+expect(count($realtimeMigrations) === 1, 'Chat deve possuir migração Realtime versionada');
+$realtimeMigration = file_get_contents($realtimeMigrations[0]);
+expect(str_contains($realtimeMigration, 'alter publication supabase_realtime add table public.messages'), 'Mensagens devem ser publicadas no Realtime');
+expect(str_contains($realtimeMigration, 'update public.conversations'), 'Nova mensagem deve atualizar a atividade da conversa');
 
 $signupChooser = file_get_contents($root . '/src/pages/cadastro.html');
 foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html'] as $signupPage) {

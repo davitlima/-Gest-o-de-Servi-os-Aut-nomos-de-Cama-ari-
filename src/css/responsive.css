@@ -1,0 +1,138 @@
+:root {
+  --touch-target: 44px;
+  --page-gutter: clamp(16px, 4vw, 32px);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 72px;
+}
+
+body {
+  min-width: 320px;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+select,
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+.btn,
+.btn-msg,
+.btn-perfil {
+  min-height: 44px;
+}
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid #7c83ff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 680px) {
+  .filters {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  .filters select {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .card-actions {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .card-actions > * {
+    width: 100% !important;
+    margin: 0 !important;
+    text-align: center;
+  }
+
+  .rating {
+    color: #f3f4ff !important;
+  }
+
+  .portfolio-grid:empty,
+  .portfolio-grid:not(:has(.portfolio-item)) {
+    display: block;
+    width: 100%;
+    line-height: 1.65;
+  }
+
+  .hero-card,
+  .hero-card__main {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .navbar,
+  .mobile-header {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .nav-actions {
+    gap: 6px !important;
+  }
+
+  .nav-actions .btn-outline,
+  .nav-actions .btn-solid {
+    padding-inline: 12px !important;
+  }
+}
+
+@media (pointer: coarse) {
+  :where(a, button, select, input, textarea) {
+    min-height: var(--touch-target);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+
+  .chat-input-bar,
+  .contratar-bar {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  @media (max-width: 600px) {
+    .chat-header {
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+  }
+}
