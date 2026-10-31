@@ -1,133 +1,75 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const tabs = document.querySelectorAll(".tabs .tab");
-  const profileCard = document.querySelector(".profile-card");
+document.addEventListener('DOMContentLoaded', async () => {
+  const api = await window.nexlarReady;
+  const session = await api.requireSession();
+  const me = await api.request('me');
+  const canOffer = me.role === 'autonomo' || me.role === 'empresa';
+  const form = document.querySelector('.profile-form');
+  const tabs = document.querySelectorAll('.tabs .tab');
+  const profileCard = document.querySelector('.profile-card');
+  const profileTitle = profileCard.querySelector('h3');
+  const portfolioTab = document.getElementById('portfolioTab');
+  const financeNav = document.getElementById('financeNav');
 
-  let portfolioSection = document.getElementById("portfolio-content");
-  if (!portfolioSection) {
-    portfolioSection = document.createElement("div");
-    portfolioSection.id = "portfolio-content";
-    portfolioSection.style.display = "none";
-    portfolioSection.innerHTML = `
-      <h3>Meu Portfólio</h3>
-      <p style="color: var(--muted); margin-bottom: 20px;">Adicione fotos e detalhes dos seus melhores trabalhos executados.</p>
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px;">
-        <div style="border: 2px dashed var(--border); border-radius: var(--radius); height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); transition: border-color 0.2s;"
-          onmouseover="this.style.borderColor='var(--accent)'"
-          onmouseout="this.style.borderColor='var(--border)'">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 8px;">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          <span style="font-size: 0.8rem; font-weight: 600;">Adicionar Foto</span>
-        </div>
-      </div>
-    `;
+  document.getElementById('profileName').value = me.full_name || '';
+  document.getElementById('profilePhone').value = me.phone || '';
+  document.getElementById('profileEmail').value = session.user.email || '';
+  document.getElementById('profileNeighborhood').value = me.neighborhood || '';
+  document.getElementById('profileBio').value = me.bio || '';
+  document.querySelector('.profile-photo .avatar').textContent = me.full_name.split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
+
+  let portfolioSection = null;
+  if (canOffer) {
+    portfolioSection = document.createElement('div'); portfolioSection.id = 'portfolio-content'; portfolioSection.style.display = 'none';
     profileCard.appendChild(portfolioSection);
+    await renderPortfolio();
+  } else {
+    portfolioTab.hidden = true; financeNav.hidden = true;
   }
 
-  const profileForm = document.querySelector(".profile-form");
-  const profileTitle = profileCard.querySelector("h3");
-
-  tabs.forEach((tab, index) => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-
-      if (index === 0) {
-        profileForm.style.display = "flex";
-        profileTitle.style.display = "block";
-        portfolioSection.style.display = "none";
-      } else {
-        profileForm.style.display = "none";
-        profileTitle.style.display = "none";
-        portfolioSection.style.display = "block";
-      }
+  async function renderPortfolio() {
+    const items = await api.request('portfolio');
+    portfolioSection.innerHTML = '<h3>Meu Portfólio</h3><p>Adicione imagens dos seus trabalhos concluídos.</p>';
+    const grid = document.createElement('div'); grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px';
+    const add = document.createElement('button'); add.type = 'button'; add.textContent = '+ Adicionar trabalho'; add.style.cssText = 'min-height:150px;border:2px dashed var(--border);background:white;border-radius:12px;cursor:pointer';
+    add.addEventListener('click', async () => {
+      const image_url = prompt('Cole a URL pública da foto do trabalho:'); if (!image_url) return;
+      const description = prompt('Descrição do trabalho (opcional):') || '';
+      try { await api.request('portfolio', { method: 'POST', body: JSON.stringify({ image_url, description }) }); await renderPortfolio(); }
+      catch (error) { alert(error.message); }
     });
+    grid.appendChild(add);
+    items.forEach(item => {
+      const card = document.createElement('figure'); card.style.cssText = 'margin:0;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border)';
+      const image = document.createElement('img'); image.src = item.image_url; image.alt = item.description || 'Trabalho do portfólio'; image.style.cssText = 'width:100%;height:150px;object-fit:cover;display:block';
+      const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = 'Excluir'; remove.style.cssText = 'position:absolute;right:8px;bottom:8px;padding:6px 10px';
+      remove.addEventListener('click', async () => { if (confirm('Excluir esta imagem?')) { await api.request(`portfolio/${item.id}`, { method: 'DELETE' }); await renderPortfolio(); } });
+      card.append(image, remove); grid.appendChild(card);
+    });
+    portfolioSection.appendChild(grid);
+  }
+
+  tabs.forEach((tab, index) => tab.addEventListener('click', () => {
+    tabs.forEach(item => item.classList.remove('active')); tab.classList.add('active');
+    const portfolioOpen = index === 1 && portfolioSection;
+    form.style.display = portfolioOpen ? 'none' : 'flex'; profileTitle.style.display = portfolioOpen ? 'none' : 'block';
+    if (portfolioSection) portfolioSection.style.display = portfolioOpen ? 'block' : 'none';
+  }));
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault(); const button = form.querySelector('.btn-save'); button.disabled = true; button.textContent = 'Salvando...';
+    try {
+      await api.request('me', { method: 'PATCH', body: JSON.stringify({
+        full_name: document.getElementById('profileName').value.trim(), phone: document.getElementById('profilePhone').value.trim(),
+        neighborhood: document.getElementById('profileNeighborhood').value.trim(), bio: document.getElementById('profileBio').value.trim(),
+      }) });
+      button.textContent = 'Dados salvos ✓';
+    } catch (error) { alert(error.message); button.textContent = 'Salvar alterações'; }
+    setTimeout(() => { button.disabled = false; button.textContent = 'Salvar alterações'; }, 1500);
   });
 
-  const btnPhoto = document.querySelector(".btn-photo");
-  const avatarDiv = document.querySelector(".profile-photo .avatar");
-
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*";
-  fileInput.style.display = "none";
-  document.body.appendChild(fileInput);
-
-  btnPhoto.addEventListener("click", () => fileInput.click());
-
-  fileInput.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        avatarDiv.textContent = "";
-        avatarDiv.style.backgroundImage = `url('${e.target.result}')`;
-        avatarDiv.style.backgroundSize = "cover";
-        avatarDiv.style.backgroundPosition = "center";
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  const form = document.querySelector(".profile-form");
-  if (form) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const btnSave = document.querySelector(".btn-save");
-      const originalText = btnSave.textContent;
-
-      btnSave.textContent = "Salvando...";
-      btnSave.disabled = true;
-      btnSave.style.opacity = "0.7";
-
-      setTimeout(() => {
-        btnSave.textContent = "Anotações Salvas com Sucesso! ✓";
-        btnSave.style.background = "var(--green)";
-
-        setTimeout(() => {
-          btnSave.textContent = originalText;
-          btnSave.style.background = "";
-          btnSave.disabled = false;
-          btnSave.style.opacity = "";
-        }, 2000);
-      }, 1200);
-    });
-  }
-
-  const btnLogout = document.querySelector(".btn-outline");
-  const btnDelete = document.querySelector(".btn-danger");
-
-  const homePath = "../../index.html";
-
-  if (btnLogout) {
-    btnLogout.addEventListener("click", () => {
-      if (confirm("Tem certeza que deseja sair do sistema Nexlar?")) {
-        window.location.href = homePath;
-      }
-    });
-  }
-
-  if (btnDelete) {
-    btnDelete.addEventListener("click", () => {
-      const confirmacao = prompt('Para excluir sua conta definitivamente, digite "DELETAR":');
-
-      if (confirmacao !== null) {
-
-        if (confirmacao.trim() === "DELETAR") {
-          alert("Sua conta foi removida de nossa base de dados.");
-          window.location.href = homePath;
-        } else {
-          alert("Palavra incorreta. A exclusão foi cancelada.");
-        }
-      }
-    });
-  }
-
-  document.querySelectorAll('.nav-item').forEach(link => {
-    link.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-    });
-  });
+  document.querySelector('.btn-outline').addEventListener('click', async () => { await api.supabase.auth.signOut(); location.href = '/'; });
+  document.querySelector('.btn-danger').addEventListener('click', () => alert('Para excluir sua conta com segurança, solicite ao suporte Nexlar.'));
+  document.querySelector('.btn-photo').addEventListener('click', () => alert('Informe a URL do avatar no cadastro de perfil; upload direto será habilitado após configurar o Storage.'));
 });
+
+

@@ -21,7 +21,7 @@
       <h1>Cadastro da Empresa</h1>
     </div>
  
-    <form id="formCadastroEmpresa">
+    <form id="formCadastroEmpresa" data-role="empresa">
       <div class="fields">
   
         <div class="field">
@@ -71,7 +71,15 @@
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>
           </span>
-          <input type="password" id="senha" placeholder="Senha" required />
+          <input type="email" id="email" placeholder="E-mail corporativo" autocomplete="email" required />
+        </div>
+
+        <div class="field">
+          <input type="password" id="senha" placeholder="Senha forte" autocomplete="new-password" required />
+        </div>
+
+        <div class="field">
+          <input type="password" id="confirmarSenha" placeholder="Confirmar senha" autocomplete="new-password" required />
         </div>
   
       </div>
@@ -111,6 +119,8 @@
 })(document);
 </script> 
 
-  <script src="/src/js/cadastroempresa.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/src/js/api.js"></script>
+  <script src="/src/js/auth.js"></script>
 </body>
 </html>

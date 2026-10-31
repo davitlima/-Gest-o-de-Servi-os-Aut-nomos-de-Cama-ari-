@@ -1,194 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nexlar - Perfil do Profissional</title>
-  <link rel="stylesheet" href="/src/css/perfilAutonomo.css" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexlar — Perfil profissional</title>
+  <link rel="stylesheet" href="/src/css/perfilAutonomo.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
   <nav class="navbar">
-    <div class="navbar__logo">
-      <a href="inicio.html">
-        <img src="/src/images/image-removebg-preview.png" alt="Logo Nexlar" class="navbar__logo" />
-      </a>
-    </div>
-    <div class="navbar__links" style="display: flex; gap: 20px; align-items: center;">
-      <button class="btn btn--outline" onclick="history.back()">Voltar</button>
-    </div>
+    <a href="inicio.html"><img src="/src/images/image-removebg-preview.png" alt="Nexlar" class="navbar__logo"></a>
+    <button class="btn btn--outline" type="button" onclick="history.back()">Voltar</button>
   </nav>
 
   <main class="main-content">
-
     <div class="hero-card">
       <div class="hero-card__left">
-        <div class="avatar">M</div>
+        <div class="avatar">?</div>
         <div class="hero-card__info">
-          <h1 class="hero-card__name">Marcos Silva</h1>
-          <span class="hero-card__tag">@construção</span>
+          <h1 class="hero-card__name">Perfil profissional</h1>
+          <span class="hero-card__tag">@serviços</span>
           <div class="hero-card__meta">
-            <span class="stars" aria-label="4.8 de 5 estrelas">★★★★<span class="star-half">★</span></span>
-            <span class="hero-card__rating">4.8</span>
-            <span class="hero-card__dot" aria-hidden="true">•</span>
-            <span class="hero-card__reviews">127 avaliações</span>
+            <span class="stars" aria-label="Sem avaliações">☆☆☆☆☆</span>
+            <span class="hero-card__rating">0.0</span>
+            <span class="hero-card__dot">•</span>
+            <span class="hero-card__reviews">0 avaliações</span>
           </div>
-          <div class="hero-card__location">
-            <span class="icon-pin" aria-hidden="true"></span> Centro, Camaçari - BA
-          </div>
+          <div class="hero-card__location"><span class="icon-pin"></span> Camaçari - BA</div>
         </div>
       </div>
-      
-      <a href="painelmensagens.html" class="btn btn--primary" style="background-color: #1d4ed8 !important; border-color: #1d4ed8 !important; color: #ffffff !important; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true" style="margin-right: 8px;">
-          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 012 2z"/>
-        </svg> 
-        Enviar Mensagem
-      </a>
+      <a href="painelmensagens.html" class="btn btn--primary">Enviar mensagem</a>
     </div>
 
     <div class="two-col">
-
       <div class="left-col">
-
         <section class="card" id="sobre">
           <h2 class="section-title">Sobre</h2>
-          <p class="about-text">Especializado em execuções residenciais e comerciais. Mais de 15 anos de experiência.</p>
-          <div class="stats-grid">
-            <div class="stat-box">
-              <span class="stat-label">Experiência</span>
-              <span class="stat-value" style="color: #1e40af !important;">15+ anos</span>
-            </div>
-            <div class="stat-box">
-              <span class="stat-label">Projetos</span>
-              <span class="stat-value" style="color: #1e40af !important;">200+</span>
-            </div>
-          </div>
+          <p class="about-text">Carregando informações do profissional...</p>
         </section>
 
         <section class="card" id="portfolio">
-          <h2 class="section-title">Portfólio de Trabalhos</h2>
-          <div class="portfolio-grid">
-            <div class="portfolio-item"><span class="camera-icon" aria-label="Foto do portfólio">📷</span></div>
-            <div class="portfolio-item"><span class="camera-icon" aria-label="Foto do portfólio">📷</span></div>
-            <div class="portfolio-item"><span class="camera-icon" aria-label="Foto do portfólio">📷</span></div>
-            <div class="portfolio-item"><span class="camera-icon" aria-label="Foto do portfólio">📷</span></div>
-            <div class="portfolio-item"><span class="camera-icon" aria-label="Foto do portfólio">📷</span></div>
-            <div class="portfolio-item"><span class="camera-icon" aria-label="Foto do portfólio">📷</span></div>
-          </div>
+          <h2 class="section-title">Portfólio de trabalhos</h2>
+          <div class="portfolio-grid">Nenhum trabalho cadastrado.</div>
         </section>
 
         <section class="card" id="avaliacoes">
-          <h2 class="section-title">Avaliações (127)</h2>
-
-          <div class="review">
-            <div class="review__header">
-              <div class="review__avatar" style="background: #5b46e8 !important; color: #ffffff !important;">MS</div>
-              <div class="review__meta">
-                <span class="review__name">Maria Santos</span>
-                <span class="review__date">Há 2 semanas</span>
-              </div>
-            </div>
-            <div class="review__stars" aria-label="5 estrelas">★★★★★</div>
-            <p class="review__text">Excelente profissional! Muito caprichoso e pontual. Recomendo!</p>
-          </div>
-
-          <div class="review">
-            <div class="review__header">
-              <div class="review__avatar" style="background: #1e40af !important; color: #ffffff !important;">JC</div>
-              <div class="review__meta">
-                <span class="review__name">João Carlos</span>
-                <span class="review__date">Há 1 mês</span>
-              </div>
-            </div>
-            <div class="review__stars" aria-label="5 estrelas">★★★★★</div>
-            <p class="review__text">Trabalho impecável. Cumpriu todos os prazos e o resultado ficou perfeito.</p>
-          </div>
-
-          <div class="review">
-            <div class="review__header">
-              <div class="review__avatar" style="background: #6d28d9 !important; color: #ffffff !important;">AP</div>
-              <div class="review__meta">
-                <span class="review__name">Ana Paula</span>
-                <span class="review__date">Há 2 meses</span>
-              </div>
-            </div>
-            <div class="review__stars" aria-label="4 estrelas">★★★★<span style="color:#767e8c">★</span></div>
-            <p class="review__text">Muito bom! Pequeno atraso no cronograma, mas a qualidade do trabalho compensou.</p>
-          </div>
-
-          <button class="btn btn--full btn--outline-dark" id="verTodasBtn">Ver Todas as Avaliações</button>
+          <h2 class="section-title">Avaliações (0)</h2>
+          <button class="btn btn--full btn--outline-dark" id="verTodasBtn" hidden>Ver todas as avaliações</button>
         </section>
-
       </div>
 
       <aside class="sidebar">
-
         <div class="card">
-          <h3 class="sidebar-title">Avalie este Profissional</h3>
-          <div class="star-rating" id="starRating" role="group" aria-label="Avaliação por estrelas">
-            <span class="star-btn" data-value="1" tabindex="0" role="button" aria-label="Avaliar com 1 estrela">☆</span>
-            <span class="star-btn" data-value="2" tabindex="0" role="button" aria-label="Avaliar com 2 estrelas">☆</span>
-            <span class="star-btn" data-value="3" tabindex="0" role="button" aria-label="Avaliar com 3 estrelas">☆</span>
-            <span class="star-btn" data-value="4" tabindex="0" role="button" aria-label="Avaliar com 4 estrelas">☆</span>
-            <span class="star-btn" data-value="5" tabindex="0" role="button" aria-label="Avaliar com 5 estrelas">☆</span>
+          <h3 class="sidebar-title">Avalie este profissional</h3>
+          <div class="star-rating" id="starRating" role="group" aria-label="Avaliação">
+            <span class="star-btn" data-value="1" tabindex="0">☆</span>
+            <span class="star-btn" data-value="2" tabindex="0">☆</span>
+            <span class="star-btn" data-value="3" tabindex="0">☆</span>
+            <span class="star-btn" data-value="4" tabindex="0">☆</span>
+            <span class="star-btn" data-value="5" tabindex="0">☆</span>
           </div>
-          <p class="star-hint" id="starHint">Clique nas estrelas para avaliar</p>
+          <p class="star-hint" id="starHint">Clique nas estrelas para avaliar após concluir um serviço.</p>
         </div>
-
-        <div class="card">
-          <h3 class="sidebar-title">Especialidades</h3>
-          <div class="tags">
-            <span class="tag">Construção Civil</span>
-            <span class="tag">Reformas</span>
-            <span class="tag">Acabamentos</span>
-            <span class="tag">Alvenaria</span>
-          </div>
-        </div>
-
-        <div class="card card--available">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
-            <div class="available-dot" aria-hidden="true"></div>
-            <strong>Disponível Agora</strong>
-          </div>
-          <p class="available-sub">Tempo médio de resposta: <strong>2 horas</strong></p>
-        </div>
-
       </aside>
-
     </div>
   </main>
 
-      <div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
-    </div>
-  </div>
-
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-<script>
-    new window.VLibras.Widget({
-        rootPath: 'https://vlibras.gov.br/app',
-        position: 'R' 
-    });
-</script>
-
-
-<script type="text/javascript">
-(function(d){
-    var s = d.createElement("script");
-    s.setAttribute("data-account", "S9u6Q9zXrg"); 
-    s.setAttribute("data-size", "small"); 
-    s.setAttribute("data-position", 6); 
-
-    s.src = "https://cdn.userway.org/widget.js";
-    (d.body || d.head).appendChild(s);
-})(document);
-</script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/src/js/api.js"></script>
   <script src="/src/js/perfilAutonomo.js"></script>
-
 </body>
 </html>
+

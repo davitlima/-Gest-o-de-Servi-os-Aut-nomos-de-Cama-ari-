@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
+/* RESET E VARIÁVEIS */
 *, *::before, *::after { 
   box-sizing: border-box; 
   margin: 0; 
@@ -20,14 +19,14 @@
 }
 
 body { 
-  font-family: Inter, sans-serif; 
+  font-family: var(--font); 
+  background: var(--bg); 
   min-height: 100vh; 
-  max-width: 1600px;
+  max-width: none;
   width: 100%;
-  margin: 0 auto;
 }
 
-
+/* NAVBAR */
 .navbar {
   display: flex; 
   align-items: center; 
@@ -41,19 +40,21 @@ body {
   z-index: 100;
 }
 
+/* LOGO - NOVOS AJUSTES */
 .logo {
   display: flex;
   align-items: center;
-  flex-shrink: 0; 
+  flex-shrink: 0; /* Impede a logo de encolher */
 }
 
 .logo img {
-  height: 38px;    
+  height: 38px;    /* Altura equilibrada para a nav de 58px */
   width: auto;
   display: block;
   object-fit: contain;
 }
 
+/* SEARCH BAR */
 .search-bar {
   display: flex; 
   align-items: center; 
@@ -64,7 +65,7 @@ body {
   padding: 7px 16px;
   flex: 1; 
   max-width: 440px; 
-  margin: 0 20px; 
+  margin: 0 20px; /* Margem ajustada para dar respiro à logo */
 }
 
 .search-bar input {
@@ -81,6 +82,7 @@ body {
   color: #aaa; 
 }
 
+/* NAV ACTIONS */
 .nav-actions { 
   display: flex; 
   align-items: center; 
@@ -135,16 +137,17 @@ body {
   color: #333; 
 }
 
+/* MAIN CONTENT */
 main {
-  max-width: 1300px; 
+  max-width: none; 
   width: 100%;
-  margin: 0 auto;
   padding: 28px 16px 48px;
   display: flex; 
   flex-direction: column; 
   gap: 20px;
 }
 
+/* HERO SECTION */
 .hero {
   background: var(--hero); 
   border-radius: 14px;
@@ -189,7 +192,7 @@ main {
   border-color: var(--accent); 
 }
 
-/* --- CATEGORIAS --- */
+/* CATEGORIES */
 .categories {
   display: grid; 
   grid-template-columns: repeat(4, 1fr); 
@@ -215,7 +218,7 @@ main {
   transform: translateY(-1px); 
 }
 
-/* --- CARDS --- */
+/* CARDS SECTION */
 .cards { 
   display: grid; 
   grid-template-columns: repeat(3, 1fr); 
@@ -298,24 +301,9 @@ main {
 }
 
 .stars { 
-  display: inline-block;
-  line-height: 1;
+  display: inline-flex; 
+  gap: 2px; 
 }
-
-.stars::before {
-  content: "★★★★★";
-  letter-spacing: 2px;
-  background: linear-gradient(90deg, #f5a623 var(--percent), #444 var(--percent));
-  -webkit-background-clip: text;
-  background-clip: text;        
-  -webkit-text-fill-color: transparent;
-  font-size: 16px;
-}
-
-.stars[data-r="3.5"] { --percent: 70%; }
-.stars[data-r="4.0"] { --percent: 80%; }
-.stars[data-r="4.5"] { --percent: 90%; }
-.stars[data-r="5.0"] { --percent: 100%; }
 
 .rating small { 
   font-size: 11px; 
@@ -323,54 +311,25 @@ main {
   font-family: var(--font); 
 }
 
-/* --- BOTÕES DOS CARDS --- */
-.card-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: auto;
-  padding-top: 6px;
-}
-
-.card-actions a {
-  flex: 1;
-  text-decoration: none;
-}
-
-.btn-perfil,
 .btn-msg {
   width: 100%; 
-  border-radius: 8px;
-  padding: 10px 8px; 
-  font-family: var(--font); 
-  font-size: 12px;
-  font-weight: 600; 
-  cursor: pointer; 
-  transition: background .2s, border-color .2s;
-}
-
-/* Botão Ver Perfil (Estilo Outline) */
-.btn-perfil {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-}
-
-.btn-perfil:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #fff;
-}
-
-
-.btn-msg {
   background: var(--accent); 
   border: none; 
+  border-radius: 8px;
+  padding: 10px; 
+  font-family: var(--font); 
+  font-size: 13px;
+  font-weight: 600; 
   color: #fff; 
+  cursor: pointer; 
+  margin-top: auto;
 }
 
 .btn-msg:hover { 
   background: #4a4abf; 
 }
 
+/* RESPONSIVE */
 @media(max-width: 680px) {
   .cards { 
     grid-template-columns: 1fr; 
@@ -382,6 +341,27 @@ main {
     display: none; 
   }
   .navbar {
-    padding: 0 16px; 
+    padding: 0 16px; /* Reduz padding lateral no celular */
   }
 }
+.stars {
+  display: inline-block;
+  line-height: 1;
+}
+
+.stars::before {
+  content: "★★★★★";
+  letter-spacing: 2px;
+  /* Cria o efeito de preenchimento dourado */
+  background: linear-gradient(90deg, #f5a623 var(--percent), #444 var(--percent));
+  -webkit-background-clip: text;
+  background-clip: text;        
+  -webkit-text-fill-color: transparent;
+  font-size: 16px;
+}
+/* Define quanto da estrela será pintado de dourado */
+.stars[data-r="3.5"] { --percent: 70%; }
+.stars[data-r="4.0"] { --percent: 80%; }
+.stars[data-r="4.5"] { --percent: 90%; }
+.stars[data-r="5.0"] { --percent: 100%; }
+
