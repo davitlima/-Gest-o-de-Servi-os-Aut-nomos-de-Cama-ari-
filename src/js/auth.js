@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (password !== value('confirmarSenha')) return show('As senhas precisam ser iguais.');
       const role = signupForm.dataset.role;
       const documentValue = value(role === 'empresa' ? 'cnpj' : 'cpf').replace(/\D/g, '');
+      const birthDate = value('nascimento');
+      const phoneValue = value('contato').replace(/\D/g, '');
+      if (!window.NexlarMasks.validDate(birthDate)) return show('Informe uma data válida no formato DD/MM/AAAA.');
+      if (documentValue.length !== (role === 'empresa' ? 14 : 11)) return show(`Informe um ${role === 'empresa' ? 'CNPJ' : 'CPF'} completo.`);
+      if (![10, 11].includes(phoneValue.length)) return show('Informe um telefone com DDD.');
       const button = signupForm.querySelector('button[type="submit"]');
       button.disabled = true;
       const { error } = await supabase.auth.signUp({

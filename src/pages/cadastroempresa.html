@@ -43,7 +43,7 @@
               <line x1="3"  y1="10" x2="21" y2="10"/>
             </svg>
           </span>
-          <input type="text" id="nascimento" placeholder="Data de nascimento" maxlength="10" required />
+          <input type="text" id="nascimento" placeholder="DD/MM/AAAA" inputmode="numeric" autocomplete="bday" oninput="maskDate(this)" maxlength="10" required />
         </div>
   
         <div class="field">
@@ -53,7 +53,7 @@
               <line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/>
             </svg>
           </span>
-          <input type="text" id="cnpj" placeholder="CNPJ" maxlength="18" required />
+          <input type="text" id="cnpj" placeholder="00.000.000/0000-00" inputmode="numeric" oninput="maskCNPJ(this)" maxlength="18" required />
         </div>
   
         <div class="field">
@@ -62,7 +62,7 @@
               <path d="M22 16.92v3a2 2 0 01-2.18 2A19.86 19.86 0 013.09 4.18 2 2 0 015.06 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 9.91a16 16 0 006.99 6.99l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
             </svg>
           </span>
-          <input type="tel" id="contato" placeholder="Contato" maxlength="15" required />
+          <input type="tel" id="contato" placeholder="(00) 00000-0000" inputmode="tel" autocomplete="tel" oninput="maskPhone(this)" maxlength="15" required />
         </div>
   
         <div class="field">
@@ -121,6 +121,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/src/js/api.js"></script>
+  <script src="/src/js/masks.js"></script>
   <script src="/src/js/auth.js"></script>
 </body>
 </html>
