@@ -12,6 +12,7 @@ function expect(bool $condition, string $message): void
 $root = dirname(__DIR__);
 expect(is_file($root . '/api/Domain.php'), 'Backend de domínio deve existir na dev');
 expect(is_file($root . '/api/index.php'), 'API PHP deve existir na dev');
+expect(is_file($root . '/src/pages/cadastro.html'), 'URL antiga de cadastro deve continuar funcionando');
 expect(is_file($root . '/supabase/migrations/20261030213215_nexlar_backend.sql'), 'Migração Supabase deve existir na dev');
 
 require $root . '/api/Domain.php';
@@ -58,5 +59,10 @@ expect(!str_contains($api, 'monthly_goals?owner_id=eq.$userId&year='), 'API não
 
 $chatHtml = file_get_contents($root . '/src/pages/painelmensagens.html');
 expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença online');
+
+$signupChooser = file_get_contents($root . '/src/pages/cadastro.html');
+foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html'] as $signupPage) {
+    expect(str_contains($signupChooser, $signupPage), 'Seletor de cadastro deve apontar para ' . $signupPage);
+}
 
 fwrite(STDOUT, "Todos os testes passaram.\n");
