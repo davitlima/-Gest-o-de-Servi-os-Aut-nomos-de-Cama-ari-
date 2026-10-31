@@ -12,10 +12,11 @@
       <div class="field"><label for="email">E-mail</label><input id="email" type="email" required autocomplete="email"></div>
       <div class="field"><label for="password">Senha</label><input id="password" type="password" required autocomplete="current-password"></div>
       <button type="submit">Entrar</button><p class="message" id="message" role="status"></p>
+      <button class="link-button" id="resendConfirmation" type="button">Reenviar e-mail de confirmação</button>
     </form>
     <section class="mfa" id="mfaSetup" hidden>
       <h2>Proteja sua conta</h2><p>Leia o QR Code no seu aplicativo autenticador e informe o código.</p>
-      <img id="mfaQr" alt="QR Code para aplicativo autenticador">
+      <img id="mfaQr" alt="QR Code para aplicativo autenticador" hidden>
       <div class="field"><label for="mfaCode">Código de 6 dígitos</label><input id="mfaCode" inputmode="numeric" maxlength="6"></div>
       <button id="verifyMfa" type="button">Verificar e continuar</button>
     </section>
@@ -23,5 +24,6 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/src/js/api.js"></script><script src="/src/js/auth.js"></script>
 </body></html>
+
 
 

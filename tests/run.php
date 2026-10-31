@@ -51,6 +51,11 @@ $authJs = file_get_contents($root . '/src/js/auth.js');
 expect(str_contains($authJs, '(?=.*\\d)'), 'Senha deve exigir um dígito real');
 expect(str_contains($authJs, 'replace(/\\D/g'), 'CPF/CNPJ deve remover caracteres não numéricos');
 expect(!str_contains($authJs, '(?=.*\\\\d)'), 'Regex de senha não pode procurar o texto literal \\d');
+expect(str_contains($authJs, "type: 'signup'"), 'Login deve permitir reenviar confirmação de e-mail');
+expect(str_contains($authJs, 'resetMfa'), 'Login deve limpar QR Code após falha');
+
+$authCss = file_get_contents($root . '/src/css/auth.css');
+expect(str_contains($authCss, '.mfa[hidden]'), 'MFA oculto não pode aparecer no login');
 
 $migration = file_get_contents($root . '/supabase/migrations/20261030213215_nexlar_backend.sql');
 $api = file_get_contents($root . '/api/index.php');
@@ -66,3 +71,4 @@ foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html
 }
 
 fwrite(STDOUT, "Todos os testes passaram.\n");
+

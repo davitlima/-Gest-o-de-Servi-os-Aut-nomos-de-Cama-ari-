@@ -51,7 +51,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loginForm = document.getElementById('loginForm');
   if (!loginForm) return;
   const mfaSetup = document.getElementById('mfaSetup');
+  const mfaQr = document.getElementById('mfaQr');
+  const resendButton = document.getElementById('resendConfirmation');
   let factorId = null;
+
+  function resetMfa() {
+    factorId = null;
+    mfaSetup.hidden = true;
+    mfaQr.hidden = true;
+    mfaQr.removeAttribute('src');
+    document.getElementById('mfaCode').value = '';
+  }
+
+  resetMfa();
+
+  const callbackError = new URLSearchParams(location.search).get('error_code');
+  if (callbackError === 'otp_expired') show('Este link de confirmação expirou ou já foi usado. Informe seu e-mail abaixo e solicite um novo.');
 
   async function finishLogin() {
     const assurance = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
@@ -61,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (verified) {
         factorId = verified.id;
         mfaSetup.hidden = false;
-        document.getElementById('mfaQr').hidden = true;
+        mfaQr.hidden = true;
         return;
       }
     }
@@ -76,17 +91,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     const enrolled = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Nexlar' });
     if (enrolled.error) return show(enrolled.error.message);
     factorId = enrolled.data.id;
-    document.getElementById('mfaQr').src = enrolled.data.totp.qr_code;
+    mfaQr.src = enrolled.data.totp.qr_code;
+    mfaQr.hidden = false;
     mfaSetup.hidden = false;
   }
 
+  resendButton.addEventListener('click', async () => {
+    resetMfa();
+    const email = value('email');
+    if (!email) return show('Informe seu e-mail para receber um novo link.');
+    resendButton.disabled = true;
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: `${location.origin}/src/pages/login.html` },
+    });
+    resendButton.disabled = false;
+    if (error) return show(error.message);
+    show('Novo e-mail enviado. Use apenas o link mais recente.', true);
+  });
+
   loginForm.addEventListener('submit', async event => {
     event.preventDefault();
+    resetMfa();
     const button = loginForm.querySelector('button');
     button.disabled = true;
     const { error } = await supabase.auth.signInWithPassword({ email: value('email'), password: value('password') });
     button.disabled = false;
-    if (error) return show(error.message);
+    if (error) return show(error.message === 'Invalid login credentials'
+      ? 'E-mail ou senha inválidos. Se acabou de se cadastrar, confirme o e-mail ou solicite um novo link.'
+      : error.message);
     await finishLogin();
   });
 
@@ -101,5 +135,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (result.error) return show(result.error.message);
     location.href = '/src/pages/inicio.html';
   });
+
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    show('E-mail confirmado. Configure ou informe seu segundo fator para continuar.', true);
+    await finishLogin();
+  }
 });
+
 

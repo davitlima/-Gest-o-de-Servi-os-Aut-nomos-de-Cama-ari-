@@ -15,12 +15,15 @@ h1 { margin:0 0 8px; font-size:28px; }
 .company-fields[hidden] { display:none; }
 button { width:100%; border:0; border-radius:10px; padding:13px; background:linear-gradient(135deg,var(--blue),var(--purple)); color:white; font-weight:700; cursor:pointer; }
 button:disabled { opacity:.6; cursor:wait; }
+.link-button { margin-top:4px; padding:4px; background:none; color:var(--blue); text-decoration:underline; text-underline-offset:3px; }
 .message { min-height:22px; margin:14px 0 0; color:#b42318; }
 .message.success { color:#087443; }
 .switch { text-align:center; color:var(--muted); margin:20px 0 0; }
 .switch a { color:var(--blue); font-weight:700; }
 .mfa { border-top:1px solid var(--border); margin-top:20px; padding-top:20px; }
+.mfa[hidden], .mfa img[hidden] { display:none; }
 .mfa img { display:block; width:180px; margin:12px auto; }
 @media(max-width:520px){ .auth-card{padding:24px 18px}.role-grid{grid-template-columns:1fr}.role-grid label{text-align:left} }
+
 
 
