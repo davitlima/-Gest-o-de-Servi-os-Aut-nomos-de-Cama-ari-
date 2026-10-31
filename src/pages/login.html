@@ -7,20 +7,16 @@
 <body>
   <main class="auth-card">
     <a href="/"><img class="logo" src="/src/images/Logo.png" alt="Nexlar"></a>
-    <h1>Entre na Nexlar</h1><p class="subtitle">Use sua senha e confirme o link enviado ao seu e-mail.</p>
+    <h1>Entre na Nexlar</h1><p class="subtitle">Use seu e-mail e sua senha.</p>
     <form id="loginForm">
       <div class="field"><label for="email">E-mail</label><input id="email" type="email" required autocomplete="email"></div>
       <div class="field"><label for="password">Senha</label><input id="password" type="password" required autocomplete="current-password"></div>
       <button type="submit">Entrar</button><p class="message" id="message" role="status"></p>
       <button class="link-button" id="resendConfirmation" type="button">Reenviar e-mail de confirmação</button>
     </form>
-    <section class="email-step" id="emailStep" hidden>
-      <h2>Confirme seu acesso</h2><p>Enviamos um link de acesso ao seu e-mail. Abra o link para concluir o login.</p>
-      <button class="link-button" id="resendCode" type="button">Reenviar link de acesso</button>
-    </section>
     <p class="switch">Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/src/js/api.js"></script><script src="/src/js/email-step.js"></script><script src="/src/js/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/src/js/api.js"></script><script src="/src/js/auth.js"></script>
 </body></html>
 
 

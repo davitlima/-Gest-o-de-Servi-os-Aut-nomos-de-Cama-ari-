@@ -20,8 +20,6 @@ button:disabled { opacity:.6; cursor:wait; }
 .message.success { color:#087443; }
 .switch { text-align:center; color:var(--muted); margin:20px 0 0; }
 .switch a { color:var(--blue); font-weight:700; }
-.email-step { border-top:1px solid var(--border); margin-top:20px; padding-top:20px; }
-.email-step[hidden] { display:none; }
 @media(max-width:520px){ .auth-card{padding:24px 18px}.role-grid{grid-template-columns:1fr}.role-grid label{text-align:left} }
 
 

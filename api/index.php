@@ -164,48 +164,6 @@ try {
     if ($userId === '') {
         throw new HttpError(401, 'Sessão inválida.');
     }
-    $sessionId = Domain::jwtSessionId($token);
-    if ($sessionId === null) throw new HttpError(401, 'Sessão sem identificador válido.');
-
-    if ($route === 'auth/email-step/start' && $method === 'POST') {
-        if (!Domain::jwtAuthenticationMethodIsRecent($token, 'password', 300)) {
-            throw new HttpError(403, 'Informe sua senha novamente antes de solicitar o link.');
-        }
-        $challenge = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
-        $db->rest('DELETE', 'email_login_challenges?user_id=eq.' . rawurlencode($userId), null, '', true);
-        $db->rest('POST', 'email_login_challenges', [[
-            'user_id' => $userId,
-            'password_session_id' => $sessionId,
-            'challenge_hash' => hash('sha256', $challenge),
-            'expires_at' => gmdate('c', time() + 600),
-        ]], '', true);
-        respond(['challenge' => $challenge]);
-    }
-
-    if ($route === 'auth/email-step/complete' && $method === 'POST') {
-        if (!Domain::jwtHasAuthenticationMethod($token, 'otp') && !Domain::jwtHasAuthenticationMethod($token, 'magiclink')) {
-            throw new HttpError(403, 'Confirme o link enviado por e-mail.');
-        }
-        $challenge = (string) (input()['challenge'] ?? '');
-        if ($challenge === '') throw new HttpError(422, 'Desafio do link não informado.');
-        $expiresAt = Domain::jwtExpiresAt($token);
-        if ($expiresAt === null || $expiresAt <= time()) throw new HttpError(401, 'Sessão expirada.');
-        $completed = $db->rest('POST', 'rpc/complete_email_step_admin', [
-            'p_user_id' => $userId,
-            'p_challenge_hash' => hash('sha256', $challenge),
-            'p_session_id' => $sessionId,
-            'p_expires_at' => gmdate('c', $expiresAt),
-        ], '', true);
-        if (!(bool) ($completed[0]['completed'] ?? false)) {
-            throw new HttpError(403, 'O link expirou, já foi usado ou não corresponde a este login.');
-        }
-        respond(['verified' => true]);
-    }
-
-    $verifiedSessions = $db->rest('GET', 'email_verified_sessions?session_id=eq.' . rawurlencode($sessionId) . '&user_id=eq.' . rawurlencode($userId) . '&select=session_id', null, '', true);
-    $emailStepVerified = isset($verifiedSessions[0]);
-    if ($route === 'auth/email-step/status' && $method === 'GET') respond(['verified' => $emailStepVerified]);
-    if (!$emailStepVerified) throw new HttpError(403, 'Confirme o link enviado por e-mail para continuar.');
     $me = profile($db, $token, $userId);
 
     if ($route === 'me' && $method === 'GET') {

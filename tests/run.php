@@ -25,21 +25,6 @@ expect(Domain::canUseFinance('empresa') === true, 'Empresa acessa financeiro');
 expect(Domain::platformFee(100.0) === 15.0, 'Taxa Nexlar deve ser 15%');
 expect(Domain::providerNet(100.0) === 85.0, 'Profissional deve receber 85%');
 
-$payload = rtrim(strtr(base64_encode(json_encode([
-    'sub' => '11111111-1111-1111-1111-111111111111',
-    'session_id' => '22222222-2222-2222-2222-222222222222',
-    'exp' => 1893456000,
-    'amr' => [['method' => 'password', 'timestamp' => 1]],
-])), '+/', '-_'), '=');
-$jwt = 'header.' . $payload . '.signature';
-expect(Domain::jwtSessionId($jwt) === '22222222-2222-2222-2222-222222222222', 'JWT deve expor o identificador da sessão');
-expect(Domain::jwtUserId($jwt) === '11111111-1111-1111-1111-111111111111', 'JWT deve expor o usuário');
-expect(Domain::jwtExpiresAt($jwt) === 1893456000, 'JWT deve expor a expiração');
-expect(Domain::jwtHasAuthenticationMethod($jwt, 'password'), 'JWT deve registrar autenticação por senha');
-expect(!Domain::jwtHasAuthenticationMethod($jwt, 'otp'), 'JWT não deve inventar autenticação por OTP');
-expect(Domain::jwtAuthenticationMethodIsRecent($jwt, 'password', 300, 250), 'Senha recente deve ser aceita');
-expect(!Domain::jwtAuthenticationMethodIsRecent($jwt, 'password', 300, 400), 'Senha antiga deve ser recusada');
-
 $productionFiles = array_merge(
     glob($root . '/src/pages/*.{html,php}', GLOB_BRACE) ?: [],
     glob($root . '/src/js/*.js') ?: [],
@@ -67,25 +52,20 @@ expect(str_contains($authJs, '(?=.*\\d)'), 'Senha deve exigir um dígito real');
 expect(str_contains($authJs, 'replace(/\\D/g'), 'CPF/CNPJ deve remover caracteres não numéricos');
 expect(!str_contains($authJs, '(?=.*\\\\d)'), 'Regex de senha não pode procurar o texto literal \\d');
 expect(str_contains($authJs, "type: 'signup'"), 'Login deve permitir reenviar confirmação de e-mail');
-expect(str_contains($authJs, 'startEmailStep'), 'Login deve iniciar a segunda etapa por e-mail');
+expect(!str_contains($authJs, 'startEmailStep'), 'Login não deve iniciar segunda etapa por e-mail');
 expect(!str_contains($authJs, 'mfa.enroll'), 'Login não deve cadastrar aplicativo autenticador');
 expect(str_contains($authJs, 'window.nexlar'), 'Login deve usar a API global publicada pelo cliente');
 expect(!str_contains($authJs, 'window.nexlarApi'), 'Login não pode usar uma API global inexistente');
 
 $authCss = file_get_contents($root . '/src/css/auth.css');
-expect(str_contains($authCss, '.email-step[hidden]'), 'Etapa por e-mail deve poder ser ocultada');
+expect(!str_contains($authCss, '.email-step'), 'CSS não deve manter a segunda etapa por e-mail');
 
 $migration = file_get_contents($root . '/supabase/migrations/20261030213215_nexlar_backend.sql');
-$emailStepMigration = file_get_contents($root . '/supabase/migrations/20261031123000_email_two_step.sql');
 $api = file_get_contents($root . '/api/index.php');
 expect(str_contains($migration, 'month date not null'), 'Meta mensal usa uma data de referência');
 expect(!str_contains($api, 'monthly_goals?owner_id=eq.$userId&year='), 'API não pode consultar colunas inexistentes de meta');
-expect(str_contains($api, "auth/email-step/start"), 'API deve iniciar a segunda etapa por e-mail');
-expect(str_contains($api, "auth/email-step/complete"), 'API deve concluir a segunda etapa por e-mail');
-expect(str_contains($api, 'jwtAuthenticationMethodIsRecent'), 'API deve exigir senha recente');
-expect(str_contains($api, 'complete_email_step_admin'), 'Conclusão deve consumir o desafio atomicamente');
-expect(str_contains($emailStepMigration, 'private.email_step_verified()'), 'RLS deve validar a sessão confirmada por e-mail');
-expect(!str_contains($api, "jwtAssuranceLevel(\$token) !== 'aal2'"), 'API não deve exigir aplicativo autenticador');
+expect(!str_contains($api, "auth/email-step/start"), 'API não deve exigir segunda etapa por e-mail');
+expect(!str_contains($api, "auth/email-step/complete"), 'API não deve concluir segunda etapa por e-mail');
 
 $chatHtml = file_get_contents($root . '/src/pages/painelmensagens.html');
 expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença online');

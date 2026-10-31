@@ -50,28 +50,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const loginForm = document.getElementById('loginForm');
   if (!loginForm) return;
-  const emailStep = document.getElementById('emailStep');
   const resendButton = document.getElementById('resendConfirmation');
-  const resendCode = document.getElementById('resendCode');
-  emailStep.hidden = true;
 
   const callbackError = new URLSearchParams(location.search).get('error_code');
   if (callbackError === 'otp_expired') show('Este link de confirmação expirou ou já foi usado. Informe seu e-mail abaixo e solicite um novo.');
-
-  async function sendLoginCode() {
-    try {
-      await window.NexlarEmailStep.startEmailStep({
-        api: window.nexlar,
-        supabase,
-        email: value('email'),
-        redirectTo: `${location.origin}/src/pages/login.html?email_step=1`,
-      });
-      emailStep.hidden = false;
-      show('Senha confirmada. Enviamos um link de acesso ao seu e-mail.', true);
-    } catch (error) {
-      show(error.message || 'Não foi possível enviar o link por e-mail.');
-    }
-  }
 
   resendButton.addEventListener('click', async () => {
     const email = value('email');
@@ -89,7 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   loginForm.addEventListener('submit', async event => {
     event.preventDefault();
-    emailStep.hidden = true;
     const button = loginForm.querySelector('button');
     button.disabled = true;
     const { error } = await supabase.auth.signInWithPassword({ email: value('email'), password: value('password') });
@@ -97,33 +78,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (error) return show(error.message === 'Invalid login credentials'
       ? 'E-mail ou senha inválidos. Se acabou de se cadastrar, confirme o e-mail ou solicite um novo link.'
       : error.message);
-    await sendLoginCode();
-  });
-
-  resendCode.addEventListener('click', async () => {
-    resendCode.disabled = true;
-    await sendLoginCode();
-    resendCode.disabled = false;
+    location.href = '/src/pages/inicio.html';
   });
 
   const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
-    try {
-      const challenge = new URLSearchParams(location.search).get('challenge');
-      if (!challenge) throw new Error('Desafio de e-mail ausente.');
-      await window.NexlarEmailStep.completeEmailStep({ api: window.nexlar, challenge });
-      location.href = '/src/pages/inicio.html';
-      return;
-    } catch (_) {
-      // Só conclui quando a sessão atual veio do link enviado após a senha.
-    }
-    try {
-      const status = await window.nexlar.request('auth/email-step/status');
-      if (status.verified) location.href = '/src/pages/inicio.html';
-    } catch (_) {
-      // A sessão existe, mas ainda precisa passar pelas duas etapas.
-    }
-  }
+  if (session) location.href = '/src/pages/inicio.html';
 });
 
 

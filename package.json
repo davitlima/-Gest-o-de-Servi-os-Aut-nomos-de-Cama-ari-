@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "php tests/run.php && node tests/masks.test.js && node tests/email-step.test.js"
+    "test": "php tests/run.php && node tests/masks.test.js"
   },
   "devDependencies": {
     "cypress": "^15.16.0"
