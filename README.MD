@@ -1,64 +1,44 @@
-Nexlar
+# Nexlar Camaçari
 
-O que é a Nexlar?
-   A Nexlar é uma plataforma que conecta clientes a profissionais autônomos de forma rápida, segura e eficiente, facilitando a contratação de serviços locais.
+Plataforma que conecta clientes, profissionais autônomos e empresas para contratação de serviços locais. Contas de autônomo e empresa podem oferecer serviços; empresas também podem contratar.
 
-Qual é o objetivo do projeto?
-   Criar um ambiente digital onde clientes possam encontrar profissionais qualificados e autônomos possam divulgar seus serviços, gerar oportunidades e gerenciar sua carreira.
+## Recursos
 
-Quais problemas a Nexlar resolve?
-   Dificuldade em encontrar profissionais confiáveis.
-   Falta de visibilidade para trabalhadores autônomos.
-   Ausência de uma plataforma centralizada para contratação de serviços locais.
-   Pouca transparência sobre pagamentos e avaliações.
+- cadastro por papel com confirmação de e-mail e MFA TOTP;
+- busca e perfis carregados do Supabase;
+- portfólio, chat, contratos e avaliações persistentes;
+- painel financeiro com lançamentos e meta mensal;
+- checkout Mercado Pago após a proposta no chat;
+- taxa da plataforma de 15% e registro líquido de 85% no financeiro.
 
-Quem pode utilizar a plataforma?
-   Clientes
-   Pessoas que desejam contratar serviços de profissionais da sua região.
-   Profissionais Autônomos
-   Prestadores de serviços que desejam divulgar seu trabalho e encontrar novos clientes.
-   Empresas que desejam contratar serviços de profissionais.
+O checkout atual recebe o pagamento na conta configurada em `MERCADO_PAGO_ACCESS_TOKEN`. O repasse bancário automático ao prestador exige contas Mercado Pago conectadas via OAuth e não deve ser anunciado como ativo enquanto essa integração não estiver configurada.
 
-Quais funcionalidades estão disponíveis?
-   Busca de profissionais por categoria.
-   Filtro por bairro.
-   Perfil profissional detalhado.
-   Sistema de avaliações.
-   Painel financeiro para autônomos.
-   Sistema de mensagens.
-   Calculadora de recebimento.
+## Requisitos e configuração
 
-Quais tecnologias foram utilizadas?
-   HTML5
-   CSS3
-   JavaScript
-   Git
-   GitHub
-   Cypress
+1. PHP 8.1 ou superior e Composer.
+2. Execute `composer install`.
+3. Copie `.env.example` para `.env` e preencha as variáveis.
+4. Aplique, em ordem, os arquivos de `supabase/migrations` no projeto Supabase.
+5. No Supabase Auth, mantenha confirmação de e-mail habilitada e cadastre a URL publicada como redirect permitida.
+6. Configure as mesmas variáveis na Vercel para Preview e Production.
 
-Como executar o projeto?
-   Clone o repositório:
-   git clone URL_DO_REPOSITORIO
-   Abra a pasta do projeto no VS Code.
-   Execute utilizando o Live Server.
+O backend PHP é servido por `/api/index.php?route=...`. Nunca exponha `SUPABASE_SERVICE_ROLE_KEY`, token do Mercado Pago ou segredo de webhook no frontend.
 
-Como executar os testes?
-npx cypress open ou npx cypress run
+## Execução local
 
+```bash
+composer install
+php -S 127.0.0.1:8000
+```
 
-Estrutura do Projeto
-   Homepage
-   Perfil do Profissional
-   Meu Perfil
-   Painel Financeiro
-   Painel de Mensagens
-   Portfólio
+Abra `http://127.0.0.1:8000`.
 
-Qual o diferencial da Nexlar?
-   A plataforma foi desenvolvida com foco na valorização dos profissionais autônomos locais, oferecendo transparência, segurança e ferramentas para crescimento profissional.
+## Testes
 
-Desenvolvedores
-   Projeto desenvolvido pela equipe Nexlar.
+```bash
+npm test
+```
 
-Licença
-   Projeto acadêmico desenvolvido para fins educacionais.
+Antes de publicar, valide também os cadastros dos três papéis, MFA, chat, contratação, checkout, avaliação e persistência do financeiro em um ambiente de teste.
+
+Projeto acadêmico desenvolvido pela equipe Nexlar.

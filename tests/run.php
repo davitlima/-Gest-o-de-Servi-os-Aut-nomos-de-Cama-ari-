@@ -46,4 +46,17 @@ if (is_file($connection)) {
 $homepageCss = file_get_contents($root . '/src/css/homepage.css');
 expect(substr_count($homepageCss, '{') === substr_count($homepageCss, '}'), 'CSS da homepage deve ter blocos balanceados');
 
+$authJs = file_get_contents($root . '/src/js/auth.js');
+expect(str_contains($authJs, '(?=.*\\d)'), 'Senha deve exigir um dígito real');
+expect(str_contains($authJs, 'replace(/\\D/g'), 'CPF/CNPJ deve remover caracteres não numéricos');
+expect(!str_contains($authJs, '(?=.*\\\\d)'), 'Regex de senha não pode procurar o texto literal \\d');
+
+$migration = file_get_contents($root . '/supabase/migrations/20261030213215_nexlar_backend.sql');
+$api = file_get_contents($root . '/api/index.php');
+expect(str_contains($migration, 'month date not null'), 'Meta mensal usa uma data de referência');
+expect(!str_contains($api, 'monthly_goals?owner_id=eq.$userId&year='), 'API não pode consultar colunas inexistentes de meta');
+
+$chatHtml = file_get_contents($root . '/src/pages/painelmensagens.html');
+expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença online');
+
 fwrite(STDOUT, "Todos os testes passaram.\n");

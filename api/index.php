@@ -99,7 +99,7 @@ try {
     if ($route === 'public/profile' && $method === 'GET') {
         $profileId = query('id');
         if ($profileId === '') throw new HttpError(422, 'Perfil não informado.');
-        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*),reviews!reviews_provider_id_fkey(rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
+        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*),reviews!reviews_provider_id_fkey(contract_id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
         if (!isset($profiles[0])) throw new HttpError(404, 'Perfil não encontrado.');
         respond($profiles[0]);
     }
@@ -228,9 +228,8 @@ try {
 
     if ($route === 'finance/goal' && $method === 'GET') {
         if (!Domain::canUseFinance($me['role'])) throw new HttpError(403, 'Seu perfil não possui painel financeiro.');
-        $year = (int) gmdate('Y');
-        $month = (int) gmdate('n');
-        $rows = $db->rest('GET', "monthly_goals?owner_id=eq.$userId&year=eq.$year&month=eq.$month&select=amount", null, $token);
+        $month = gmdate('Y-m-01');
+        $rows = $db->rest('GET', 'monthly_goals?owner_id=eq.' . $userId . '&month=eq.' . $month . '&select=amount', null, $token);
         respond(['amount' => isset($rows[0]['amount']) ? (float) $rows[0]['amount'] : 0]);
     }
 
@@ -238,12 +237,15 @@ try {
         if (!Domain::canUseFinance($me['role'])) throw new HttpError(403, 'Seu perfil não possui painel financeiro.');
         $amount = (float) (input()['amount'] ?? -1);
         if (!is_finite($amount) || $amount < 0) throw new HttpError(422, 'Meta mensal inválida.');
-        $year = (int) gmdate('Y');
-        $month = (int) gmdate('n');
-        $path = "monthly_goals?owner_id=eq.$userId&year=eq.$year&month=eq.$month";
+        $month = gmdate('Y-m-01');
+        $path = 'monthly_goals?owner_id=eq.' . $userId . '&month=eq.' . $month;
+        if ($amount === 0.0) {
+            $db->rest('DELETE', $path, null, $token);
+            respond(['amount' => 0]);
+        }
         $existing = $db->rest('GET', $path . '&select=owner_id', null, $token);
-        $row = ['owner_id' => $userId, 'year' => $year, 'month' => $month, 'amount' => $amount, 'updated_at' => gmdate('c')];
-        $rows = isset($existing[0]) ? $db->rest('PATCH', $path, ['amount' => $amount, 'updated_at' => gmdate('c')], $token)
+        $row = ['owner_id' => $userId, 'month' => $month, 'amount' => $amount];
+        $rows = isset($existing[0]) ? $db->rest('PATCH', $path, ['amount' => $amount], $token)
             : $db->rest('POST', 'monthly_goals', [$row], $token);
         respond($rows[0] ?? $row);
     }
@@ -312,6 +314,11 @@ try {
         if (isset($contract[0]) && is_array($contract[0])) $contract = $contract[0];
         $baseUrl = rtrim(Config::get('APP_URL'), '/');
         try {
+            $preferenceId = (string) ($contract['mercado_pago_preference_id'] ?? '');
+            if ($preferenceId !== '') {
+                $preference = mercadoPago('GET', '/checkout/preferences/' . rawurlencode($preferenceId));
+                respond([ 'checkout_url' => $preference['init_point'] ?? $preference['sandbox_init_point'] ?? null ]);
+            }
             $preference = mercadoPago('POST', '/checkout/preferences', [
                 'items' => [[ 'title' => $contract['description'], 'quantity' => 1, 'currency_id' => 'BRL', 'unit_price' => (float) $contract['amount'] ]],
                 'external_reference' => (string) $contractId,

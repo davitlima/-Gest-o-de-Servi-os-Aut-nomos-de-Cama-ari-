@@ -205,6 +205,9 @@ as $$
 declare result public.contracts;
 begin
   if (select auth.jwt() ->> 'aal') is distinct from 'aal2' then raise exception 'MFA required'; end if;
+  select * into result from public.contracts
+  where id = p_contract_id and buyer_id = (select auth.uid()) and status = 'aguardando_pagamento';
+  if result.id is not null then return result; end if;
   update public.contracts set status = 'aguardando_pagamento', updated_at = now()
   where id = p_contract_id and buyer_id = (select auth.uid()) and status = 'proposta'
   returning * into result;
@@ -273,7 +276,7 @@ grant select on public.profiles, public.portfolio_items, public.reviews to anon,
 grant select, update on public.profile_private to authenticated;
 grant select, insert on public.conversations, public.messages to authenticated;
 grant select, insert, update on public.financial_entries, public.monthly_goals to authenticated;
-grant delete on public.financial_entries to authenticated;
+grant delete on public.financial_entries, public.monthly_goals to authenticated;
 grant select on public.contracts to authenticated;
 grant insert, update, delete on public.portfolio_items to authenticated;
 grant insert on public.reviews to authenticated;

@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     signupForm.addEventListener('submit', async event => {
       event.preventDefault();
       const password = value('senha');
-      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password)) {
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password)) {
         return show('A senha deve ter 8 caracteres, maiúscula, minúscula, número e símbolo.');
       }
       if (password !== value('confirmarSenha')) return show('As senhas precisam ser iguais.');
       const role = signupForm.dataset.role;
-      const documentValue = value(role === 'empresa' ? 'cnpj' : 'cpf').replace(/\\D/g, '');
+      const documentValue = value(role === 'empresa' ? 'cnpj' : 'cpf').replace(/\D/g, '');
       const button = signupForm.querySelector('button[type="submit"]');
       button.disabled = true;
       const { error } = await supabase.auth.signUp({

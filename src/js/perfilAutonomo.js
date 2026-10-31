@@ -52,7 +52,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
         await api.requireSession();
         const contracts = await api.request(`contracts&provider_id=${encodeURIComponent(providerId)}`);
-        const eligible = contracts.find(contract => contract.status === 'concluido');
+        const reviewedContracts = new Set((profile.reviews || []).map(review => Number(review.contract_id)));
+        const eligible = contracts.find(contract => contract.status === 'concluido' && !reviewedContracts.has(Number(contract.id)));
         if (!eligible) throw new Error('Você poderá avaliar após concluir uma contratação com este profissional.');
         const comment = prompt('Conte como foi o serviço (opcional):') || '';
         await api.request('reviews', { method: 'POST', body: JSON.stringify({ contract_id: eligible.id, rating, comment }) });
