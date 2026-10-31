@@ -181,7 +181,6 @@ window.addEventListener('beforeunload', () => { if (realtimeChannel) api.supabas
 
 (async () => {
   api = await window.nexlarReady; await api.requireSession(); me = await api.request('me');
-  if (me.role === 'cliente') document.querySelector('[data-page="financeiro"]')?.remove();
   conversations = await api.request('conversations'); renderConversationList();
   const providerId = new URLSearchParams(location.search).get('provider_id');
   if (providerId) {
@@ -197,3 +196,4 @@ window.addEventListener('beforeunload', () => { if (realtimeChannel) api.supabas
   emptyState.querySelector('.empty-title').textContent = 'Não foi possível carregar';
   emptyState.querySelector('.empty-sub').textContent = error.message;
 });
+

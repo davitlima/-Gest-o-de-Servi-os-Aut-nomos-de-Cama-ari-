@@ -201,6 +201,38 @@ function exibirAviso(mensagem, ehAviso = false) {
 }
 
 /* ---------- GERENCIAMENTO DE EVENTOS ---------- */
+const financeSidebar = $('financeSidebar');
+const financeOverlay = $('financeOverlay');
+const financeMenuButton = $('financeMenuButton');
+const financeSidebarClose = $('financeSidebarClose');
+
+function definirEstadoMenuFinanceiro(aberto, devolverFoco = false) {
+  financeSidebar.classList.toggle('open', aberto);
+  financeOverlay.classList.toggle('visible', aberto);
+  financeMenuButton.setAttribute('aria-expanded', String(aberto));
+  financeMenuButton.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+  document.body.classList.toggle('drawer-open', aberto);
+  if (aberto) financeSidebarClose.focus();
+  else if (devolverFoco) financeMenuButton.focus();
+}
+
+financeMenuButton.addEventListener('click', () => {
+  definirEstadoMenuFinanceiro(!financeSidebar.classList.contains('open'));
+});
+financeSidebarClose.addEventListener('click', () => definirEstadoMenuFinanceiro(false, true));
+financeOverlay.addEventListener('click', () => definirEstadoMenuFinanceiro(false, true));
+financeSidebar.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => definirEstadoMenuFinanceiro(false));
+});
+window.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && financeSidebar.classList.contains('open')) {
+    definirEstadoMenuFinanceiro(false, true);
+  }
+});
+window.matchMedia('(min-width: 761px)').addEventListener('change', event => {
+  if (event.matches) definirEstadoMenuFinanceiro(false);
+});
+
 $('openModal').addEventListener('click', () => abrirModal());
 $('closeModal').addEventListener('click', fecharModal);
 $('cancelModal').addEventListener('click', fecharModal);
@@ -260,5 +292,6 @@ $('saveGoal').addEventListener('click', async () => {
 });
 
 carregarRegistros().catch(error => exibirAviso(error.message, true));
+
 
 

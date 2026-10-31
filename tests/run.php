@@ -75,6 +75,7 @@ expect(str_contains($chatHtml, 'id="connectionStatus"'), 'Chat deve comunicar o 
 $chatJs = file_get_contents($root . '/src/js/painelmensagens.js');
 expect(!str_contains($chatJs, 'setInterval('), 'Fallback do chat não pode sobrepor requisições lentas');
 expect(str_contains($chatJs, 'isCurrentOpen'), 'Troca rápida de conversa deve invalidar carregamentos antigos');
+expect(!str_contains($chatJs, "[data-page=\"financeiro\"]')?.remove()"), 'Mensagens não deve remover o Financeiro da navegação');
 
 $responsiveCss = file_get_contents($root . '/src/css/responsive.css');
 expect(str_contains($responsiveCss, 'env(safe-area-inset-bottom'), 'Layout móvel deve respeitar a safe area inferior');
@@ -82,7 +83,14 @@ expect(str_contains($responsiveCss, 'env(safe-area-inset-top'), 'Chat móvel dev
 expect(str_contains($responsiveCss, 'min-height: 44px'), 'Controles móveis devem ter alvo de toque mínimo');
 
 $financeCss = file_get_contents($root . '/src/css/Painelfinanceiro.css');
-expect(str_contains($financeCss, 'body { overflow: auto; flex-direction: column;'), 'Financeiro móvel deve empilhar navegação e conteúdo');
+$financeHtml = file_get_contents($root . '/src/pages/Painelfinanceiro.html');
+expect(str_contains($financeHtml, 'id="financeMenuButton"'), 'Financeiro móvel deve oferecer botão para abrir a navegação');
+expect(str_contains($financeHtml, 'id="financeSidebar"'), 'Sidebar financeira deve possuir identificador acessível');
+expect(str_contains($financeHtml, 'id="financeOverlay"'), 'Drawer financeiro deve possuir overlay de fechamento');
+expect(str_contains($financeHtml, 'aria-expanded="false"'), 'Botão do menu deve anunciar o estado recolhido');
+expect(str_contains($financeCss, '.sidebar.open'), 'Sidebar financeira deve abrir como drawer no celular');
+expect(str_contains($financeCss, 'transform: translateX(-100%)'), 'Sidebar financeira deve iniciar recolhida no celular');
+expect(str_contains($financeCss, '.goal-editor-controls'), 'Editor de meta precisa de layout responsivo próprio');
 $myProfileCss = file_get_contents($root . '/src/css/Meuperfil.css');
 expect(str_contains($myProfileCss, 'body { flex-direction: column;'), 'Meu Perfil móvel deve empilhar navegação e conteúdo');
 
@@ -102,4 +110,5 @@ foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html
 }
 
 fwrite(STDOUT, "Todos os testes passaram.\n");
+
 
