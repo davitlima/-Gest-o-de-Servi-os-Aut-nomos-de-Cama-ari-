@@ -36,7 +36,7 @@ final class Supabase
     {
         $key = $service ? $this->serviceKey : $this->publicKey;
         if ($service && $key === '') {
-            throw new \RuntimeException('SUPABASE_SERVICE_ROLE_KEY é necessária para confirmar pagamentos.');
+            throw new \RuntimeException('SUPABASE_SERVICE_ROLE_KEY é necessária para operações administrativas.');
         }
         $headers = [
             'apikey: ' . $key,
@@ -81,5 +81,6 @@ final class HttpError extends \RuntimeException
         parent::__construct($message);
     }
 }
+
 
 

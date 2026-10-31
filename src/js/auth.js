@@ -50,54 +50,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const loginForm = document.getElementById('loginForm');
   if (!loginForm) return;
-  const mfaSetup = document.getElementById('mfaSetup');
-  const mfaQr = document.getElementById('mfaQr');
+  const emailStep = document.getElementById('emailStep');
   const resendButton = document.getElementById('resendConfirmation');
-  let factorId = null;
-
-  function resetMfa() {
-    factorId = null;
-    mfaSetup.hidden = true;
-    mfaQr.hidden = true;
-    mfaQr.removeAttribute('src');
-    document.getElementById('mfaCode').value = '';
-  }
-
-  resetMfa();
+  const resendCode = document.getElementById('resendCode');
+  emailStep.hidden = true;
 
   const callbackError = new URLSearchParams(location.search).get('error_code');
   if (callbackError === 'otp_expired') show('Este link de confirmação expirou ou já foi usado. Informe seu e-mail abaixo e solicite um novo.');
 
-  async function finishLogin() {
-    const assurance = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (assurance.data?.nextLevel === 'aal2' && assurance.data.currentLevel !== 'aal2') {
-      const factors = await supabase.auth.mfa.listFactors();
-      const verified = factors.data?.totp?.find(item => item.status === 'verified');
-      if (verified) {
-        factorId = verified.id;
-        mfaSetup.hidden = false;
-        mfaQr.hidden = true;
-        return;
-      }
+  async function sendLoginCode() {
+    try {
+      await window.NexlarEmailStep.startEmailStep({
+        api: window.nexlar,
+        supabase,
+        email: value('email'),
+        redirectTo: `${location.origin}/src/pages/login.html?email_step=1`,
+      });
+      emailStep.hidden = false;
+      show('Senha confirmada. Enviamos um link de acesso ao seu e-mail.', true);
+    } catch (error) {
+      show(error.message || 'Não foi possível enviar o link por e-mail.');
     }
-    if (assurance.data?.currentLevel === 'aal2') {
-      location.href = '/src/pages/inicio.html';
-      return;
-    }
-    const factors = await supabase.auth.mfa.listFactors();
-    for (const pending of factors.data?.totp?.filter(item => item.status !== 'verified') || []) {
-      await supabase.auth.mfa.unenroll({ factorId: pending.id });
-    }
-    const enrolled = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Nexlar' });
-    if (enrolled.error) return show(enrolled.error.message);
-    factorId = enrolled.data.id;
-    mfaQr.src = enrolled.data.totp.qr_code;
-    mfaQr.hidden = false;
-    mfaSetup.hidden = false;
   }
 
   resendButton.addEventListener('click', async () => {
-    resetMfa();
     const email = value('email');
     if (!email) return show('Informe seu e-mail para receber um novo link.');
     resendButton.disabled = true;
@@ -113,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   loginForm.addEventListener('submit', async event => {
     event.preventDefault();
-    resetMfa();
+    emailStep.hidden = true;
     const button = loginForm.querySelector('button');
     button.disabled = true;
     const { error } = await supabase.auth.signInWithPassword({ email: value('email'), password: value('password') });
@@ -121,25 +97,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (error) return show(error.message === 'Invalid login credentials'
       ? 'E-mail ou senha inválidos. Se acabou de se cadastrar, confirme o e-mail ou solicite um novo link.'
       : error.message);
-    await finishLogin();
+    await sendLoginCode();
   });
 
-  document.getElementById('verifyMfa').addEventListener('click', async () => {
-    const challenge = await supabase.auth.mfa.challenge({ factorId });
-    if (challenge.error) return show(challenge.error.message);
-    const result = await supabase.auth.mfa.verify({
-      factorId,
-      challengeId: challenge.data.id,
-      code: value('mfaCode'),
-    });
-    if (result.error) return show(result.error.message);
-    location.href = '/src/pages/inicio.html';
+  resendCode.addEventListener('click', async () => {
+    resendCode.disabled = true;
+    await sendLoginCode();
+    resendCode.disabled = false;
   });
 
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
-    show('E-mail confirmado. Configure ou informe seu segundo fator para continuar.', true);
-    await finishLogin();
+    try {
+      const challenge = new URLSearchParams(location.search).get('challenge');
+      if (!challenge) throw new Error('Desafio de e-mail ausente.');
+      await window.NexlarEmailStep.completeEmailStep({ api: window.nexlar, challenge });
+      location.href = '/src/pages/inicio.html';
+      return;
+    } catch (_) {
+      // Só conclui quando a sessão atual veio do link enviado após a senha.
+    }
+    try {
+      const status = await window.nexlar.request('auth/email-step/status');
+      if (status.verified) location.href = '/src/pages/inicio.html';
+    } catch (_) {
+      // A sessão existe, mas ainda precisa passar pelas duas etapas.
+    }
   }
 });
 
