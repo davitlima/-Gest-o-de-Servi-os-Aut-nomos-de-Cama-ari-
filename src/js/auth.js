@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         email: value('email'),
         password,
         options: {
-          emailRedirectTo: `${location.origin}/src/pages/login.html`,
           data: {
             role,
             full_name: value('nome'),
@@ -43,32 +42,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       button.disabled = false;
       if (error) return show(error.message);
+      await supabase.auth.signOut();
       signupForm.reset();
-      show('Cadastro criado. Confirme o link enviado ao seu e-mail antes de entrar.', true);
+      show('Cadastro criado. Você já pode entrar com seu e-mail e senha.', true);
     });
   }
 
   const loginForm = document.getElementById('loginForm');
   if (!loginForm) return;
-  const resendButton = document.getElementById('resendConfirmation');
-
-  const callbackError = new URLSearchParams(location.search).get('error_code');
-  if (callbackError === 'otp_expired') show('Este link de confirmação expirou ou já foi usado. Informe seu e-mail abaixo e solicite um novo.');
-
-  resendButton.addEventListener('click', async () => {
-    const email = value('email');
-    if (!email) return show('Informe seu e-mail para receber um novo link.');
-    resendButton.disabled = true;
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email,
-      options: { emailRedirectTo: `${location.origin}/src/pages/login.html` },
-    });
-    resendButton.disabled = false;
-    if (error) return show(error.message);
-    show('Novo e-mail enviado. Use apenas o link mais recente.', true);
-  });
-
   loginForm.addEventListener('submit', async event => {
     event.preventDefault();
     const button = loginForm.querySelector('button');
@@ -76,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const { error } = await supabase.auth.signInWithPassword({ email: value('email'), password: value('password') });
     button.disabled = false;
     if (error) return show(error.message === 'Invalid login credentials'
-      ? 'E-mail ou senha inválidos. Se acabou de se cadastrar, confirme o e-mail ou solicite um novo link.'
+      ? 'E-mail ou senha inválidos.'
       : error.message);
     location.href = '/src/pages/inicio.html';
   });
