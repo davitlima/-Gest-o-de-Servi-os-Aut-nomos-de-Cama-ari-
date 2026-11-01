@@ -2,10 +2,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const api = await window.nexlarReady;
   const providerId = new URLSearchParams(location.search).get('id');
   const hint = document.getElementById('starHint');
+  let profile = null;
   if (!providerId) { hint.textContent = 'Abra um profissional pela lista para ver o perfil real.'; return; }
 
   try {
-    const profile = await api.request(`public/profile&id=${encodeURIComponent(providerId)}`);
+    profile = await api.request(`public/profile&id=${encodeURIComponent(providerId)}`);
     const reviews = profile.reviews || [];
     const average = reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0;
     document.querySelector('.hero-card__name').textContent = profile.company_name || profile.full_name;
@@ -64,5 +65,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     star.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); star.click(); } });
   });
 });
+
 
 

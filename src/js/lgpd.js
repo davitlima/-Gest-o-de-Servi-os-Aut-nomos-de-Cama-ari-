@@ -23,10 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnHome = document.getElementById("btn-home");
   if (btnHome) {
     btnHome.addEventListener("click", () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      window.location.href = '/src/pages/inicio.html';
     });
   }
 });
+

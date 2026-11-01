@@ -219,24 +219,32 @@ nav {
   font-weight: 400;
   margin: 48px 0 20px;
   letter-spacing: -.2px;
+}
 
 .btn-home {
   display: block;
   width: fit-content;
   margin: 32px auto 0;
-  padding: 12px 30px;
-  background: var(--text);
+  min-height: 44px;
+  padding: 12px 24px;
+  background: var(--accent);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 999px;
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition: opacity .2s;
+  transition: background .2s, transform .15s, box-shadow .2s;
 }
 
-.btn-home:hover { opacity: .85; }
+.btn-home:hover { background: #2d59d6; box-shadow: 0 6px 16px rgba(59,110,248,.25); }
+.btn-home:active { transform: translateY(1px); }
+.btn-home:focus-visible { outline: 3px solid rgba(59,110,248,.3); outline-offset: 3px; }
+
+@media (max-width: 600px) {
+  .btn-home { width: calc(100% - 32px); margin-inline: auto; }
+}
 
 
 footer {
@@ -256,4 +264,5 @@ footer {
 .reveal.visible {
   opacity: 1;
   transform: none;
-}}
+}
+

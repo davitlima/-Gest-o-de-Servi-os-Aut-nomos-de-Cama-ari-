@@ -46,6 +46,17 @@ if (is_file($connection)) {
 
 $homepageCss = file_get_contents($root . '/src/css/homepage.css');
 expect(substr_count($homepageCss, '{') === substr_count($homepageCss, '}'), 'CSS da homepage deve ter blocos balanceados');
+$lgpdCss = file_get_contents($root . '/src/css/lgpd.css');
+expect(substr_count($lgpdCss, '{') === substr_count($lgpdCss, '}'), 'CSS da LGPD deve ter blocos balanceados');
+$lgpdHtml = file_get_contents($root . '/src/pages/lgpd.html');
+expect(str_contains($lgpdHtml, 'id="btn-home"'), 'LGPD deve manter o botão de retorno ao início');
+$lgpdJs = file_get_contents($root . '/src/js/lgpd.js');
+expect(str_contains($lgpdJs, "location.href = '/src/pages/inicio.html'"), 'Botão de retorno deve navegar para o início');
+
+$publicProfileJs = file_get_contents($root . '/src/js/perfilAutonomo.js');
+expect(str_contains($publicProfileJs, 'let profile = null;'), 'Perfil público deve manter o perfil carregado disponível para a avaliação');
+expect(!str_contains($publicProfileJs, 'const profile = await'), 'Perfil público não pode limitar o perfil ao bloco de carregamento');
+expect(str_contains($publicProfileJs, "api.request('reviews'"), 'Perfil público deve enviar a avaliação pela API');
 
 $authJs = file_get_contents($root . '/src/js/auth.js');
 expect(str_contains($authJs, '(?=.*\\d)'), 'Senha deve exigir um dígito real');
