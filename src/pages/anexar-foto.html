@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alterar foto - Nexlar</title>
+  <link rel="stylesheet" href="/src/css/anexar-foto.css">
+</head>
+<body>
+  <main class="photo-page">
+    <a class="back-link" href="/src/pages/Meuperfil.html">← Voltar ao perfil</a>
+    <section class="photo-card">
+      <h1>Alterar foto de perfil</h1>
+      <p>Escolha uma imagem JPG, PNG, GIF ou WebP de até 5 MB.</p>
+      <div class="photo-preview" id="photoPreview" aria-label="Prévia da foto">Sua foto</div>
+      <label class="file-label" for="photoInput">Escolher foto</label>
+      <input id="photoInput" type="file" accept="image/*">
+      <p class="photo-message" id="photoMessage" role="status" aria-live="polite"></p>
+      <button class="save-photo" id="savePhoto" type="button" disabled>Salvar foto</button>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/src/js/api.js"></script>
+  <script src="/src/js/profile-upload-core.js"></script>
+  <script src="/src/js/anexar-foto.js"></script>
+</body>
+</html>

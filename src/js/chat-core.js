@@ -16,6 +16,10 @@
     return `/src/pages/painelmensagens.html?provider_id=${encodeURIComponent(providerId)}`;
   }
 
+  function profileUrl(profileId) {
+    return `/src/pages/perfilAutonomo.html?id=${encodeURIComponent(profileId)}`;
+  }
+
   function connectionMode(status) {
     if (status === 'SUBSCRIBED') return 'realtime';
     if (['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].includes(status)) return 'fallback';
@@ -30,5 +34,5 @@
     return Number(expectedId) === Number(activeId) && expectedGeneration === currentGeneration;
   }
 
-  return { mergeMessages, professionalChatUrl, connectionMode, belongsToConversation, isCurrentOpen };
+  return { mergeMessages, professionalChatUrl, profileUrl, connectionMode, belongsToConversation, isCurrentOpen };
 });

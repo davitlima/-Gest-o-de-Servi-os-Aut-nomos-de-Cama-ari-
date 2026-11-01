@@ -14,7 +14,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('profileEmail').value = session.user.email || '';
   document.getElementById('profileNeighborhood').value = me.neighborhood || '';
   document.getElementById('profileBio').value = me.bio || '';
-  document.querySelector('.profile-photo .avatar').textContent = me.full_name.split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
+  const avatar = document.querySelector('.profile-photo .avatar');
+  if (me.avatar_url) { avatar.textContent = ''; avatar.style.background = `url("${me.avatar_url}") center/cover`; }
+  else avatar.textContent = me.full_name.split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
 
   let portfolioSection = null;
   if (canOffer) {
@@ -68,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.querySelector('.btn-outline').addEventListener('click', async () => { await api.supabase.auth.signOut(); location.href = '/'; });
   document.querySelector('.btn-danger').addEventListener('click', () => alert('Para excluir sua conta com segurança, solicite ao suporte Nexlar.'));
-  document.querySelector('.btn-photo').addEventListener('click', () => alert('Informe a URL do avatar no cadastro de perfil; upload direto será habilitado após configurar o Storage.'));
+  document.querySelector('.btn-photo').addEventListener('click', () => { location.href = '/src/pages/anexar-foto.html'; });
 });
 
 

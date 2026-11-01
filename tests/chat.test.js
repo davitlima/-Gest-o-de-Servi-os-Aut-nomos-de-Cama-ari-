@@ -1,6 +1,8 @@
 const assert = require('node:assert/strict');
 const chat = require('../src/js/chat-core.js');
 
+assert.equal(chat.profileUrl('abc/123'), '/src/pages/perfilAutonomo.html?id=abc%2F123');
+
 const first = { id: 10, body: 'Olá', created_at: '2026-10-31T10:00:00Z' };
 const duplicate = { ...first };
 const second = { id: 11, body: 'Tudo bem?', created_at: '2026-10-31T10:00:01Z' };
