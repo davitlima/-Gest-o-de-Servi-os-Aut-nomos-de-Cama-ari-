@@ -15,7 +15,25 @@
   }
 
   function createDrawerController({ sidebar, overlay, trigger, close, body, media, windowTarget, links }) {
+    const focusable = [close, ...links];
+    const backgroundState = new Map();
+    function isolateBackground(open) {
+      if (open && backgroundState.size === 0) {
+        for (let ancestor = sidebar.parentElement; ancestor && ancestor !== body; ancestor = ancestor.parentElement) {
+          for (const sibling of ancestor.parentElement.children) {
+            if (sibling !== ancestor) {
+              backgroundState.set(sibling, sibling.inert);
+              sibling.inert = true;
+            }
+          }
+        }
+      } else if (!open) {
+        backgroundState.forEach((inert, element) => { element.inert = inert; });
+        backgroundState.clear();
+      }
+    }
     function setOpen(open, returnFocus = false) {
+      open = open && !media.matches;
       sidebar.classList.toggle('open', open);
       overlay.classList.toggle('visible', open);
       trigger.setAttribute('aria-expanded', String(open));
@@ -24,11 +42,24 @@
       const hidden = !media.matches && !open;
       sidebar.inert = hidden;
       sidebar.setAttribute('aria-hidden', String(hidden));
+      overlay.inert = !open;
+      overlay.setAttribute('aria-hidden', String(!open));
+      isolateBackground(open);
       if (open) close.focus();
       else if (returnFocus) trigger.focus();
     }
     const onKeydown = event => {
-      if (event.key === 'Escape' && sidebar.classList.contains('open')) setOpen(false, true);
+      if (!sidebar.classList.contains('open') || media.matches) return;
+      if (event.key === 'Escape') setOpen(false, true);
+      if (event.key === 'Tab') {
+        const active = sidebar.ownerDocument.activeElement;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!focusable.includes(active) || (event.shiftKey ? active === first : active === last)) {
+          event.preventDefault();
+          (event.shiftKey ? last : first).focus();
+        }
+      }
     };
     const onBreakpointChange = () => setOpen(false);
     trigger.addEventListener('click', () => setOpen(!sidebar.classList.contains('open')));
