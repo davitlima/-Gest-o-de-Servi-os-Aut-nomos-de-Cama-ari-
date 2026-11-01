@@ -6,6 +6,8 @@
   <title>Nexlar – Mensagens</title>
   <link rel="stylesheet" href="/src/css/painelmensagens.css" />
   <link rel="stylesheet" href="/src/css/responsive.css" />
+  <link rel="stylesheet" href="/src/css/panel-nav.css" />
+  <script src="/src/js/panel-nav.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="/src/js/api.js" defer></script>
   <script src="/src/js/chat-core.js" defer></script>
@@ -13,59 +15,11 @@
 </head>
 <body>
 
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <img src="/src/images/logobranca.png" alt="Logo Nexlar" class="imagem-logo">
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="inicio.html" class="nav-item" data-page="inicio">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-        <span>Início</span>
-      </a>
-      
-      <a href="Meuperfil.html" class="nav-item" data-page="perfil">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
-        <span>Meu Perfil</span>
-      </a>
-      
-      <a href="Painelfinanceiro.html" class="nav-item" data-page="financeiro">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="1" x2="12" y2="23"></line>
-          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-        </svg>     
-        <span>Financeiro</span>
-      </a>
-      
-      <a href="#" class="nav-item active" data-page="mensagem">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-        <span>Mensagem</span>
-      </a>
-    </nav>
-
-    <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">✕</button>
-  </aside>
-
-  <div class="overlay" id="overlay"></div>
+  <nexlar-panel-nav active="mensagens"></nexlar-panel-nav>
 
   <div class="main-wrapper">
 
     <section class="messages-panel" id="messagesPanel">
-      <div class="mobile-header">
-        <button class="hamburger" id="hamburger" aria-label="Abrir menu">
-          <span></span><span></span><span></span>
-        </button>
-        <span class="mobile-title">Nexlar</span>
-      </div>
-
       <h1 class="panel-title">Mensagens</h1>
 
       <div class="search-wrapper">
@@ -127,6 +81,7 @@
 
 </body>
 </html>
+
 
 
 

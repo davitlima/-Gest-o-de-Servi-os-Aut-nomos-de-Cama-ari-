@@ -1,5 +1,3 @@
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
 const messagesPanel = document.getElementById('messagesPanel');
 const chatArea = document.getElementById('chatArea');
 const emptyState = document.getElementById('emptyState');
@@ -169,9 +167,6 @@ async function handleContract() {
   if (result.checkout_url) location.href = result.checkout_url;
 }
 
-document.getElementById('hamburger').addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('visible'); });
-document.getElementById('sidebarClose').addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('visible'); });
-overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('visible'); });
 document.getElementById('backBtn').addEventListener('click', () => { openGeneration += 1; messagesPanel.classList.remove('hidden'); chatArea.classList.remove('visible'); unsubscribeRealtime(); });
 document.getElementById('sendBtn').addEventListener('click', sendMessage);
 chatInput.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); } });

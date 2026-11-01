@@ -1,8 +1,9 @@
 {
   "scripts": {
-    "test": "php tests/run.php && node tests/masks.test.js && node tests/chat.test.js"
+    "test": "php tests/run.php && node tests/masks.test.js && node tests/chat.test.js && node tests/panel-nav.test.js"
   },
   "devDependencies": {
     "cypress": "^15.16.0"
   }
 }
+

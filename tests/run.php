@@ -83,16 +83,23 @@ expect(str_contains($responsiveCss, 'env(safe-area-inset-top'), 'Chat móvel dev
 expect(str_contains($responsiveCss, 'min-height: 44px'), 'Controles móveis devem ter alvo de toque mínimo');
 
 $financeCss = file_get_contents($root . '/src/css/Painelfinanceiro.css');
-$financeHtml = file_get_contents($root . '/src/pages/Painelfinanceiro.html');
-expect(str_contains($financeHtml, 'id="financeMenuButton"'), 'Financeiro móvel deve oferecer botão para abrir a navegação');
-expect(str_contains($financeHtml, 'id="financeSidebar"'), 'Sidebar financeira deve possuir identificador acessível');
-expect(str_contains($financeHtml, 'id="financeOverlay"'), 'Drawer financeiro deve possuir overlay de fechamento');
-expect(str_contains($financeHtml, 'aria-expanded="false"'), 'Botão do menu deve anunciar o estado recolhido');
-expect(str_contains($financeCss, '.sidebar.open'), 'Sidebar financeira deve abrir como drawer no celular');
-expect(str_contains($financeCss, 'transform: translateX(-100%)'), 'Sidebar financeira deve iniciar recolhida no celular');
 expect(str_contains($financeCss, '.goal-editor-controls'), 'Editor de meta precisa de layout responsivo próprio');
-$myProfileCss = file_get_contents($root . '/src/css/Meuperfil.css');
-expect(str_contains($myProfileCss, 'body { flex-direction: column;'), 'Meu Perfil móvel deve empilhar navegação e conteúdo');
+
+foreach (['Meuperfil' => 'perfil', 'Painelfinanceiro' => 'financeiro', 'painelmensagens' => 'mensagens'] as $page => $active) {
+    $html = file_get_contents($root . '/src/pages/' . $page . '.html');
+    expect(substr_count($html, '<nexlar-panel-nav ') === 1, $page . ' deve usar uma única navegação compartilhada');
+    expect(str_contains($html, '<nexlar-panel-nav active="' . $active . '"></nexlar-panel-nav>'), $page . ' deve informar a rota ativa correta');
+    expect(substr_count($html, '/src/css/panel-nav.css') === 1, $page . ' deve carregar o CSS compartilhado uma única vez');
+    expect(substr_count($html, '/src/js/panel-nav.js') === 1, $page . ' deve carregar o componente uma única vez');
+    expect(strpos($html, '/src/css/panel-nav.css') < strpos($html, '<script'), $page . ' deve agrupar os estilos antes dos scripts');
+    expect(strpos($html, '/src/js/panel-nav.js') < strpos($html, '/src/js/' . $page . '.js'), $page . ' deve carregar a navegação antes do script da página');
+    expect(!preg_match('/<aside\b|id="(?:financeSidebar|financeOverlay|financeMenuButton|sidebarClose|hamburger|overlay)"/', $html), $page . ' não deve duplicar o drawer');
+    $css = file_get_contents($root . '/src/css/' . $page . '.css');
+    expect(!preg_match('/\.(?:sidebar|nav-link|nav-item|hamburger|menu-toggle|finance-overlay)\b/', $css), $page . ' não deve duplicar estilos da navegação');
+    expect(substr_count($css, '{') === substr_count($css, '}'), $page . ' deve manter o CSS balanceado');
+    $js = file_get_contents($root . '/src/js/' . $page . '.js');
+    expect(!preg_match('/financeSidebar|financeOverlay|financeMenuButton|definirEstadoMenuFinanceiro|financeNav|sidebarClose|hamburger|drawer-open/', $js), $page . ' não deve controlar nem ocultar a navegação compartilhada');
+}
 
 $clientSignup = file_get_contents($root . '/src/pages/cadastrocliente.html');
 expect(substr_count($clientSignup, 'vlibras-plugin.js') === 1, 'Cadastro de cliente deve carregar VLibras uma única vez');

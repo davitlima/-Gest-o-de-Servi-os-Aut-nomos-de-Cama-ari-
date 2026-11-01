@@ -5,8 +5,6 @@
 }
 
 :root {
-  --sidebar-bg: #050520;
-  --sidebar-hover: #050520; /* Mantido conforme seu padrão */
   --accent: #7c3aed;
   --accent2: #4f46e5;
   --accent-light: #ede9fe;
@@ -40,112 +38,6 @@ body {
 }
 
 /* ==========================================================================
-   BARRA LATERAL (SIDEBAR) - IGUAL AO FINANCEIRO
-   ========================================================================== */
-.sidebar {
-  width: 210px;
-  min-width: 210px;
-  background: var(--sidebar-bg);
-  display: flex;
-  flex-direction: column;
-  padding: 24px 0 16px;
-  position: relative;
-  z-index: 100;
-  transition: transform 0.3s ease;
-}
-
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 20px 28px;
-}
-
-.imagem-logo {
-  height: auto;
-  max-height: 45px;
-  width: auto;
-  display: block;
-  object-fit: contain;
-}
-
-.logo-sub {
-  display: block;
-  color: var(--muted);
-  font-size: .68rem;
-  margin-top: 1px;
-}
-
-/* NAVEGAÇÃO DA SIDEBAR */
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding: 0;
-}
-
-/* Suporta tanto as classes .nav-item quanto .nav-link com design idêntico */
-.nav-item, .nav-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 20px;
-  color: #8899aa;
-  text-decoration: none;
-  font-size: .85rem;
-  border-left: 3px solid transparent;
-  transition: background .18s, color .18s, border-color .18s;
-  border-radius: 0;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-.nav-item:hover, .nav-link:hover {
-  background: var(--sidebar-hover);
-  color: #ffffff;
-}
-
-.nav-item.active, .nav-link.active {
-  background: var(--sidebar-hover);
-  color: #ffffff;
-  border-left-color: var(--accent);
-}
-
-.nav-icon, .nav-link svg {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  stroke: currentColor;
-  fill: none;
-}
-
-/* Botão de Fechar (Mobile) */
-.sidebar-close {
-  display: none;
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(15,25,45,.55);
-  backdrop-filter: blur(3px);
-  z-index: 90;
-}
-
-.overlay.visible {
-  display: block;
-}
-
-/* ==========================================================================
    ÁREA PRINCIPAL DE MENSAGENS (CONTAINERS)
    ========================================================================== */
 .main-wrapper {
@@ -165,37 +57,6 @@ body {
   flex-direction: column;
   padding: 28px 0 0;
   overflow: hidden;
-}
-
-.mobile-header {
-  display: none;
-  align-items: center;
-  gap: 12px;
-  padding: 0 18px 14px;
-}
-
-.hamburger {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 4px;
-}
-
-.hamburger span {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: #333;
-  border-radius: 2px;
-}
-
-.mobile-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
 }
 
 .panel-title {
@@ -609,36 +470,15 @@ body {
 
 /* Layout de Tablet */
 @media (max-width: 860px) {
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    transform: translateX(-100%);
-    z-index: 100;
-  }
-
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
-  .sidebar-close {
-    display: block;
-  }
-
   .messages-panel {
     min-width: 260px;
     width: 260px;
-    padding-top: 0;
   }
+}
 
-  .mobile-header {
-    display: flex;
-  }
-
-  .panel-title {
-    padding-top: 0;
-  }
+@media (max-width: 760px) {
+  .main-wrapper { padding-top: max(68px, calc(env(safe-area-inset-top) + 56px)); }
+  .messages-panel { padding-top: 0; }
 }
 
 /* Layout Mobile (Alterna entre Lista ou Janela do Chat ativo) */
@@ -659,7 +499,7 @@ body {
 
   .chat-area {
     position: fixed;
-    inset: 0;
+    inset: max(68px, calc(env(safe-area-inset-top) + 56px)) 0 0;
     z-index: 50;
     background: #f8f9fb;
     display: none;
@@ -674,7 +514,7 @@ body {
   }
 
   .chat-view {
-    height: 100dvh;
+    height: 100%;
     min-height: 0;
   }
 
@@ -696,6 +536,4 @@ body {
     flex: 0 0 auto;
   }
 }
-
-
 

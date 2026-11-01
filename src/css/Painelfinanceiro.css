@@ -1,8 +1,6 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --sidebar-bg: #050520;
-  --sidebar-hover: #050520;
   --accent: #7c3aed;
   --accent2: #4f46e5;
   --accent-light: #ede9fe;
@@ -30,46 +28,6 @@ body {
   color: var(--text);
   overflow: hidden;
 }
-
-/* ===== SIDEBAR ===== */
-.sidebar {
-  width: 210px; min-width: 210px;
-  background: var(--sidebar-bg);
-  display: flex; flex-direction: column;
-  padding: 24px 0 16px;
-  z-index: 220;
-}
-
-.sidebar-close, .menu-toggle, .finance-overlay { display: none; }
-
-.imagem-logo {
-  height: auto;
-  max-height: 45px;
-  width: auto;
-  display: block;
-  object-fit: contain;
-}
-
-.logo-image-main {
-  height: 38px;        
-  width: auto;        
-  display: block;     
-  object-fit: contain; 
-}
-
-.logo { display: flex; align-items: center; gap: 10px; padding: 0 20px 28px; }
-.logo-name { display: block; color: #fff; font-weight: 700; font-size: 1rem; }
-.logo-sub  { display: block; color: #64748b; font-size: .68rem; margin-top: 1px; }
-
-.nav-link {
-  display: flex; align-items: center; gap: 10px;
-  padding: 11px 20px; color: #8899aa; text-decoration: none;
-  font-size: .85rem; border-left: 3px solid transparent;
-  transition: background .18s, color .18s, border-color .18s;
-}
-.nav-link svg { width: 16px; height: 16px; flex-shrink: 0; }
-.nav-link:hover { background: var(--sidebar-hover); color: #fff; }
-.nav-link.active { background: var(--sidebar-hover); color: #fff; border-left-color: var(--accent); }
 
 /* ===== MAIN ===== */
 .main {
@@ -150,8 +108,7 @@ body {
   min-height: 40px; padding: 8px 14px; border: 0; border-radius: 8px;
   background: var(--accent); color: #fff; font: inherit; font-weight: 700; cursor: pointer;
 }
-.goal-editor input:focus-visible, .goal-editor button:focus-visible,
-.menu-toggle:focus-visible, .sidebar-close:focus-visible {
+.goal-editor input:focus-visible, .goal-editor button:focus-visible {
   outline: 3px solid rgba(124, 58, 237, .3); outline-offset: 2px;
 }
 
@@ -270,35 +227,9 @@ body {
 
 @media (max-width: 760px) {
   body { overflow: auto; height: auto; min-height: 100dvh; }
-  body.drawer-open { overflow: hidden; }
-  .sidebar {
-    position: fixed; inset: 0 auto 0 0; width: min(280px, 86vw); min-width: 0; height: 100dvh;
-    padding: max(20px, env(safe-area-inset-top)) 0 max(16px, env(safe-area-inset-bottom));
-    box-shadow: 18px 0 40px rgba(5, 5, 32, .26); transform: translateX(-100%);
-    transition: transform .24s ease; overflow-y: auto;
-  }
-  .sidebar.open { transform: translateX(0); }
-  .sidebar .logo { padding: 0 52px 22px 20px; }
-  .sidebar nav { display: flex; flex-direction: column; gap: 4px; }
-  .nav-link { min-height: 44px; justify-content: flex-start; }
-  .sidebar-close {
-    display: inline-flex; position: absolute; top: max(14px, env(safe-area-inset-top)); right: 12px;
-    width: 44px; height: 44px; align-items: center; justify-content: center;
-    border: 0; border-radius: 10px; color: #fff; background: rgba(255,255,255,.09); cursor: pointer;
-  }
-  .sidebar-close svg, .menu-toggle svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
-  .finance-overlay {
-    display: block; position: fixed; inset: 0; border: 0; background: rgba(15, 23, 42, .48);
-    opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 210;
-  }
-  .finance-overlay.visible { opacity: 1; pointer-events: auto; }
-  .menu-toggle {
-    display: inline-flex; width: 44px; height: 44px; flex: 0 0 44px;
-    align-items: center; justify-content: center; border: 1px solid var(--border);
-    border-radius: 10px; background: var(--card-bg); color: var(--text); cursor: pointer;
-  }
   .main { width: 100%; margin-left: 0; padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom)); }
   .top-bar { align-items: stretch; flex-direction: column; }
+  .top-bar-title { min-height: 44px; }
   .top-bar h1 { font-size: clamp(1.2rem, 6vw, 1.5rem); }
   .top-bar > .btn-primary { width: 100%; min-height: 44px; }
   .kpi-row, .chart-row { grid-template-columns: 1fr; }
@@ -307,9 +238,4 @@ body {
   .goal-editor input, .goal-editor button { min-height: 44px; }
   .form-row, .inspect-grid { grid-template-columns: 1fr; flex-direction: column; }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .sidebar, .finance-overlay { transition: none; }
-}
-
 

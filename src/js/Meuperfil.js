@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const profileCard = document.querySelector('.profile-card');
   const profileTitle = profileCard.querySelector('h3');
   const portfolioTab = document.getElementById('portfolioTab');
-  const financeNav = document.getElementById('financeNav');
 
   document.getElementById('profileName').value = me.full_name || '';
   document.getElementById('profilePhone').value = me.phone || '';
@@ -23,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     profileCard.appendChild(portfolioSection);
     await renderPortfolio();
   } else {
-    portfolioTab.hidden = true; financeNav.hidden = true;
+    portfolioTab.hidden = true;
   }
 
   async function renderPortfolio() {
@@ -71,5 +70,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.querySelector('.btn-danger').addEventListener('click', () => alert('Para excluir sua conta com segurança, solicite ao suporte Nexlar.'));
   document.querySelector('.btn-photo').addEventListener('click', () => alert('Informe a URL do avatar no cadastro de perfil; upload direto será habilitado após configurar o Storage.'));
 });
+
 
 

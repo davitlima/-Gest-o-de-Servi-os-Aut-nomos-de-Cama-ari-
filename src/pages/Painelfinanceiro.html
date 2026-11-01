@@ -6,6 +6,8 @@
   <title>Nexlar – Painel do Autônomo</title>
   <link rel="stylesheet" href="/src/css/Painelfinanceiro.css" />
   <link rel="stylesheet" href="/src/css/responsive.css" />
+  <link rel="stylesheet" href="/src/css/panel-nav.css" />
+  <script src="/src/js/panel-nav.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="/src/js/api.js" defer></script>
@@ -13,43 +15,11 @@
 </head>
 <body>
 
-<aside class="sidebar" id="financeSidebar" aria-label="Navegação principal">
-  <button class="sidebar-close" id="financeSidebarClose" type="button" aria-label="Fechar menu">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
-  </button>
-  <div class="logo">
-    <img src="/src/images/logobranca.png" alt="logo" class="imagem-logo">
-  </div>
-  <nav>
-    <a href="inicio.html" onclick="window.location.href='inicio.html';" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Início
-    </a>
-
-    <a href="Meuperfil.html" onclick="window.location.href='Meuperfil.html';" class="nav-link" data-page="perfil">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-      <span>Meu Perfil</span>
-    </a>
-
-    <a href="Painelfinanceiro.html" onclick="window.location.href='Painelfinanceiro.html';" class="nav-link active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Financeiro
-    </a>
-    
-    <a href="painelmensagens.html" onclick="window.location.href='painelmensagens.html';" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 012 2z"/></svg>Mensagem
-    </a>
-  </nav>
-</aside>
-<button class="finance-overlay" id="financeOverlay" type="button" aria-label="Fechar menu"></button>
+<nexlar-panel-nav active="financeiro"></nexlar-panel-nav>
 
 <main class="main">
   <header class="top-bar">
     <div class="top-bar-title">
-      <button class="menu-toggle" id="financeMenuButton" type="button" aria-controls="financeSidebar" aria-expanded="false" aria-label="Abrir menu">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
       <h1>Painel do Autônomo</h1>
     </div>
     <button class="btn-primary" id="openModal">+ Adicionar Registro</button>
