@@ -563,15 +563,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     confirmAccountDeletion.disabled = true;
     cancelAccountDeletion.disabled = true;
     confirmAccountDeletion.textContent = 'Excluindo…';
-    accountDeleteFeedback.textContent = 'Verificando sua conta e removendo os arquivos…';
+    accountDeleteFeedback.textContent = 'Removendo seus dados pessoais e preservando o histórico contratual…';
     accountDeletionFeedback.hidden = true;
 
     try {
-      const readiness = await api.request('account/deletion-check');
-      if (!readiness.eligible) {
-        throw new Error('Há contratos associados à sua conta. Fale com o suporte para preservar o histórico antes da exclusão.');
-      }
-
       const storage = api.supabase.storage.from('avatars');
       const { data: rootFiles, error: listError } = await storage.list(session.user.id, { limit: 1000 });
       if (listError) throw listError;
@@ -596,9 +591,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       location.replace('/');
     } catch (error) {
       const code = String(error.message || '');
-      accountDeleteFeedback.textContent = code.includes('ACCOUNT_HAS_CONTRACT_HISTORY')
-        ? 'Há contratos associados à sua conta. Fale com o suporte para preservar o histórico antes da exclusão.'
-        : code || 'Não foi possível excluir a conta. Seus dados de perfil continuam ativos; tente novamente.';
+      accountDeleteFeedback.textContent = code || 'Não foi possível excluir a conta. Seus dados de perfil continuam ativos; tente novamente.';
       accountDeletionFeedback.textContent = accountDeleteFeedback.textContent;
       accountDeletionFeedback.hidden = false;
       confirmAccountDeletion.disabled = false;
