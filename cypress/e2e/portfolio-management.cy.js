@@ -25,6 +25,12 @@ function visitProviderProfile({ items = [], failPortfolioInsert = false } = {}) 
           win.__portfolioItems.push({ id: 2, ...item });
           return { id: 2, ...item };
         }
+        if (route.startsWith('portfolio/') && options?.method === 'PATCH') {
+          const item = JSON.parse(options.body);
+          win.__portfolioRequests.push(item);
+          win.__portfolioItems = win.__portfolioItems.map(existing => String(existing.id) === route.slice('portfolio/'.length) ? { ...existing, ...item } : existing);
+          return win.__portfolioItems.find(existing => String(existing.id) === route.slice('portfolio/'.length));
+        }
         if (route.startsWith('portfolio/') && options?.method === 'DELETE') {
           win.__portfolioItems = win.__portfolioItems.filter(item => String(item.id) !== route.slice('portfolio/'.length));
           return {};
@@ -40,30 +46,44 @@ describe('Gerenciamento do portfólio profissional', () => {
   it('seleciona a imagem, mostra prévia, salva caminho e descrição', () => {
     visitProviderProfile();
     cy.get('#portfolioTab').click();
-    cy.contains('button', '+ Adicionar trabalho').click();
+    cy.get('.profile-photo').should('not.be.visible');
+    cy.get('.profile-form').should('not.be.visible');
+    cy.get('.profile-card > h3').should('not.be.visible');
+    cy.contains('button', '+ Criar oferta de serviço').click();
     cy.get('#portfolioFileInput').selectFile('src/images/Logo.png', { force: true });
     cy.get('#portfolioUploadPreview img').should('be.visible');
     cy.get('#portfolioDescription').type('Instalação residencial');
+    cy.get('#portfolioTitle').type('Pintura de quarto');
+    cy.get('#portfolioPriceMode').select('a_partir_de');
+    cy.get('#portfolioPrice').type('350');
+    cy.get('#portfolioDuration').type('2 dias');
     cy.get('#savePortfolioUpload').click();
     cy.window().its('__portfolioRequests.0').should(item => {
       expect(item.description).to.equal('Instalação residencial');
+      expect(item.title).to.equal('Pintura de quarto');
+      expect(item.price_mode).to.equal('a_partir_de');
+      expect(item.price).to.equal(350);
+      expect(item.estimated_duration).to.equal('2 dias');
       expect(item.storage_path).to.match(/^provider-1\/portfolio\//);
       expect(item.image_url).to.include(`/avatars/${item.storage_path}`);
     });
+    cy.window().its('__portfolioItems').should('have.length', 1);
     cy.get('#portfolio-content').scrollIntoView();
     cy.contains('#portfolio-content', 'Instalação residencial').should('be.visible');
+    cy.contains('#portfolio-content', 'A partir de R$ 350,00').should('be.visible');
+    cy.contains('#portfolio-content', 'Prazo estimado: 2 dias').should('be.visible');
   });
 
   it('aceita arrastar a imagem e rejeita tipo e tamanho inválidos', () => {
     visitProviderProfile();
     cy.get('#portfolioTab').click();
-    cy.contains('button', '+ Adicionar trabalho').click();
+    cy.contains('button', '+ Criar oferta de serviço').click();
     cy.get('#portfolioDropzone').selectFile('src/images/Logo.png', { action: 'drag-drop' });
     cy.get('#portfolioUploadPreview img').should('be.visible');
     cy.get('#portfolioUploadModal').should('have.attr', 'aria-modal', 'true');
     cy.get('body').type('{esc}');
     cy.get('#portfolioTab').should('have.focus').click();
-    cy.contains('button', '+ Adicionar trabalho').click();
+    cy.contains('button', '+ Criar oferta de serviço').click();
     cy.get('#portfolioFileInput').selectFile({
       contents: Cypress.Buffer.from('not an image'), fileName: 'arquivo.svg', mimeType: 'image/svg+xml',
     }, { force: true });
@@ -78,8 +98,10 @@ describe('Gerenciamento do portfólio profissional', () => {
   it('remove o arquivo recém-enviado se a gravação no banco falhar', () => {
     visitProviderProfile({ failPortfolioInsert: true });
     cy.get('#portfolioTab').click();
-    cy.contains('button', '+ Adicionar trabalho').click();
+    cy.contains('button', '+ Criar oferta de serviço').click();
     cy.get('#portfolioFileInput').selectFile('src/images/Logo.png', { force: true });
+    cy.get('#portfolioTitle').type('Instalação elétrica');
+    cy.get('#portfolioPriceMode').select('sob_consulta');
     cy.get('#savePortfolioUpload').click();
     cy.contains('#portfolioUploadMessage', 'Falha de banco simulada.').should('be.visible');
     cy.window().its('__storagePaths').should('be.empty');
@@ -99,4 +121,27 @@ describe('Gerenciamento do portfólio profissional', () => {
     cy.contains('#portfolio-content', 'Trabalho antigo').should('not.exist');
     cy.window().its('__removedStoragePaths').should('include', 'provider-1/portfolio/1-trabalho.png');
   });
+
+  it('edita título, preço e prazo de um item existente sem reenviar imagem', () => {
+    visitProviderProfile({ items: [{
+      id: 8, image_url: '/trabalho.png', storage_path: null, title: 'Reparo antigo', description: 'Descrição',
+      price_mode: 'sob_consulta', price: null, estimated_duration: 'A combinar',
+    }] });
+    cy.get('#portfolioTab').click();
+    cy.contains('button', 'Editar').click();
+    cy.get('#portfolioTitle').clear().type('Reparo hidráulico');
+    cy.get('#portfolioPriceMode').select('fixo');
+    cy.get('#portfolioPrice').should('be.visible').type('180');
+    cy.get('#portfolioDuration').clear().type('1 dia');
+    cy.contains('button', 'Salvar alterações').click();
+    cy.window().its('__portfolioRequests.0').should(item => {
+      expect(item.title).to.equal('Reparo hidráulico');
+      expect(item.price_mode).to.equal('fixo');
+      expect(item.price).to.equal(180);
+      expect(item.estimated_duration).to.equal('1 dia');
+      expect(item.image_url).to.be.undefined;
+    });
+    cy.contains('#portfolio-content', 'Reparo hidráulico').should('be.visible');
+  });
 });
+

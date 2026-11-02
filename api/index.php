@@ -192,9 +192,36 @@ try {
         $storagePath = trim((string) ($data['storage_path'] ?? ''));
         $description = trim((string) ($data['description'] ?? ''));
         if (!Domain::validPortfolioImage($imageUrl, $storagePath, $userId, Config::get('SUPABASE_URL'))) throw new HttpError(422, 'Imagem de portfólio inválida.');
-        if (mb_strlen($description) > 160) throw new HttpError(422, 'A descrição deve ter no máximo 160 caracteres.');
-        $row = ['owner_id' => $userId, 'image_url' => $imageUrl, 'storage_path' => $storagePath, 'description' => $description ?: null];
+        $title = trim((string) ($data['title'] ?? ''));
+        $priceMode = (string) ($data['price_mode'] ?? '');
+        $price = $data['price'] ?? null;
+        $duration = trim((string) ($data['estimated_duration'] ?? ''));
+        if (!Domain::validPortfolioOffer($title, $priceMode, $price, $description, $duration)) throw new HttpError(422, 'Revise o nome, descrição, preço e prazo da oferta.');
+        if ($priceMode === 'sob_consulta') $price = null;
+        $row = ['owner_id' => $userId, 'image_url' => $imageUrl, 'storage_path' => $storagePath, 'title' => $title, 'description' => $description ?: null, 'price_mode' => $priceMode, 'price' => $price === null ? null : (float) $price, 'estimated_duration' => $duration ?: null];
         respond($db->rest('POST', 'portfolio_items', [$row], $token)[0] ?? $row, 201);
+    }
+
+    if (preg_match('#^portfolio/(\d+)$#', $route, $match) && $method === 'PATCH') {
+        if (!Domain::canOfferServices($me['role'])) throw new HttpError(403, 'Seu perfil não possui portfólio.');
+        $data = input();
+        $title = trim((string) ($data['title'] ?? ''));
+        $description = trim((string) ($data['description'] ?? ''));
+        $priceMode = (string) ($data['price_mode'] ?? '');
+        $price = $data['price'] ?? null;
+        $duration = trim((string) ($data['estimated_duration'] ?? ''));
+        if (!Domain::validPortfolioOffer($title, $priceMode, $price, $description, $duration)) throw new HttpError(422, 'Revise o nome, descrição, preço e prazo da oferta.');
+        if ($priceMode === 'sob_consulta') $price = null;
+        $row = ['title' => $title, 'description' => $description ?: null, 'price_mode' => $priceMode, 'price' => $price === null ? null : (float) $price, 'estimated_duration' => $duration ?: null];
+        if (array_key_exists('image_url', $data) || array_key_exists('storage_path', $data)) {
+            $imageUrl = trim((string) ($data['image_url'] ?? ''));
+            $storagePath = trim((string) ($data['storage_path'] ?? ''));
+            if (!Domain::validPortfolioImage($imageUrl, $storagePath, $userId, Config::get('SUPABASE_URL'))) throw new HttpError(422, 'Imagem de portfólio inválida.');
+            $row['image_url'] = $imageUrl; $row['storage_path'] = $storagePath;
+        }
+        $updated = $db->rest('PATCH', 'portfolio_items?id=eq.' . $match[1] . '&owner_id=eq.' . $userId, $row, $token);
+        if (!isset($updated[0])) throw new HttpError(404, 'Oferta não encontrada.');
+        respond($updated[0]);
     }
 
     if (preg_match('#^portfolio/(\d+)$#', $route, $match) && $method === 'DELETE') {
@@ -359,6 +386,7 @@ try {
     error_log($error->getMessage());
     respond(['error' => 'Erro interno do servidor.'], 500);
 }
+
 
 
 

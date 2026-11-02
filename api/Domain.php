@@ -27,6 +27,21 @@ final class Domain
         return hash_equals($expectedUrl, $imageUrl);
     }
 
+    public static function validPortfolioOffer(string $title, string $priceMode, mixed $price, string $description, string $duration): bool
+    {
+        if (mb_strlen(trim($title)) < 2 || mb_strlen(trim($title)) > 90
+            || mb_strlen($description) > 1000 || mb_strlen($duration) > 80
+            || !in_array($priceMode, ['fixo', 'a_partir_de', 'sob_consulta'], true)) {
+            return false;
+        }
+
+        if ($priceMode === 'sob_consulta') {
+            return $price === null || $price === '';
+        }
+
+        return is_numeric($price) && self::validMoney((float) $price) && (float) $price <= 1000000;
+    }
+
     public static function validMoney(float|int $value): bool
     {
         return is_finite((float) $value) && $value > 0;
@@ -60,6 +75,7 @@ final class Domain
     }
 
 }
+
 
 
 

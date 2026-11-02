@@ -22,12 +22,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     const portfolio = document.querySelector('.portfolio-grid'); portfolio.innerHTML = '';
     (profile.portfolio_items || []).forEach(item => {
       const work = document.createElement('figure'); work.className = 'portfolio-entry';
-      const image = document.createElement('img'); image.src = item.image_url; image.alt = item.description || 'Trabalho do profissional'; image.className = 'portfolio-item'; image.loading = 'lazy';
+      const image = document.createElement('img'); image.src = item.image_url; image.alt = item.title || item.description || 'Trabalho do profissional'; image.className = 'portfolio-item'; image.loading = 'lazy';
       work.appendChild(image);
+      const body = document.createElement('div'); body.className = 'portfolio-entry__body';
+      const title = document.createElement('h3'); title.textContent = item.title || 'Trabalho realizado'; body.appendChild(title);
       if (item.description) {
-        const caption = document.createElement('figcaption'); caption.textContent = item.description;
-        work.appendChild(caption);
+        const description = document.createElement('p'); description.className = 'portfolio-entry__description'; description.textContent = item.description; body.appendChild(description);
       }
+      const price = document.createElement('p'); price.className = 'portfolio-entry__price';
+      if (item.price_mode === 'fixo' && Number(item.price) > 0) price.textContent = `R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      else if (item.price_mode === 'a_partir_de' && Number(item.price) > 0) price.textContent = `A partir de R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      else price.textContent = 'Preço sob consulta';
+      body.appendChild(price);
+      if (item.estimated_duration) { const duration = document.createElement('p'); duration.className = 'portfolio-entry__duration'; duration.textContent = `Prazo estimado: ${item.estimated_duration}`; body.appendChild(duration); }
+      work.appendChild(body);
+      const contact = document.createElement('a'); contact.className = 'portfolio-entry__contact'; contact.href = window.NexlarChat.professionalChatUrl(providerId); contact.textContent = 'Conversar sobre este serviço';
+      work.appendChild(contact);
       portfolio.appendChild(work);
     });
     if (!portfolio.children.length) portfolio.textContent = 'O profissional ainda não adicionou trabalhos.';
@@ -72,6 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     star.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); star.click(); } });
   });
 });
+
 
 
 

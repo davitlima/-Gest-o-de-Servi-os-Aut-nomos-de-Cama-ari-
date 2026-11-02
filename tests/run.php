@@ -26,6 +26,12 @@ expect(Domain::validPortfolioImage('https://project.supabase.co/storage/v1/objec
 expect(!Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/other/portfolio/123-foto.png', 'other/portfolio/123-foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita objeto de outro usuário');
 expect(!Domain::validPortfolioImage('https://evil.example/user-1/portfolio/foto.png', 'user-1/portfolio/foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita URL externa');
 expect(!Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/user-1/avatar.png', 'user-1/avatar.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita caminho fora da pasta de portfólio');
+expect(Domain::validPortfolioOffer('Pintura de quarto', 'a_partir_de', 350, 'Tinta e acabamento inclusos.', '2 dias úteis'), 'Oferta aceita preço inicial e prazo válidos');
+expect(Domain::validPortfolioOffer('Instalação elétrica', 'sob_consulta', null, '', ''), 'Oferta aceita orçamento sob consulta sem preço');
+expect(!Domain::validPortfolioOffer('x', 'fixo', 100, '', ''), 'Oferta exige título legível');
+expect(!Domain::validPortfolioOffer('Pintura', 'fixo', null, '', ''), 'Oferta com preço definido exige valor');
+expect(!Domain::validPortfolioOffer('Pintura', 'outro', 100, '', ''), 'Oferta rejeita modalidade de preço desconhecida');
+expect(!Domain::validPortfolioOffer('Pintura', 'fixo', 100, str_repeat('x', 1001), ''), 'Oferta limita o tamanho da descrição');
 expect(Domain::platformFee(100.0) === 15.0, 'Taxa Nexlar deve ser 15%');
 expect(Domain::providerNet(100.0) === 85.0, 'Profissional deve receber 85%');
 
@@ -92,6 +98,10 @@ $portfolioMigration = file_get_contents($portfolioMigrationFiles[0]);
 foreach (['add column if not exists storage_path text', 'portfolio_owner_insert', 'portfolio_owner_update', 'portfolio_owner_delete', 'portfolio_items_owner_created_idx', 'storage.foldername(name)'] as $portfolioMigrationRequirement) {
     expect(str_contains($portfolioMigration, $portfolioMigrationRequirement), 'Migração do portfólio deve incluir ' . $portfolioMigrationRequirement);
 }
+$portfolioOffersMigration = file_get_contents($root . '/supabase/migrations/20261102192718_portfolio_service_offers.sql');
+foreach (['add column if not exists title text', 'add column if not exists price_mode', 'add column if not exists price numeric', 'add column if not exists estimated_duration', 'portfolio_items_price_valid'] as $offerRequirement) {
+    expect(str_contains($portfolioOffersMigration, $offerRequirement), 'Migração de ofertas deve incluir ' . $offerRequirement);
+}
 
 $chatHtml = file_get_contents($root . '/src/pages/painelmensagens.html');
 expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença online');
@@ -149,3 +159,4 @@ foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html
 }
 
 fwrite(STDOUT, "Todos os testes passaram.\n");
+

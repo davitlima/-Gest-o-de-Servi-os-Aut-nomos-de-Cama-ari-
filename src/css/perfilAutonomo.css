@@ -45,7 +45,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 40px;
+  min-height: 50px;
+  padding: 6px 32px;
   background: var(--white);
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -56,11 +57,12 @@ body {
 
 .navbar__logo {
   height: auto;
-  max-height: 38px;
+  max-height: 32px;
   width: auto;
   display: block;
   object-fit: contain;
 }
+.navbar > .btn { min-height: 36px; padding: 6px 16px; }
 
 .navbar__grid-icon {
   font-size: 1rem;
@@ -316,17 +318,45 @@ body {
 .portfolio-entry { min-width: 0; margin: 0; }
 .portfolio-entry .portfolio-item {
   width: 100%;
+  aspect-ratio: 4 / 3;
   height: auto;
   object-fit: cover;
   cursor: default;
+  border-radius: 12px 12px 0 0;
 }
-.portfolio-entry figcaption {
-  margin-top: 8px;
+.portfolio-entry {
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+.portfolio-entry__body { padding: 14px 16px 16px; }
+.portfolio-entry__body h3 { margin: 0 0 5px; font: 600 1rem/1.35 var(--font-head); color: var(--text); }
+.portfolio-entry__description {
+  margin: 0 0 12px;
   color: var(--text-muted);
   font-size: .9rem;
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
+.portfolio-entry__price { margin: 0; color: var(--primary); font-weight: 700; font-size: 1rem; }
+.portfolio-entry__duration { margin: 3px 0 0; color: #465063; font-size: .84rem; }
+.portfolio-entry__contact {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 14px 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+.portfolio-entry__contact:hover { background: var(--primary-hover); }
+.portfolio-entry__contact:focus-visible { outline: 3px solid #193eaf; outline-offset: 3px; }
 
 .portfolio-item {
   aspect-ratio: 1;
@@ -544,7 +574,8 @@ body {
 /* RESPONSIVIDADE */
 @media (max-width: 768px) {
   .navbar {
-    padding: 12px 18px;
+    min-height: 48px;
+    padding: 6px 18px;
   }
 
   .hero-card {
@@ -576,10 +607,12 @@ body {
     position: static;
   }
 
-  .portfolio-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
+  .portfolio-grid { grid-template-columns: 1fr; gap: 14px; }
+  .navbar > .btn { min-height: 34px; padding: 5px 13px; }
+}
+
+@media (min-width: 520px) and (max-width: 768px) {
+  .portfolio-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 380px) {
@@ -588,4 +621,5 @@ body {
   .avatar { width: 64px; height: 64px; }
   .hero-card__reviews { flex-basis: 100%; }
 }
+
 

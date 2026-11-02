@@ -155,6 +155,7 @@ body.avatar-modal-open {
   gap: 18px;
   margin-bottom: 30px;
 }
+.profile-photo[hidden] { display: none !important; }
 
 .avatar {
   width: 72px;
@@ -352,11 +353,19 @@ body.avatar-modal-open {
 }
 
 .portfolio-description { display: grid; gap: 6px; text-align: left; font-weight: 600; color: #172033; }
-.portfolio-description input { width: 100%; padding: 12px 14px; border: 1px solid #cfd5e2; border-radius: 10px; font: inherit; }
+.portfolio-description input,
+.portfolio-description textarea,
+.portfolio-description select { width: 100%; min-height: 44px; padding: 11px 13px; border: 1px solid #cfd5e2; border-radius: 10px; background: #fff; color: #172033; font: inherit; }
+.portfolio-description textarea { min-height: 92px; resize: vertical; }
 .portfolio-dropzone .avatar-dropzone__preview { border-radius: 14px; }
-.portfolio-description input:focus-visible { outline: 3px solid #7774ff; outline-offset: 2px; }
+.portfolio-description input:focus-visible,
+.portfolio-description textarea:focus-visible,
+.portfolio-description select:focus-visible { outline: 3px solid #7774ff; outline-offset: 2px; }
 .portfolio-content[hidden] { display: none !important; }
 .portfolio-content > p:not(.portfolio-feedback) { margin: -12px 0 18px; color: var(--muted); line-height: 1.55; }
+.portfolio-offer-fields { display: grid; gap: 14px; margin-top: 18px; }
+.portfolio-offer-fields__row { display: grid; grid-template-columns: 1.1fr .9fr; gap: 12px; }
+.portfolio-offer-fields [hidden] { display: none !important; }
 .portfolio-feedback { min-height: 22px; margin: 0 0 12px; color: #b42318; font-size: 14px; }
 .portfolio-grid--manage {
   display: grid;
@@ -364,30 +373,38 @@ body.avatar-modal-open {
   gap: 16px;
 }
 .portfolio-work {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   margin: 0;
   overflow: hidden;
   border-radius: 12px;
   background: #f8f9fc;
 }
-.portfolio-work img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
-.portfolio-work figcaption { padding: 10px 12px 46px; color: #374151; line-height: 1.45; overflow-wrap: anywhere; }
+.portfolio-work > img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.portfolio-work__body { flex: 1; padding: 14px 14px 6px; }
+.portfolio-work__body h4 { margin: 0 0 7px; color: #172033; font-size: 16px; line-height: 1.35; }
+.portfolio-work__body p { margin: 0 0 10px; color: #505a6d; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.portfolio-work__body .portfolio-work__price { margin: 0; color: #3730a3; font-size: 15px; font-weight: 700; }
+.portfolio-work__body .portfolio-work__duration { margin: 4px 0 0; color: #596579; }
+.portfolio-work__actions { display: flex; gap: 8px; padding: 8px 12px 12px; }
+.portfolio-edit,
 .portfolio-remove {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
   min-height: 36px;
   padding: 7px 12px;
-  border: 1px solid #ef4444;
+  border: 1px solid #c8cde0;
   border-radius: 8px;
   background: #fff;
-  color: #b42318;
+  color: #273253;
   font: inherit;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
+.portfolio-edit { flex: 1; }
+.portfolio-remove { border-color: #efb2b2; color: #b42318; }
+.portfolio-edit:hover { background: #f4f3ff; }
+.portfolio-remove:hover { background: #fff5f5; }
 .portfolio-remove:disabled { cursor: wait; opacity: .6; }
 .portfolio-add-button {
   min-height: 140px;
@@ -403,6 +420,7 @@ body.avatar-modal-open {
 .portfolio-add-button:hover { border-color: var(--accent2); background: #f0ebff; }
 .portfolio-add-button:focus-visible,
 .portfolio-remove:focus-visible { outline: 3px solid #7774ff; outline-offset: 2px; }
+.portfolio-edit:focus-visible { outline: 3px solid #7774ff; outline-offset: 2px; }
 
 .avatar-modal__actions {
   display: flex;
@@ -442,6 +460,12 @@ body.avatar-modal-open {
   opacity: 0.52;
 }
 
+@media (max-width: 600px) {
+  .portfolio-upload-panel { padding: 20px; }
+  .portfolio-offer-fields__row { grid-template-columns: 1fr; }
+  .portfolio-grid--manage { grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
+}
+
 .avatar-modal button:focus-visible,
 .btn-photo:focus-visible {
   outline: 3px solid rgba(79, 70, 229, 0.35);
@@ -459,6 +483,7 @@ body.avatar-modal-open {
   flex-direction: column;
   gap: 18px;
 }
+.profile-form[hidden] { display: none !important; }
 
 .form-row {
   display: flex;
@@ -565,3 +590,4 @@ textarea {
     grid-template-columns: 1fr 1fr;
   }
 }
+

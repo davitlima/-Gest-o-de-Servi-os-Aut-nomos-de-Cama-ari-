@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     field.value = option?.value || value || '';
   };
   const form = document.querySelector('.profile-form');
+  const profilePhoto = document.querySelector('.profile-photo');
   const tabs = document.querySelectorAll('.tabs .tab');
   const profileCard = document.querySelector('.profile-card');
   const profileTitle = profileCard.querySelector('h3');
@@ -176,9 +177,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function renderPortfolio() {
     portfolioSection.replaceChildren();
     const heading = document.createElement('h3');
-    heading.textContent = 'Meu Portfólio';
+    heading.textContent = 'Serviços e trabalhos';
     const intro = document.createElement('p');
-    intro.textContent = 'Apresente seus trabalhos com imagens e uma descrição curta.';
+    intro.textContent = 'Monte ofertas claras para seus clientes: mostre o resultado, explique o que está incluído e informe preço e prazo.';
     const feedback = document.createElement('p');
     feedback.className = 'portfolio-feedback';
     feedback.setAttribute('role', 'status');
@@ -199,8 +200,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const grid = document.createElement('div');
     grid.className = 'portfolio-grid portfolio-grid--manage';
     const add = document.createElement('button');
-    add.type = 'button'; add.className = 'portfolio-add-button'; add.textContent = '+ Adicionar trabalho';
-    add.addEventListener('click', openPortfolioUpload);
+    add.type = 'button'; add.className = 'portfolio-add-button'; add.textContent = '+ Criar oferta de serviço';
+    add.addEventListener('click', () => openPortfolioUpload());
     grid.appendChild(add);
 
     items.forEach(item => {
@@ -208,8 +209,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       card.className = 'portfolio-work';
       const image = document.createElement('img');
       image.src = item.image_url;
-      image.alt = item.description || 'Trabalho do portfólio';
+      image.alt = item.title || item.description || 'Trabalho do portfólio';
       image.loading = 'lazy';
+      const body = document.createElement('div'); body.className = 'portfolio-work__body';
+      const title = document.createElement('h4'); title.textContent = item.title || 'Trabalho realizado'; body.appendChild(title);
+      if (item.description) { const description = document.createElement('p'); description.textContent = item.description; body.appendChild(description); }
+      const price = document.createElement('p'); price.className = 'portfolio-work__price';
+      if (item.price_mode === 'fixo' && Number(item.price) > 0) price.textContent = `R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      else if (item.price_mode === 'a_partir_de' && Number(item.price) > 0) price.textContent = `A partir de R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      else price.textContent = 'Preço sob consulta';
+      body.appendChild(price);
+      if (item.estimated_duration) { const duration = document.createElement('p'); duration.className = 'portfolio-work__duration'; duration.textContent = `Prazo estimado: ${item.estimated_duration}`; body.appendChild(duration); }
+      const actions = document.createElement('div'); actions.className = 'portfolio-work__actions';
+      const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'portfolio-edit'; edit.textContent = 'Editar'; edit.addEventListener('click', () => openPortfolioUpload(item));
       const remove = document.createElement('button');
       remove.type = 'button'; remove.className = 'portfolio-remove'; remove.textContent = 'Excluir';
       remove.addEventListener('click', async () => {
@@ -234,13 +246,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           feedback.textContent = error.message || 'Não foi possível excluir este trabalho.';
         }
       });
-      card.append(image);
-      if (item.description) {
-        const caption = document.createElement('figcaption');
-        caption.textContent = item.description;
-        card.appendChild(caption);
-      }
-      card.appendChild(remove);
+      actions.append(edit, remove);
+      card.append(image, body, actions);
       grid.appendChild(card);
     });
     portfolioSection.appendChild(grid);
@@ -253,7 +260,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   portfolioModal.setAttribute('role', 'dialog');
   portfolioModal.setAttribute('aria-modal', 'true');
   portfolioModal.setAttribute('aria-labelledby', 'portfolioUploadTitle');
-  portfolioModal.innerHTML = `<section class="avatar-modal__panel portfolio-upload-panel" aria-describedby="portfolioUploadDescription"><header class="avatar-modal__header"><div><h2 id="portfolioUploadTitle">Adicionar trabalho</h2><p id="portfolioUploadDescription">Escolha uma imagem nítida de até 5 MB.</p></div><button class="avatar-modal__close" id="closePortfolioUpload" type="button" aria-label="Fechar painel">×</button></header><button class="avatar-dropzone portfolio-dropzone" id="portfolioDropzone" type="button" aria-label="Arraste ou selecione uma imagem"><span class="avatar-dropzone__preview" id="portfolioUploadPreview" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg></span><strong>Arraste a imagem para cá</strong><span>ou clique para selecionar no dispositivo</span><small>JPG, PNG, GIF ou WebP · máximo de 5 MB</small></button><input id="portfolioFileInput" type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden><label class="portfolio-description" for="portfolioDescription">Descrição (opcional)<input id="portfolioDescription" type="text" maxlength="160" placeholder="Descreva este trabalho"></label><p class="avatar-upload-message" id="portfolioUploadMessage" role="status" aria-live="polite"></p><footer class="avatar-modal__actions"><button type="button" class="avatar-action avatar-action--secondary" id="cancelPortfolioUpload">Cancelar</button><button type="button" class="avatar-action avatar-action--primary" id="savePortfolioUpload" disabled>Salvar trabalho</button></footer></section>`;
+  portfolioModal.innerHTML = `<section class="avatar-modal__panel portfolio-upload-panel" aria-describedby="portfolioUploadDescription"><header class="avatar-modal__header"><div><h2 id="portfolioUploadTitle">Criar oferta de serviço</h2><p id="portfolioUploadDescription">Mostre um trabalho e informe ao cliente o que esperar.</p></div><button class="avatar-modal__close" id="closePortfolioUpload" type="button" aria-label="Fechar painel">×</button></header><button class="avatar-dropzone portfolio-dropzone" id="portfolioDropzone" type="button" aria-label="Arraste ou selecione uma imagem"><span class="avatar-dropzone__preview" id="portfolioUploadPreview" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg></span><strong>Arraste uma foto do trabalho</strong><span>ou clique para selecionar no dispositivo</span><small id="portfolioFileHint">JPG, PNG, GIF ou WebP · máximo de 5 MB</small></button><input id="portfolioFileInput" type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden><div class="portfolio-offer-fields"><label class="portfolio-description" for="portfolioTitle">Nome do serviço<input id="portfolioTitle" type="text" maxlength="90" required placeholder="Ex.: Pintura de quarto"></label><label class="portfolio-description" for="portfolioDescription">Descrição e o que está incluído<textarea id="portfolioDescription" maxlength="1000" rows="3" placeholder="Explique o serviço, materiais, acabamento ou detalhes importantes"></textarea></label><div class="portfolio-offer-fields__row"><label class="portfolio-description" for="portfolioPriceMode">Como informar o preço<select id="portfolioPriceMode"><option value="fixo">Preço fechado</option><option value="a_partir_de">A partir de</option><option value="sob_consulta">Sob consulta</option></select></label><label class="portfolio-description" id="portfolioPriceGroup" for="portfolioPrice">Valor em reais<input id="portfolioPrice" type="number" min="0.01" max="1000000" step="0.01" placeholder="0,00"></label></div><label class="portfolio-description" for="portfolioDuration">Prazo estimado<input id="portfolioDuration" type="text" maxlength="80" placeholder="Ex.: 2 dias úteis"></label></div><p class="avatar-upload-message" id="portfolioUploadMessage" role="status" aria-live="polite"></p><footer class="avatar-modal__actions"><button type="button" class="avatar-action avatar-action--secondary" id="cancelPortfolioUpload">Cancelar</button><button type="button" class="avatar-action avatar-action--primary" id="savePortfolioUpload" disabled>Salvar oferta</button></footer></section>`;
   document.body.appendChild(portfolioModal);
   const portfolioDropzone = portfolioModal.querySelector('.avatar-dropzone');
   const portfolioPanel = portfolioModal.querySelector('.portfolio-upload-panel');
@@ -261,20 +268,36 @@ document.addEventListener('DOMContentLoaded', async () => {
   const portfolioPreview = document.getElementById('portfolioUploadPreview');
   const portfolioMessage = document.getElementById('portfolioUploadMessage');
   const portfolioDescription = document.getElementById('portfolioDescription');
+  const portfolioTitle = document.getElementById('portfolioTitle');
+  const portfolioPriceMode = document.getElementById('portfolioPriceMode');
+  const portfolioPrice = document.getElementById('portfolioPrice');
+  const portfolioPriceGroup = document.getElementById('portfolioPriceGroup');
+  const portfolioDuration = document.getElementById('portfolioDuration');
+  const portfolioModalTitle = document.getElementById('portfolioUploadTitle');
+  const portfolioFileHint = document.getElementById('portfolioFileHint');
   const portfolioSave = document.getElementById('savePortfolioUpload');
   const portfolioCloseButtons = [document.getElementById('closePortfolioUpload'), document.getElementById('cancelPortfolioUpload')];
   const emptyPortfolioPreview = portfolioPreview.innerHTML;
   let selectedPortfolio = null;
   let portfolioPreviewUrl = null;
   let portfolioSaving = false;
+  let portfolioEditingItem = null;
 
-  function clearPortfolioSelection() {
+  function clearPortfolioSelection({ keepFields = false } = {}) {
     if (portfolioPreviewUrl) URL.revokeObjectURL(portfolioPreviewUrl);
     portfolioPreviewUrl = null;
     selectedPortfolio = null;
     portfolioInput.value = '';
     portfolioPreview.innerHTML = emptyPortfolioPreview;
-    portfolioDescription.value = '';
+    if (!keepFields) {
+      portfolioDescription.value = '';
+      portfolioTitle.value = '';
+      portfolioPriceMode.value = 'fixo';
+      portfolioPrice.value = '';
+      portfolioDuration.value = '';
+      portfolioPriceGroup.hidden = false;
+      portfolioPrice.required = true;
+    }
     portfolioMessage.textContent = '';
     portfolioMessage.className = 'avatar-upload-message';
     portfolioSave.disabled = true;
@@ -283,7 +306,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function choosePortfolio(files) {
     const { file, validation } = window.NexlarProfileUpload.selectProfileImage(files);
-    clearPortfolioSelection();
+    clearPortfolioSelection({ keepFields: true });
     if (!validation.valid) {
       portfolioMessage.textContent = validation.error;
       return;
@@ -299,8 +322,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     portfolioSave.disabled = false;
   }
 
-  function openPortfolioUpload() {
+  function openPortfolioUpload(item = null) {
     clearPortfolioSelection();
+    portfolioEditingItem = item;
+    if (item) {
+      portfolioModalTitle.textContent = 'Editar oferta de serviço';
+      portfolioTitle.value = item.title || '';
+      portfolioDescription.value = item.description || '';
+      portfolioPriceMode.value = ['fixo', 'a_partir_de', 'sob_consulta'].includes(item.price_mode) ? item.price_mode : 'sob_consulta';
+      portfolioPrice.value = item.price ?? '';
+      portfolioDuration.value = item.estimated_duration || '';
+      portfolioFileHint.textContent = 'A imagem atual será mantida se você não escolher outra.';
+      if (item.image_url) {
+        const image = document.createElement('img'); image.src = item.image_url; image.alt = 'Imagem atual do trabalho'; portfolioPreview.replaceChildren(image);
+      }
+      portfolioSave.disabled = false;
+      portfolioSave.textContent = 'Salvar alterações';
+    } else {
+      portfolioModalTitle.textContent = 'Criar oferta de serviço';
+      portfolioFileHint.textContent = 'JPG, PNG, GIF ou WebP · máximo de 5 MB';
+      portfolioSave.textContent = 'Salvar oferta';
+    }
+      portfolioPriceGroup.hidden = portfolioPriceMode.value === 'sob_consulta';
+      portfolioPrice.required = portfolioPriceMode.value !== 'sob_consulta';
     portfolioModal.hidden = false;
     document.body.classList.add('avatar-modal-open');
     document.getElementById('closePortfolioUpload').focus();
@@ -315,6 +359,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   portfolioDropzone.addEventListener('click', () => portfolioInput.click());
+  portfolioPriceMode.addEventListener('change', () => {
+    const quote = portfolioPriceMode.value === 'sob_consulta';
+    portfolioPriceGroup.hidden = quote;
+    portfolioPrice.required = !quote;
+    if (quote) portfolioPrice.value = '';
+    if (selectedPortfolio || portfolioEditingItem) portfolioSave.disabled = false;
+  });
   portfolioInput.addEventListener('change', () => choosePortfolio(portfolioInput.files));
   ['dragenter', 'dragover'].forEach(type => portfolioDropzone.addEventListener(type, event => {
     event.preventDefault(); portfolioDropzone.classList.add('is-dragging');
@@ -336,31 +387,40 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   portfolioSave.addEventListener('click', async () => {
-    if (!selectedPortfolio || portfolioSaving) return;
+    if ((!selectedPortfolio && !portfolioEditingItem) || portfolioSaving) return;
+    if (!portfolioTitle.value.trim()) { portfolioMessage.textContent = 'Informe um nome para o serviço.'; portfolioTitle.focus(); return; }
+    if (portfolioPriceMode.value !== 'sob_consulta' && !(Number(portfolioPrice.value) > 0)) { portfolioMessage.textContent = 'Informe um valor válido ou escolha “Sob consulta”.'; portfolioPrice.focus(); return; }
     portfolioSaving = true;
     portfolioSave.disabled = true;
     portfolioSave.textContent = 'Salvando...';
     portfolioPanel.setAttribute('aria-busy', 'true');
-    portfolioMessage.textContent = 'Enviando imagem...';
+    portfolioMessage.textContent = selectedPortfolio ? 'Enviando imagem e salvando oferta...' : 'Salvando oferta...';
     portfolioMessage.className = 'avatar-upload-message';
     const bucket = api.supabase.storage.from('avatars');
     let uploaded = null;
     let persisted = false;
     try {
-      uploaded = await window.NexlarProfileUpload.uploadImage({
-        bucket, userId: session.user.id, file: selectedPortfolio, folder: 'portfolio',
-      });
-      await api.request('portfolio', {
-        method: 'POST',
-        body: JSON.stringify({
-          image_url: uploaded.publicUrl,
-          storage_path: uploaded.path,
-          description: portfolioDescription.value.trim(),
-        }),
+      const data = {
+        title: portfolioTitle.value.trim(),
+        description: portfolioDescription.value.trim(),
+        price_mode: portfolioPriceMode.value,
+        price: portfolioPriceMode.value === 'sob_consulta' ? null : Number(portfolioPrice.value),
+        estimated_duration: portfolioDuration.value.trim(),
+      };
+      if (selectedPortfolio) {
+        uploaded = await window.NexlarProfileUpload.uploadImage({ bucket, userId: session.user.id, file: selectedPortfolio, folder: 'portfolio' });
+        data.image_url = uploaded.publicUrl; data.storage_path = uploaded.path;
+      }
+      await api.request(portfolioEditingItem ? `portfolio/${portfolioEditingItem.id}` : 'portfolio', {
+        method: portfolioEditingItem ? 'PATCH' : 'POST', body: JSON.stringify(data),
       });
       persisted = true;
       portfolioSaving = false;
       closePortfolioUpload();
+      if (uploaded && portfolioEditingItem?.storage_path) {
+        try { await bucket.remove([portfolioEditingItem.storage_path]); }
+        catch (_) { console.error('[Nexlar] Não foi possível remover a imagem substituída do portfólio.'); }
+      }
       await renderPortfolio();
     } catch (error) {
       if (uploaded && !persisted) {
@@ -374,7 +434,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       portfolioSave.disabled = false;
     } finally {
       portfolioSaving = false;
-      portfolioSave.textContent = 'Salvar trabalho';
+      portfolioSave.textContent = portfolioEditingItem ? 'Salvar alterações' : 'Salvar oferta';
       portfolioPanel.removeAttribute('aria-busy');
     }
   });
@@ -383,6 +443,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     tabs.forEach(item => item.classList.remove('active')); tab.classList.add('active');
     const portfolioOpen = index === 1 && portfolioSection;
     form.hidden = Boolean(portfolioOpen);
+    profilePhoto.hidden = Boolean(portfolioOpen);
     profileTitle.hidden = Boolean(portfolioOpen);
     if (portfolioSection) portfolioSection.hidden = !portfolioOpen;
   }));
@@ -415,3 +476,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   document.querySelector('.btn-danger').addEventListener('click', () => alert('Para excluir sua conta com segurança, solicite ao suporte Nexlar.'));
 });
+

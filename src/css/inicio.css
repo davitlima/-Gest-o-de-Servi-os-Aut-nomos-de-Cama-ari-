@@ -32,7 +32,7 @@ body {
   align-items: center; 
   justify-content: space-between;
   padding: 0 28px; 
-  height: 58px;
+  height: 50px;
   background: #fff; 
   border-bottom: 1px solid #e0e0ec;
   position: sticky; 
@@ -48,7 +48,7 @@ body {
 }
 
 .logo img {
-  height: 38px;    /* Altura equilibrada para a nav de 58px */
+  height: 32px;
   width: auto;
   display: block;
   object-fit: contain;
@@ -407,7 +407,7 @@ main {
   .search-bar { display:flex; width:100%; max-width:none; margin:0; }
   .navbar {
     padding: 0 16px; /* Reduz padding lateral no celular */
-    height:auto; min-height:58px; flex-wrap:wrap; gap:8px; padding-block:8px;
+    height:auto; min-height:48px; flex-wrap:wrap; gap:8px; padding-block:6px;
   }
   .navbar .search-bar { order:3; flex-basis:100%; }
   main { padding:18px 14px 36px; gap:16px; }
@@ -437,4 +437,5 @@ main {
 .stars[data-r="4.0"] { --percent: 80%; }
 .stars[data-r="4.5"] { --percent: 90%; }
 .stars[data-r="5.0"] { --percent: 100%; }
+
 
