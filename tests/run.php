@@ -99,12 +99,14 @@ expect(!str_contains($api, 'monthly_goals?owner_id=eq.$userId&year='), 'API não
 expect(!str_contains($api, "auth/email-step/start"), 'API não deve exigir segunda etapa por e-mail');
 expect(!str_contains($api, "auth/email-step/complete"), 'API não deve concluir segunda etapa por e-mail');
 
-$deletionMigrationFiles = glob($root . '/supabase/migrations/*_account_delete_mfa_optional.sql') ?: [];
-expect(count($deletionMigrationFiles) === 1, 'Regra de exclusão deve diferenciar contas com e sem MFA configurada');
+$deletionMigrationFiles = glob($root . '/supabase/migrations/*_account_delete_without_mfa.sql') ?: [];
+expect(count($deletionMigrationFiles) === 1, 'Exclusão de conta deve ter uma migração sem requisito de MFA');
 $deletionMigration = file_get_contents($deletionMigrationFiles[0]);
-expect(str_contains($deletionMigration, 'auth.mfa_factors'), 'Exclusão deve verificar se existe fator MFA confirmado');
-expect(str_contains($deletionMigration, "status = 'verified'"), 'Fatores MFA não confirmados não podem bloquear a exclusão');
-expect(str_contains($deletionMigration, "is distinct from 'aal2'"), 'Conta com MFA confirmado ainda exige nível AAL2');
+expect(str_contains($deletionMigration, 'auth.uid()'), 'Exclusão continua limitada à conta autenticada');
+expect(str_contains($deletionMigration, "p_confirmation is distinct from 'EXCLUIR'"), 'Exclusão continua exigindo confirmação explícita');
+expect(!str_contains($deletionMigration, 'MFA_REQUIRED') && !str_contains($deletionMigration, 'auth.mfa_factors'), 'Exclusão não pode depender de MFA');
+$profileJs = file_get_contents($root . '/src/js/Meuperfil.js');
+expect(!str_contains($profileJs, 'MFA_REQUIRED') && !str_contains($profileJs, 'getAuthenticatorAssuranceLevel'), 'Tela de exclusão não pode pedir verificação em duas etapas');
 
 $avatarMigration = file_get_contents($root . '/supabase/migrations/20261101120000_profile_avatar_storage.sql');
 expect(str_contains($avatarMigration, 'file_size_limit'), 'Bucket de avatar deve impor limite de tamanho no Storage');
