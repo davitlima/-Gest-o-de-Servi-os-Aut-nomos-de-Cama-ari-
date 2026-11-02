@@ -18,7 +18,7 @@ describe('Account deletion controls', () => {
           supabase: {
             auth: {
               signOut: async () => ({ error: null }),
-              mfa: { getAuthenticatorAssuranceLevel: async () => ({ data: { currentLevel: 'aal2' }, error: null }) }
+              mfa: { getAuthenticatorAssuranceLevel: async () => ({ data: { currentLevel: 'aal1' }, error: null }) }
             },
             storage: { from: () => ({ list: async () => ({ data: [], error: null }), remove: async () => ({ error: null }) }) }
           }
@@ -65,3 +65,4 @@ describe('Account deletion controls', () => {
     cy.window().its('localStorage').invoke('getItem', 'account-delete-request').should('eq', JSON.stringify({ method: 'DELETE', body: { confirmation: 'EXCLUIR' } }));
   });
 });
+
