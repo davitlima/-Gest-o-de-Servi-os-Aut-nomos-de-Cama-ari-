@@ -86,4 +86,4 @@ describe('Tela Inicial - Nexlar', () => {
       .closest('a')
       .should('have.attr', 'onclick', 'event.stopPropagation();');
   });
-});gity
+});
