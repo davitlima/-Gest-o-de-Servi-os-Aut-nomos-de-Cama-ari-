@@ -598,9 +598,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const code = String(error.message || '');
       accountDeleteFeedback.textContent = code.includes('ACCOUNT_HAS_CONTRACT_HISTORY')
         ? 'Há contratos associados à sua conta. Fale com o suporte para preservar o histórico antes da exclusão.'
-        : code.includes('MFA_REQUIRED')
-          ? 'Sua conta tem um autenticador configurado. Entre novamente e conclua a verificação em duas etapas antes de excluir.'
-          : code || 'Não foi possível excluir a conta. Seus dados de perfil continuam ativos; tente novamente.';
+        : code || 'Não foi possível excluir a conta. Seus dados de perfil continuam ativos; tente novamente.';
       accountDeletionFeedback.textContent = accountDeleteFeedback.textContent;
       accountDeletionFeedback.hidden = false;
       confirmAccountDeletion.disabled = false;
