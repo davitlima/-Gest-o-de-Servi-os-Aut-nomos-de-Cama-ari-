@@ -51,7 +51,7 @@
 
             <div class="profile-photo">
                 <div class="avatar">?</div>
-                <button class="btn-photo">
+                <button class="btn-photo" type="button" aria-haspopup="dialog" aria-controls="avatarUploadModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
                         <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4z" />
                         <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5m0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0" />
@@ -99,8 +99,40 @@
 
     </main>
 
+    <div class="avatar-modal" id="avatarUploadModal" role="dialog" aria-modal="true" aria-labelledby="avatarUploadTitle" hidden>
+        <section class="avatar-modal__panel" aria-describedby="avatarUploadDescription">
+            <header class="avatar-modal__header">
+                <div>
+                    <h2 id="avatarUploadTitle">Alterar foto de perfil</h2>
+                    <p id="avatarUploadDescription">Escolha uma imagem nítida de até 5 MB.</p>
+                </div>
+                <button class="avatar-modal__close" id="closeAvatarUpload" type="button" aria-label="Fechar painel">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+                </button>
+            </header>
+
+            <button class="avatar-dropzone" id="avatarDropzone" type="button">
+                <span class="avatar-dropzone__preview" id="avatarUploadPreview" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg>
+                </span>
+                <strong>Arraste sua foto para cá</strong>
+                <span>ou clique para selecionar no dispositivo</span>
+                <small id="avatarFileName">JPG, PNG, GIF ou WebP · máximo de 5 MB</small>
+            </button>
+            <input id="avatarFileInput" type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+
+            <p class="avatar-upload-message" id="avatarUploadMessage" role="status" aria-live="polite"></p>
+
+            <footer class="avatar-modal__actions">
+                <button class="avatar-action avatar-action--secondary" id="cancelAvatarUpload" type="button">Cancelar</button>
+                <button class="avatar-action avatar-action--primary" id="saveAvatarUpload" type="button" disabled>Salvar foto</button>
+            </footer>
+        </section>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/src/js/api.js"></script>
+    <script src="/src/js/profile-upload-core.js"></script>
     <script src="/src/js/Meuperfil.js"></script>
 </body>
 

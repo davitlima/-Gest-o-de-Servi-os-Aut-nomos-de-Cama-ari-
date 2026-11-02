@@ -79,6 +79,10 @@ expect(!str_contains($api, 'monthly_goals?owner_id=eq.$userId&year='), 'API não
 expect(!str_contains($api, "auth/email-step/start"), 'API não deve exigir segunda etapa por e-mail');
 expect(!str_contains($api, "auth/email-step/complete"), 'API não deve concluir segunda etapa por e-mail');
 
+$avatarMigration = file_get_contents($root . '/supabase/migrations/20261101120000_profile_avatar_storage.sql');
+expect(str_contains($avatarMigration, 'file_size_limit'), 'Bucket de avatar deve impor limite de tamanho no Storage');
+expect(str_contains($avatarMigration, 'allowed_mime_types'), 'Bucket de avatar deve impor os tipos permitidos no Storage');
+
 $chatHtml = file_get_contents($root . '/src/pages/painelmensagens.html');
 expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença online');
 expect(substr_count($chatHtml, '/src/js/api.js') === 1, 'Chat deve carregar o cliente de API uma única vez');
@@ -95,6 +99,13 @@ expect(str_contains($responsiveCss, 'min-height: 44px'), 'Controles móveis deve
 
 $financeCss = file_get_contents($root . '/src/css/Painelfinanceiro.css');
 expect(str_contains($financeCss, '.goal-editor-controls'), 'Editor de meta precisa de layout responsivo próprio');
+
+$profileHtml = file_get_contents($root . '/src/pages/Meuperfil.html');
+foreach (['avatarUploadModal', 'avatarDropzone', 'avatarFileInput', 'avatarUploadMessage', 'cancelAvatarUpload', 'saveAvatarUpload'] as $avatarControl) {
+    expect(str_contains($profileHtml, 'id="' . $avatarControl . '"'), 'Modal de avatar deve possuir o controle ' . $avatarControl);
+}
+expect(str_contains($profileHtml, 'role="dialog"'), 'Modal de avatar deve expor semântica de diálogo');
+expect(str_contains($profileHtml, 'aria-modal="true"'), 'Modal de avatar deve bloquear o contexto externo para leitores de tela');
 
 foreach (['Meuperfil' => 'perfil', 'Painelfinanceiro' => 'financeiro', 'painelmensagens' => 'mensagens'] as $page => $active) {
     $html = file_get_contents($root . '/src/pages/' . $page . '.html');

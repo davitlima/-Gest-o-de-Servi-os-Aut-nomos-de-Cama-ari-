@@ -30,6 +30,10 @@ body {
   overflow: hidden;
 }
 
+body.avatar-modal-open {
+  overflow: hidden;
+}
+
 .container {
   flex: 1;
   padding: 34px 42px;
@@ -189,6 +193,200 @@ body {
   height: 16px;
 }
 
+.avatar-modal[hidden] {
+  display: none;
+}
+
+.avatar-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(10, 15, 35, 0.62);
+}
+
+.avatar-modal__panel {
+  width: min(100%, 520px);
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  padding: 28px;
+  border-radius: 16px;
+  background: var(--card-bg);
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.28);
+}
+
+.avatar-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.avatar-modal__header h2 {
+  margin-bottom: 6px;
+  font-size: 24px;
+  line-height: 1.2;
+  color: #111827;
+}
+
+.avatar-modal__header p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.avatar-modal__close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: #f3f4f6;
+  color: #374151;
+  cursor: pointer;
+}
+
+.avatar-modal__close:hover {
+  background: #e5e7eb;
+}
+
+.avatar-modal__close svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.avatar-dropzone {
+  width: 100%;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 28px;
+  border: 2px dashed #a5b4fc;
+  border-radius: 16px;
+  background: #f8f7ff;
+  color: #312e81;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.avatar-dropzone:hover,
+.avatar-dropzone.is-dragging {
+  border-color: var(--accent);
+  background: #f0ebff;
+}
+
+.avatar-dropzone.is-dragging {
+  transform: scale(1.01);
+}
+
+.avatar-dropzone__preview {
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.avatar-dropzone__preview svg {
+  width: 38px;
+  height: 38px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.avatar-dropzone__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-dropzone strong {
+  color: #1e1b4b;
+  font-size: 16px;
+}
+
+.avatar-dropzone > span:not(.avatar-dropzone__preview),
+.avatar-dropzone small {
+  color: #625b80;
+  font-size: 13px;
+}
+
+.avatar-upload-message {
+  min-height: 22px;
+  margin-top: 12px;
+  color: #b42318;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.avatar-upload-message.is-success {
+  color: #087443;
+}
+
+.avatar-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.avatar-action {
+  min-height: 44px;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.avatar-action--secondary {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+}
+
+.avatar-action--primary {
+  border: 1px solid var(--accent2);
+  background: var(--accent2);
+  color: #fff;
+}
+
+.avatar-action--primary:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.avatar-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.avatar-modal button:focus-visible,
+.btn-photo:focus-visible {
+  outline: 3px solid rgba(79, 70, 229, 0.35);
+  outline-offset: 3px;
+}
+
 .profile-card h3 {
   margin-bottom: 22px;
   font-size: 22px;
@@ -282,5 +480,26 @@ textarea {
   body { flex-direction: column; height: auto; min-height: 100dvh; overflow: auto; }
   .container { padding-top: max(24px, env(safe-area-inset-top)); }
   .top-header > div:first-child { padding-left: 56px; }
+
+  .avatar-modal {
+    align-items: end;
+    padding: 12px 12px max(12px, env(safe-area-inset-bottom));
+  }
+
+  .avatar-modal__panel {
+    width: 100%;
+    max-height: calc(100dvh - 24px);
+    padding: 22px 18px;
+  }
+
+  .avatar-dropzone {
+    min-height: 240px;
+    padding: 22px 16px;
+  }
+
+  .avatar-modal__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
