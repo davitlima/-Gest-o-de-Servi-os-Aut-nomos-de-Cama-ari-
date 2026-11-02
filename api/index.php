@@ -125,7 +125,7 @@ try {
     if ($route === 'public/profile' && $method === 'GET') {
         $profileId = query('id');
         if ($profileId === '') throw new HttpError(422, 'Perfil não informado.');
-        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*,portfolio_item_images(id,image_url,storage_path,position,created_at)),reviews!reviews_provider_id_fkey(contract_id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))&portfolio_item_images.order=position.asc', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
+        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*,portfolio_item_images(id,image_url,storage_path,position,created_at)),reviews!reviews_provider_id_fkey(contract_id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))&portfolio_items.portfolio_item_images.order=position.asc', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
         if (!isset($profiles[0])) throw new HttpError(404, 'Perfil não encontrado.');
         respond($profiles[0]);
     }
