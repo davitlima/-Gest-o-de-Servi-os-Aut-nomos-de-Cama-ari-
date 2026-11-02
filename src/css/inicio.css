@@ -54,34 +54,35 @@ body {
   object-fit: contain;
 }
 
-/* SEARCH BAR */
+/* SEARCH */
 .search-bar {
-  display: flex; 
-  align-items: center; 
+  display: flex;
+  align-items: center;
   gap: 8px;
-  background: #f5f5fb; 
+  background: #f5f5fb;
   border: 1px solid #e0e0ec;
-  border-radius: 999px; 
-  padding: 7px 16px;
-  flex: 1 1 440px;
+  border-radius: 8px;
+  padding: 9px 12px;
+  min-height: 44px;
   min-width: 0;
-  max-width: 440px; 
-  width: min(440px, 100%);
-  margin: 0 24px;
+  width: 100%;
+  color: #667085;
 }
 
 .search-bar input {
-  border: none; 
-  background: transparent; 
+  border: 0;
+  background: transparent;
   outline: none;
-  font-family: var(--font); 
-  font-size: 13px; 
-  color: #333; 
+  font-family: var(--font);
+  font-size: 13px;
+  color: #333;
+  min-width: 0;
   width: 100%;
 }
 
-.search-bar input::placeholder { 
+.search-bar input::placeholder {
   color: #6b7280;
+  opacity: 1;
 }
 
 /* NAV ACTIONS */
@@ -184,8 +185,10 @@ main {
   background: #fff; 
   border-radius: 10px;
   padding: 12px 14px; 
-  display: flex; 
-  gap: 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: 12px;
 }
 
 .results-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; color:#4b4b69; font-size:13px; }
@@ -210,7 +213,8 @@ main {
 .retry-professionals:focus-visible { outline: 3px solid #8585ff; outline-offset: 3px; }
 
 .filters select {
-  flex: 1; 
+  min-width: 0;
+  min-height: 44px;
   border: 1.5px solid #e0e0ec; 
   border-radius: 8px;
   padding: 9px 12px; 
@@ -404,15 +408,13 @@ main {
   .categories { 
     grid-template-columns: repeat(2, 1fr); 
   }
-  .search-bar { display:flex; width:100%; max-width:none; margin:0; }
   .navbar {
     padding: 0 16px; /* Reduz padding lateral no celular */
     height:auto; min-height:48px; flex-wrap:wrap; gap:8px; padding-block:6px;
   }
-  .navbar .search-bar { order:3; flex-basis:100%; }
   main { padding:18px 14px 36px; gap:16px; }
   .hero { padding:22px 18px; }
-  .filters { flex-direction:column; gap:8px; }
+  .filters { grid-template-columns:1fr; gap:8px; }
   .categories { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 
@@ -437,5 +439,6 @@ main {
 .stars[data-r="4.0"] { --percent: 80%; }
 .stars[data-r="4.5"] { --percent: 90%; }
 .stars[data-r="5.0"] { --percent: 100%; }
+
 
 
