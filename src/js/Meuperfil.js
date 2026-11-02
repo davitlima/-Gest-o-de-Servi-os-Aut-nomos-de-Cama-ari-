@@ -532,5 +532,89 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert(error.message || 'Não foi possível sair da conta. Tente novamente.');
     }
   });
-  document.querySelector('.btn-danger').addEventListener('click', () => alert('Para excluir sua conta com segurança, solicite ao suporte Nexlar.'));
+
+  const accountDeleteDialog = document.getElementById('accountDeleteDialog');
+  const openAccountDeletion = document.getElementById('openAccountDeletion');
+  const accountDeleteConfirmation = document.getElementById('accountDeleteConfirmation');
+  const accountDeleteFeedback = document.getElementById('accountDeleteFeedback');
+  const confirmAccountDeletion = document.getElementById('confirmAccountDeletion');
+  const cancelAccountDeletion = document.getElementById('cancelAccountDeletion');
+  const accountDeletionFeedback = document.getElementById('accountDeletionFeedback');
+  let deletingAccount = false;
+
+  openAccountDeletion.addEventListener('click', () => {
+    accountDeleteConfirmation.value = '';
+    accountDeleteFeedback.textContent = '';
+    confirmAccountDeletion.disabled = true;
+    accountDeleteDialog.showModal();
+    accountDeleteConfirmation.focus();
+  });
+
+  accountDeleteConfirmation.addEventListener('input', () => {
+    confirmAccountDeletion.disabled = accountDeleteConfirmation.value.trim().toUpperCase() !== 'EXCLUIR' || deletingAccount;
+  });
+
+  cancelAccountDeletion.addEventListener('click', () => accountDeleteDialog.close());
+  accountDeleteDialog.addEventListener('close', () => openAccountDeletion.focus());
+
+  confirmAccountDeletion.addEventListener('click', async () => {
+    if (deletingAccount || accountDeleteConfirmation.value.trim().toUpperCase() !== 'EXCLUIR') return;
+    deletingAccount = true;
+    confirmAccountDeletion.disabled = true;
+    cancelAccountDeletion.disabled = true;
+    confirmAccountDeletion.textContent = 'Excluindo…';
+    accountDeleteFeedback.textContent = 'Verificando sua conta e removendo os arquivos…';
+    accountDeletionFeedback.hidden = true;
+
+    try {
+      const { data: assurance, error: assuranceError } = await api.supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (assuranceError) throw assuranceError;
+      if (assurance?.currentLevel !== 'aal2') {
+        throw new Error('Confirme sua verificação em duas etapas e tente excluir a conta novamente.');
+      }
+
+      const readiness = await api.request('account/deletion-check');
+      if (!readiness.eligible) {
+        throw new Error('Há contratos associados à sua conta. Fale com o suporte para preservar o histórico antes da exclusão.');
+      }
+
+      const storage = api.supabase.storage.from('avatars');
+      const { data: rootFiles, error: listError } = await storage.list(session.user.id, { limit: 1000 });
+      if (listError) throw listError;
+      const paths = (rootFiles || [])
+        .filter(file => file.id || file.metadata)
+        .map(file => `${session.user.id}/${file.name}`);
+      if ((rootFiles || []).some(file => file.name === 'portfolio' && !file.id && !file.metadata)) {
+        const { data: portfolioFiles, error: portfolioListError } = await storage.list(`${session.user.id}/portfolio`, { limit: 1000 });
+        if (portfolioListError) throw portfolioListError;
+        paths.push(...(portfolioFiles || []).filter(file => file.id || file.metadata).map(file => `${session.user.id}/portfolio/${file.name}`));
+      }
+      if (paths.length) {
+        const { error: removeError } = await storage.remove(paths);
+        if (removeError) throw removeError;
+      }
+
+      await api.request('account', {
+        method: 'DELETE',
+        body: JSON.stringify({ confirmation: accountDeleteConfirmation.value.trim().toUpperCase() }),
+      });
+      await api.supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+      location.replace('/');
+    } catch (error) {
+      const code = String(error.message || '');
+      accountDeleteFeedback.textContent = code.includes('ACCOUNT_HAS_CONTRACT_HISTORY')
+        ? 'Há contratos associados à sua conta. Fale com o suporte para preservar o histórico antes da exclusão.'
+        : code.includes('MFA_REQUIRED')
+          ? 'Confirme sua verificação em duas etapas e tente excluir a conta novamente.'
+          : code || 'Não foi possível excluir a conta. Seus dados de perfil continuam ativos; tente novamente.';
+      accountDeletionFeedback.textContent = accountDeleteFeedback.textContent;
+      accountDeletionFeedback.hidden = false;
+      confirmAccountDeletion.disabled = false;
+      cancelAccountDeletion.disabled = false;
+    } finally {
+      deletingAccount = false;
+      confirmAccountDeletion.textContent = 'Excluir permanentemente';
+      confirmAccountDeletion.disabled = accountDeleteConfirmation.value.trim().toUpperCase() !== 'EXCLUIR';
+    }
+  });
 });

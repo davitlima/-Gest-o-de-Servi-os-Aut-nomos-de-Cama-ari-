@@ -64,5 +64,34 @@ describe('Shared panel navigation layout', () => {
     visitPanel('Meuperfil', 'empresa');
     cy.get('.panel-nav__link[href="Painelfinanceiro.html"]').should('be.visible');
   });
+
+  it('keeps the mobile drawer open if the role lookup finishes after the user taps it', () => {
+    cy.viewport(390, 844);
+    cy.intercept('GET', '**/src/js/api.js', {
+      headers: { 'content-type': 'application/javascript' },
+      body: `let meReads = 0;
+        window.nexlarReady = Promise.resolve({
+          requireSession: async () => ({ user: { id: 'provider', email: 'provider@example.test' } }),
+          request: async path => {
+            if (path === 'me') {
+              meReads += 1;
+              if (meReads === 1) await new Promise(resolve => setTimeout(resolve, 700));
+              return { id: 'provider', role: 'empresa', full_name: 'Empresa de teste' };
+            }
+            return [];
+          },
+          supabase: { auth: { signOut: async () => ({ error: null }) } }
+        });
+        window.dispatchEvent(new Event('nexlar:ready'));`
+    });
+    cy.intercept('GET', 'https://cdn.jsdelivr.net/npm/@supabase/**', { body: '' });
+    cy.visit('/src/pages/Meuperfil.html');
+
+    cy.get('.panel-nav__trigger').click();
+    cy.get('.panel-nav__trigger').should('have.attr', 'aria-expanded', 'true');
+    cy.wait(800);
+    cy.get('.panel-nav__trigger').should('have.attr', 'aria-expanded', 'true');
+    cy.get('.panel-nav__link[href="Painelfinanceiro.html"]').should('be.visible');
+  });
 });
 

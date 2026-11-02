@@ -14,8 +14,7 @@
     return `<button class="panel-nav__trigger" type="button" aria-controls="panel-nav-sidebar" aria-expanded="false" aria-label="Abrir menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><button class="panel-nav__overlay" type="button" aria-label="Fechar menu" tabindex="-1"></button><aside class="panel-nav__sidebar" id="panel-nav-sidebar" aria-label="Navegação principal"><button class="panel-nav__close" type="button" aria-label="Fechar menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button><div class="panel-nav__logo"><img src="/src/images/logobranca.png" alt="Nexlar" /></div><nav>${links}</nav></aside>`;
   }
 
-  function createDrawerController({ sidebar, overlay, trigger, close, body, media, windowTarget, links }) {
-    const focusable = [close, ...links];
+  function createDrawerController({ sidebar, overlay, trigger, close, body, media, windowTarget, links = [] }) {
     const backgroundState = new Map();
     function isolateBackground(open) {
       if (open && backgroundState.size === 0) {
@@ -53,6 +52,8 @@
       if (event.key === 'Escape') setOpen(false, true);
       if (event.key === 'Tab') {
         const active = sidebar.ownerDocument.activeElement;
+        const currentLinks = sidebar.querySelectorAll ? [...sidebar.querySelectorAll('nav a')] : [...links];
+        const focusable = [close, ...currentLinks];
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
         if (!focusable.includes(active) || (event.shiftKey ? active === first : active === last)) {
@@ -65,7 +66,9 @@
     trigger.addEventListener('click', () => setOpen(!sidebar.classList.contains('open')));
     close.addEventListener('click', () => setOpen(false, true));
     overlay.addEventListener('click', () => setOpen(false, true));
-    links.forEach(link => link.addEventListener('click', () => setOpen(false)));
+    sidebar.addEventListener('click', event => {
+      if (event.target.closest('nav a')) setOpen(false);
+    });
     windowTarget.addEventListener('keydown', onKeydown);
     media.addEventListener('change', onBreakpointChange);
     setOpen(false);
@@ -102,7 +105,6 @@
           if (me && ['autonomo', 'empresa'].includes(me.role)) {
             const current = this.querySelector('.panel-nav__sidebar nav');
             current.innerHTML = renderNavigation(this.getAttribute('active'), true).match(/<nav>([\s\S]*)<\/nav>/)[1];
-            setupController();
           }
         }).catch(() => {});
       }

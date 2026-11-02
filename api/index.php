@@ -208,6 +208,21 @@ try {
         respond(array_merge($updated, $private));
     }
 
+    if ($route === 'account/deletion-check' && $method === 'GET') {
+        $filter = rawurlencode('(buyer_id.eq.' . $userId . ',provider_id.eq.' . $userId . ')');
+        $contracts = $db->rest('GET', 'contracts?select=id&or=' . $filter . '&limit=1', null, $token);
+        respond([
+            'eligible' => $contracts === [],
+            'message' => $contracts === [] ? null : 'ACCOUNT_HAS_CONTRACT_HISTORY',
+        ]);
+    }
+
+    if ($route === 'account' && $method === 'DELETE') {
+        $confirmation = (string) (input()['confirmation'] ?? '');
+        $db->rest('POST', 'rpc/delete_own_account', ['p_confirmation' => $confirmation], $token);
+        respond(['deleted' => true]);
+    }
+
     if ($route === 'portfolio' && $method === 'GET') {
         respond($db->rest('GET', 'portfolio_items?owner_id=eq.' . $userId . '&select=*,portfolio_item_images(id,image_url,storage_path,position,created_at)&portfolio_item_images.order=position.asc&order=created_at.desc', null, $token));
     }

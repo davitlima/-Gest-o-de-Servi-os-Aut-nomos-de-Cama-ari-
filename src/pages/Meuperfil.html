@@ -34,12 +34,6 @@
                     <span>Sair</span>
                 </button>
 
-                <button class="btn btn-danger">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                    </svg>
-                    <span>Excluir Conta</span>
-                </button>
             </div>
         </header>
 
@@ -127,6 +121,16 @@
             <div class="portfolio-grid portfolio-grid--manage" id="portfolioGrid"></div>
         </section>
 
+        <details class="account-danger">
+            <summary>Zona de risco</summary>
+            <div class="account-danger__content">
+                <h2>Excluir conta</h2>
+                <p>A exclusão é permanente e remove seus dados e arquivos. Contas com contratos registrados precisam ser analisadas pelo suporte para preservar o histórico das partes.</p>
+                <button class="account-danger__button" id="openAccountDeletion" type="button">Excluir minha conta</button>
+                <p class="account-danger__feedback" id="accountDeletionFeedback" role="status" aria-live="polite" hidden></p>
+            </div>
+        </details>
+
 
     </main>
 
@@ -160,6 +164,20 @@
             </footer>
         </section>
     </div>
+
+    <dialog class="account-delete-dialog" id="accountDeleteDialog" aria-labelledby="accountDeleteTitle" aria-describedby="accountDeleteDescription">
+        <section class="account-delete-dialog__panel">
+            <h2 id="accountDeleteTitle">Excluir sua conta?</h2>
+            <p id="accountDeleteDescription">Esta ação é permanente. Seu perfil, conversas e arquivos pessoais serão removidos. Para confirmar, digite <strong>EXCLUIR</strong>.</p>
+            <label for="accountDeleteConfirmation">Confirmação</label>
+            <input id="accountDeleteConfirmation" type="text" autocomplete="off" spellcheck="false" aria-describedby="accountDeleteFeedback" placeholder="Digite EXCLUIR">
+            <p class="account-delete-dialog__feedback" id="accountDeleteFeedback" role="alert" aria-live="assertive"></p>
+            <footer>
+                <button class="account-delete-dialog__cancel" id="cancelAccountDeletion" type="button">Manter minha conta</button>
+                <button class="account-delete-dialog__confirm" id="confirmAccountDeletion" type="button" disabled>Excluir permanentemente</button>
+            </footer>
+        </section>
+    </dialog>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/src/js/api.js"></script>
