@@ -98,10 +98,15 @@ nexlar-panel-nav {
     cursor: pointer;
     touch-action: manipulation;
   }
+  body.drawer-open .panel-nav__trigger {
+    visibility: hidden;
+    pointer-events: none;
+  }
   .top-bar-title { padding-left: 56px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .panel-nav__sidebar, .panel-nav__overlay, .panel-nav__link { transition: none; }
 }
+
 
