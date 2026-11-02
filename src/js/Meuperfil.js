@@ -3,6 +3,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const session = await api.requireSession();
   const me = await api.request('me');
   const canOffer = me.role === 'autonomo' || me.role === 'empresa';
+  const serviceField = document.getElementById('profileService');
+  const neighborhoodField = document.getElementById('profileNeighborhood');
+  const normalizeLabel = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const setProviderValue = (field, value) => {
+    const option = [...field.options].find(item => item.value && normalizeLabel(item.value) === normalizeLabel(value));
+    if (value && !option) field.add(new Option(`Atual: ${value}`, value));
+    field.value = option?.value || value || '';
+  };
   const form = document.querySelector('.profile-form');
   const tabs = document.querySelectorAll('.tabs .tab');
   const profileCard = document.querySelector('.profile-card');
@@ -12,22 +20,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('profileName').value = me.full_name || '';
   document.getElementById('profilePhone').value = me.phone || '';
   document.getElementById('profileEmail').value = session.user.email || '';
-  const neighborhoodField = document.getElementById('profileNeighborhood');
-  const serviceField = document.getElementById('profileService');
+  document.querySelectorAll('.provider-profile-field').forEach(group => {
+    group.hidden = !canOffer;
+    group.querySelector('select').disabled = !canOffer;
+  });
   if (canOffer) {
-    const matchingOption = (field, saved) => [...field.options].find(option =>
-      window.NexlarMarketplace.normalize(option.value) === window.NexlarMarketplace.normalize(saved));
-    const knownNeighborhood = matchingOption(neighborhoodField, me.neighborhood);
-    const knownService = matchingOption(serviceField, me.service_category);
-    if (me.neighborhood && !knownNeighborhood) neighborhoodField.add(new Option(`Atual: ${me.neighborhood}`, me.neighborhood));
-    if (me.service_category && !knownService) serviceField.add(new Option(`Atual: ${me.service_category}`, me.service_category));
-    if (me.neighborhood) neighborhoodField.value = knownNeighborhood?.value || me.neighborhood;
-    if (me.service_category) serviceField.value = knownService?.value || me.service_category;
-  } else {
-    neighborhoodField.closest('.form-group').hidden = true;
-    serviceField.closest('.form-group').hidden = true;
-    neighborhoodField.disabled = true;
-    serviceField.disabled = true;
+    setProviderValue(serviceField, me.service_category);
+    setProviderValue(neighborhoodField, me.neighborhood);
   }
   document.getElementById('profileBio').value = me.bio || '';
   const avatar = document.querySelector('.profile-photo .avatar');
@@ -152,4 +151,79 @@ document.addEventListener('DOMContentLoaded', async () => {
       avatarMessage.className = 'avatar-upload-message is-success';
       setTimeout(closeAvatarModal, 500);
     } catch (error) {
-      avatarMessage.textContent = error.mesï[h‘éì¶»§q«^wF%6fRçFW‡D6öçFVçBÒu6Çf"f÷Fòs°Ð¢fF%æVÂç&VÖ÷fTGG&–'WFR‚v&–Ö'W7’r“°Ð¢ÐÐ¢Ò“°Ð Ð¢ÆWB÷'FföÆ–õ6V7F–öâÒçVÆÃ°Ð¢–b†6äöffW"’°Ð¢÷'FföÆ–õ6V7F–öâÒFö7VÖVçBæ7&VFTVÆVÖVçB‚vF—br“²÷'FföÆ–õ6V7F–öâæ–BÒw÷'FföÆ–òÖ6öçFVçBs²÷'FföÆ–õ6V7F–öâç7G–ÆRæF—7Æ’ÒvæöæRs°Ð¢&öf–ÆT6&BæVæD6†–ÆB‡÷'FföÆ–õ6V7F–öâ“°Ð¢v—B&VæFW%÷'FföÆ–ò‚“°Ð¢ÒVÇ6R°Ð¢÷'FföÆ–õF"æ†–FFVâÒG'VS°Ð¢ÐÐ Ð¢7–æ2gVæ7F–öâ&VæFW%÷'FföÆ–ò‚’°Ð¢6öç7B—FV×2Òv—B’ç&WVW7B‚w÷'FföÆ–òr“°Ð¢÷'FföÆ–õ6V7F–öâæ–ææW$…DÔÂÒsÆƒ3äÖWR÷'Fl;6Æ–óÂöƒ3ãÇäF–6–öæR–ÖvVç2F÷26WW2G&&Æ†÷26öæ6Ç\:ÖF÷2ãÂ÷âs°Ð¢6öç7Bw&–BÒFö7VÖVçBæ7&VFTVÆVÖVçB‚vF—br“²w&–Bç7G–ÆRæ775FW‡BÒvF—7Æ“¦w&–C¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVB†WFòÖf–ÆÂÆÖ–æÖ‚ƒS‚Ãg"’“¶v£g‚s°Ð¢6öç7BFBÒFö7VÖVçBæ7&VFTVÆVÖVçB‚v'WGFöâr“²FBçG—RÒv'WGFöâs²FBçFW‡D6öçFVçBÒr²F–6–öæ"G&&Æ†òs²FBç7G–ÆRæ775FW‡BÒvÖ–âÖ†V–v‡C£Sƒ¶&÷&FW#£'‚F6†VBf"‚ÒÖ&÷&FW"“¶&6¶w&÷VæC§v†—FS¶&÷&FW"×&F—W3£'ƒ¶7W'6÷#§ö–çFW"s°Ð¢FBæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂ7–æ2‚’Óâ°Ð¢6öç7B–ÖvU÷W&ÂÒ&ö×B‚t6öÆRU$Â;¦&Æ–6Ff÷FòFòG&&Æ†ó¢r“²–b‚–ÖvU÷W&Â’&WGW&ã°Ð¢6öç7BFW67&—F–öâÒ&ö×B‚tFW67&œ:|:6òFòG&&Æ†ò†÷6–öæÂ“¢r’ÇÂrs°Ð¢G'’²v—B’ç&WVW7B‚w÷'FföÆ–òrÂ²ÖWF†öC¢uõ5BrÂ&öG“¢¥4ôâç7G&–æv–g’‡²–ÖvU÷W&ÂÂFW67&—F–öâÒ’Ò“²v—B&VæFW%÷'FföÆ–ò‚“²ÐÐ¢6F6‚†W'&÷"’²ÆW'B†W'&÷"æÖW76vR“²ÐÐ¢Ò“°Ð¢w&–BæVæD6†–ÆB†FB“°Ð¢—FV×2æf÷$V6‚†—FVÒÓâ°Ð¢6öç7B6&BÒFö7VÖVçBæ7&VFTVÆVÖVçB‚vf–wW&Rr“²6&Bç7G–ÆRæ775FW‡BÒvÖ&v–ã£·÷6—F–öã§&VÆF—fS¶&÷&FW"×&F—W3£'ƒ¶÷fW&fÆ÷s¦†–FFVã¶&÷&FW#£‚6öÆ–Bf"‚ÒÖ&÷&FW"’s°Ð¢6öç7B–ÖvRÒFö7VÖVçBæ7&VFTVÆVÖVçB‚v–Örr“²–ÖvRç7&2Ò—FVÒæ–ÖvU÷W&Ã²–ÖvRæÇBÒ—FVÒæFW67&—F–öâÇÂuG&&Æ†òFò÷'Fl;6Æ–òs²–ÖvRç7G–ÆRæ775FW‡BÒwv–GFƒ£S¶†V–v‡C£Sƒ¶ö&¦V7BÖf—C¦6÷fW#¶F—7Æ“¦&Æö6²s°Ð¢6öç7B&VÖ÷fRÒFö7VÖVçBæ7&VFTVÆVÖVçB‚v'WGFöâr“²&VÖ÷fRçG—RÒv'WGFöâs²&VÖ÷fRçFW‡D6öçFVçBÒtW†6ÇV—"s²&VÖ÷fRç7G–ÆRæ775FW‡BÒw÷6—F–öã¦'6öÇWFS·&–v‡C£‡ƒ¶&÷GFöÓ£‡ƒ·FF–æs£g‚‚s°Ð¢&VÖ÷fRæFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂ7–æ2‚’Óâ²–b†6öæf—&Ò‚tW†6ÇV—"W7F–ÖvVÓòr’’²v—B’ç&WVW7B†÷'FföÆ–òòG¶—FVÒæ–GÖÂ²ÖWF†öC¢tDTÄUDRrÒ“²v—B&VæFW%÷'FföÆ–ò‚“²ÒÒ“°Ð¢6&BæVæB†–ÖvRÂ&VÖ÷fR“²w&–BæVæD6†–ÆB†6&B“°Ð¢Ò“°Ð¢÷'FföÆ–õ6V7F–öâæVæD6†–ÆB†w&–B“°Ð¢ÐÐ Ð¢F'2æf÷$V6‚‚‡F"Â–æFW‚’ÓâF"æFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂ‚’Óâ°Ð¢F'2æf÷$V6‚†—FVÒÓâ—FVÒæ6Æ74Æ—7Bç&VÖ÷fR‚v7F—fRr’“²F"æ6Æ74Æ—7BæFB‚v7F—fRr“°Ð¢6öç7B÷'FföÆ–ô÷VâÒ–æFW‚ÓÓÒbb÷'FföÆ–õ6V7F–öã°Ð¢f÷&Òç7G–ÆRæF—7Æ’Ò÷'FföÆ–ô÷VâòvæöæRr¢vfÆW‚s²&öf–ÆUF—FÆRç7G–ÆRæF—7Æ’Ò÷'FföÆ–ô÷VâòvæöæRr¢v&Æö6²s°Ð¢–b‡÷'FföÆ–õ6V7F–öâ’÷'FföÆ–õ6V7F–öâç7G–ÆRæF—7Æ’Ò÷'FföÆ–ô÷Vâòv&Æö6²r¢væöæRs°Ð¢Ò’“°Ð Ð¢f÷&ÒæFDWfVçDÆ—7FVæW"‚w7V&Ö—BrÂ7–æ2WfVçBÓâ°Ð¢WfVçBç&WfVçDFVfVÇB‚“²6öç7B'WGFöâÒf÷&ÒçVW'•6VÆV7F÷"‚ræ'Fâ×6fRr“²'WGFöâæF—6&ÆVBÒG'VS²'WGFöâçFW‡D6öçFVçBÒu6ÇfæFòâââs°Ð¢G'’°Ð¢6öç7BWFFW2Ò°Ð¢gVÆÅöæÖS¢Fö7VÖVçBævWDVÆVÖVçD'”–B‚w&öf–ÆTæÖRr’çfÇVRçG&–Ò‚’Â†öæS¢Fö7VÖVçBævWDVÆVÖVçD'”–B‚w&öf–ÆU†öæRr’çfÇVRçG&–Ò‚’ÀÐ¢&–ó¢Fö7VÖVçBævWDVÆVÖVçD'”–B‚w&öf–ÆT&–òr’çfÇVRçG&–Ò‚’ÀÐ¢Ó°Ð¢–b†6äöffW"’ö&¦V7Bæ76–vâ‡WFFW2Â²æV–v†&÷&†ööC¢æV–v†&÷&†ööDf–VÆBçfÇVRÂ6W'f–6Uö6FVv÷'“¢6W'f–6Tf–VÆBçfÇVRÒ“°Ð¢v—B’ç&WVW7B‚vÖRrÂ²ÖWF†öC¢uD4‚rÂ&öG“¢¥4ôâç7G&–æv–g’‡WFFW2’Ò“°Ð¢'WGFöâçFW‡D6öçFVçBÒtFF÷26Çf÷2)É2s°Ð¢Ò6F6‚†W'&÷"’²ÆW'B†W'&÷"æÖW76vR“²'WGFöâçFW‡D6öçFVçBÒu6Çf"ÇFW&:|;VW2s²ÐÐ¢6WEF–ÖV÷WB‚‚’Óâ²'WGFöâæF—6&ÆVBÒfÇ6S²'WGFöâçFW‡D6öçFVçBÒu6Çf"ÇFW&:|;VW2s²ÒÂS“°Ð¢Ò“°Ð Ð¢Fö7VÖVçBçVW'•6VÆV7F÷"‚ræ'FâÖ÷WFÆ–æRr’æFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂ7–æ2WfVçBÓâ°Ð¢6öç7B'WGFöâÒWfVçBæ7W'&VçEF&vWC°Ð¢'WGFöâæF—6&ÆVBÒG'VS°Ð¢G'’°Ð¢6öç7B²W'&÷"ÒÒv—B’ç7W&6RæWF‚ç6–vä÷WB‚“°Ð¢–b†W'&÷"’F‡&÷rW'&÷#°Ð¢Æö6F–öâæ‡&VbÒròs°Ð¢Ò6F6‚†W'&÷"’°Ð¢'WGFöâæF—6&ÆVBÒfÇ6S°Ð¢ÆW'B†W'&÷"æÖW76vRÇÂtì:6òfö’÷7<:×fVÂ6—"F6öçFâFVçFRæ÷fÖVçFRâr“°Ð¢ÐÐ¢Ò“°Ð¢Fö7VÖVçBçVW'•6VÆV7F÷"‚ræ'FâÖFævW"r’æFDWfVçDÆ—7FVæW"‚v6Æ–6²rÂ‚’ÓâÆW'B‚u&W†6ÇV—"7V6öçF6öÒ6VwW&ì:vÂ6öÆ–6—FRò7W÷'FRæW†Æ"âr’“°Ð§Ò“°Ð Ð Ð Ð
+      avatarMessage.textContent = error.message || 'NÃ£o foi possÃ­vel salvar a foto. Tente novamente.';
+      avatarMessage.className = 'avatar-upload-message';
+      avatarSave.disabled = false;
+    } finally {
+      avatarSaving = false;
+      avatarSave.textContent = 'Salvar foto';
+      avatarPanel.removeAttribute('aria-busy');
+    }
+  });
+
+  let portfolioSection = null;
+  if (canOffer) {
+    portfolioSection = document.createElement('div'); portfolioSection.id = 'portfolio-content'; portfolioSection.style.display = 'none';
+    profileCard.appendChild(portfolioSection);
+    await renderPortfolio();
+  } else {
+    portfolioTab.hidden = true;
+  }
+
+  async function renderPortfolio() {
+    const items = await api.request('portfolio');
+    portfolioSection.innerHTML = '<h3>Meu PortfÃ³lio</h3><p>Adicione imagens dos seus trabalhos concluÃ­dos.</p>';
+    const grid = document.createElement('div'); grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px';
+    const add = document.createElement('button'); add.type = 'button'; add.textContent = '+ Adicionar trabalho'; add.style.cssText = 'min-height:150px;border:2px dashed var(--border);background:white;border-radius:12px;cursor:pointer';
+    add.addEventListener('click', async () => {
+      const image_url = prompt('Cole a URL pÃºblica da foto do trabalho:'); if (!image_url) return;
+      const description = prompt('DescriÃ§Ã£o do trabalho (opcional):') || '';
+      try { await api.request('portfolio', { method: 'POST', body: JSON.stringify({ image_url, description }) }); await renderPortfolio(); }
+      catch (error) { alert(error.message); }
+    });
+    grid.appendChild(add);
+    items.forEach(item => {
+      const card = document.createElement('figure'); card.style.cssText = 'margin:0;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border)';
+      const image = document.createElement('img'); image.src = item.image_url; image.alt = item.description || 'Trabalho do portfÃ³lio'; image.style.cssText = 'width:100%;height:150px;object-fit:cover;display:block';
+      const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = 'Excluir'; remove.style.cssText = 'position:absolute;right:8px;bottom:8px;padding:6px 10px';
+      remove.addEventListener('click', async () => { if (confirm('Excluir esta imagem?')) { await api.request(`portfolio/${item.id}`, { method: 'DELETE' }); await renderPortfolio(); } });
+      card.append(image, remove); grid.appendChild(card);
+    });
+    portfolioSection.appendChild(grid);
+  }
+
+  tabs.forEach((tab, index) => tab.addEventListener('click', () => {
+    tabs.forEach(item => item.classList.remove('active')); tab.classList.add('active');
+    const portfolioOpen = index === 1 && portfolioSection;
+    form.style.display = portfolioOpen ? 'none' : 'flex'; profileTitle.style.display = portfolioOpen ? 'none' : 'block';
+    if (portfolioSection) portfolioSection.style.display = portfolioOpen ? 'block' : 'none';
+  }));
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault(); const button = form.querySelector('.btn-save'); button.disabled = true; button.textContent = 'Salvando...';
+    try {
+      await api.request('me', { method: 'PATCH', body: JSON.stringify({
+        full_name: document.getElementById('profileName').value.trim(), phone: document.getElementById('profilePhone').value.trim(),
+        neighborhood: canOffer ? neighborhoodField.value : undefined,
+        service_category: canOffer ? serviceField.value : undefined,
+        bio: document.getElementById('profileBio').value.trim(),
+      }) });
+      button.textContent = 'Dados salvos âœ“';
+    } catch (error) { alert(error.message); button.textContent = 'Salvar alteraÃ§Ãµes'; }
+    setTimeout(() => { button.disabled = false; button.textContent = 'Salvar alteraÃ§Ãµes'; }, 1500);
+  });
+
+  document.querySelector('.btn-outline').addEventListener('click', async event => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      const { error } = await api.supabase.auth.signOut();
+      if (error) throw error;
+      location.href = '/';
+    } catch (error) {
+      button.disabled = false;
+      alert(error.message || 'NÃ£o foi possÃ­vel sair da conta. Tente novamente.');
+    }
+  });
+  document.querySelector('.btn-danger').addEventListener('click', () => alert('Para excluir sua conta com seguranÃ§a, solicite ao suporte Nexlar.'));
+});

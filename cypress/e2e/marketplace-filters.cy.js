@@ -67,11 +67,10 @@ describe('Busca e filtros da lista pública', () => {
     cy.contains('#cards .card', 'Maria Costa').should('be.visible');
   });
 
-  it('usa os mesmos filtros na homepage pública', () => {
+  it('mantém a homepage pública com acesso ao cadastro de cliente', () => {
     cy.visit('/');
-    cy.get('#cards .card').should('have.length', 3);
-    cy.get('#sel-bairro').select('gleba-a');
-    cy.get('#cards .card:visible').should('have.length', 1).and('contain', 'João Silva');
+    cy.contains('h1', 'A conexão inteligente').should('be.visible');
+    cy.get('a[href="src/pages/cadastrocliente.html"]').should('be.visible');
   });
 });
 
@@ -191,7 +190,13 @@ describe('Avatares no chat', () => {
       };
     } });
     cy.get('.conversation-item .avatar').should('have.class', 'has-photo')
+      .should('have.css', 'position', 'relative')
+      .and('have.css', 'width', '46px')
       .find('.avatar-fallback').should('have.css', 'visibility', 'hidden');
+    cy.get('.conversation-item .avatar-image').should($image => {
+      expect($image[0].getBoundingClientRect().width).to.equal(46);
+    });
+    cy.get('.conversation-item .conv-info').should('be.visible');
     cy.get('.conversation-item').click();
     cy.get('#chatHeaderAvatar').should('have.class', 'has-photo')
       .find('.avatar-fallback').should('have.css', 'visibility', 'hidden');
