@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { validateProfileImage, selectProfileImage, uploadProfileAvatar, profileImageLimit } = require('../src/js/profile-upload-core.js');
+const { validateProfileImage, selectProfileImage, uploadProfileAvatar, uploadImage, profileImageLimit } = require('../src/js/profile-upload-core.js');
 
 assert.equal(profileImageLimit, 5 * 1024 * 1024);
 assert.deepEqual(validateProfileImage({ type: 'image/jpeg', size: 1024 }), { valid: true });
@@ -39,5 +39,8 @@ assert.equal(selectProfileImage([{ name: 'grande.webp', type: 'image/webp', size
     /Falha ao atualizar perfil/
   );
   assert.deepEqual([...storedPaths], [], 'Falha no perfil deve remover o upload recém-criado');
+  const portfolio = await uploadImage({ bucket, userId: 'user-1', file: firstImage, folder: 'portfolio', timestamp: 456 });
+  assert.equal(portfolio.path, 'user-1/portfolio/456-perfil.png');
+  assert.equal(portfolio.publicUrl, 'https://cdn.example/user-1/portfolio/456-perfil.png');
   console.log('Validações de upload de perfil passaram.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

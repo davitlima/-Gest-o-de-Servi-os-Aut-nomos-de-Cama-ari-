@@ -229,6 +229,11 @@ $('deleteRecord').addEventListener('click', async () => {
 async function carregarRegistros() {
   const { request, requireSession } = await window.nexlarReady;
   await requireSession();
+  const me = await request('me');
+  if (!['autonomo', 'empresa'].includes(me.role)) {
+    window.location.replace('inicio.html');
+    return;
+  }
   const [registros, goal] = await Promise.all([request('finance'), request('finance/goal')]);
   metaMensal = Number(goal.amount) || 0;
   $('monthlyGoal').value = metaMensal || '';

@@ -6,8 +6,8 @@
     { key: 'mensagens', href: 'painelmensagens.html', label: 'Mensagens', icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' }
   ];
 
-  function renderNavigation(active) {
-    const links = destinations.map(item => {
+  function renderNavigation(active, canUseFinance = true) {
+    const links = destinations.filter(item => canUseFinance || item.key !== 'financeiro').map(item => {
       const current = item.key === active ? ' aria-current="page"' : '';
       return `<a class="panel-nav__link" href="${item.href}"${current}><svg viewBox="0 0 24 24" aria-hidden="true">${item.icon}</svg><span>${item.label}</span></a>`;
     }).join('');
@@ -81,16 +81,29 @@
     class NexlarPanelNav extends global.HTMLElement {
       connectedCallback() {
         this.innerHTML = renderNavigation(this.getAttribute('active'));
-        this.controller = createDrawerController({
-          sidebar: this.querySelector('.panel-nav__sidebar'),
-          overlay: this.querySelector('.panel-nav__overlay'),
-          trigger: this.querySelector('.panel-nav__trigger'),
-          close: this.querySelector('.panel-nav__close'),
-          body: global.document.body,
-          media: global.matchMedia('(min-width: 761px)'),
-          windowTarget: global,
-          links: this.querySelectorAll('nav a')
-        });
+        const setupController = () => {
+          this.controller?.cleanup();
+          this.controller = createDrawerController({
+            sidebar: this.querySelector('.panel-nav__sidebar'),
+            overlay: this.querySelector('.panel-nav__overlay'),
+            trigger: this.querySelector('.panel-nav__trigger'),
+            close: this.querySelector('.panel-nav__close'),
+            body: global.document.body,
+            media: global.matchMedia('(min-width: 761px)'),
+            windowTarget: global,
+            links: this.querySelectorAll('nav a')
+          });
+        };
+        Promise.resolve(global.nexlarReady).then(async api => {
+          if (!api) return;
+          const me = await api.request('me');
+          if (me.role !== 'autonomo' && me.role !== 'empresa') {
+            const current = this.querySelector('.panel-nav__sidebar nav');
+            current.innerHTML = renderNavigation(this.getAttribute('active'), false).match(/<nav>([\s\S]*)<\/nav>/)[1];
+            setupController();
+          }
+        }).catch(() => {});
+        setupController();
       }
       disconnectedCallback() { this.controller?.cleanup(); this.controller = null; }
       setOpen(open, returnFocus) { this.controller?.setOpen(open, returnFocus); }

@@ -63,9 +63,11 @@ body {
   border: 1px solid #e0e0ec;
   border-radius: 999px; 
   padding: 7px 16px;
-  flex: 1; 
+  flex: 1 1 440px;
+  min-width: 0;
   max-width: 440px; 
-  margin: 0 20px; /* Margem ajustada para dar respiro à logo */
+  width: min(440px, 100%);
+  margin: 0 24px;
 }
 
 .search-bar input {

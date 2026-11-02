@@ -351,6 +351,9 @@ body.avatar-modal-open {
   color: #087443;
 }
 
+.portfolio-description { display: grid; gap: 6px; text-align: left; font-weight: 600; color: #172033; }
+.portfolio-description input { width: 100%; padding: 12px 14px; border: 1px solid #cfd5e2; border-radius: 10px; font: inherit; }
+
 .avatar-modal__actions {
   display: flex;
   justify-content: flex-end;

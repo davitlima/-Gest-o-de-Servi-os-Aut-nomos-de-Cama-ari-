@@ -21,3 +21,16 @@ with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select au
 create policy "Users delete their own avatar"
 on storage.objects for delete to authenticated
 using (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid()::text));
+
+create policy "Providers upload portfolio images"
+on storage.objects for insert to authenticated
+with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid()::text) and (storage.foldername(name))[2] = 'portfolio' and exists (select 1 from public.profiles where id = (select auth.uid()) and role in ('autonomo', 'empresa')));
+
+create policy "Providers update portfolio images"
+on storage.objects for update to authenticated
+using (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid()::text) and (storage.foldername(name))[2] = 'portfolio' and exists (select 1 from public.profiles where id = (select auth.uid()) and role in ('autonomo', 'empresa')))
+with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid()::text) and (storage.foldername(name))[2] = 'portfolio' and exists (select 1 from public.profiles where id = (select auth.uid()) and role in ('autonomo', 'empresa')));
+
+create policy "Providers delete portfolio images"
+on storage.objects for delete to authenticated
+using (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid()::text) and (storage.foldername(name))[2] = 'portfolio' and exists (select 1 from public.profiles where id = (select auth.uid()) and role in ('autonomo', 'empresa')));

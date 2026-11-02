@@ -17,21 +17,26 @@
     return { file, validation: validateProfileImage(file) };
   }
 
-  async function uploadProfileAvatar({ bucket, updateProfile, userId, file, timestamp = Date.now() }) {
+  async function uploadImage({ bucket, userId, file, folder = '', timestamp = Date.now() }) {
     const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
-    const path = `${userId}/${timestamp}-${safeName || 'avatar'}`;
+    const path = `${userId}/${folder ? `${folder}/` : ''}${timestamp}-${safeName || 'image'}`;
     const { error: uploadError } = await bucket.upload(path, file, { upsert: false, contentType: file.type });
     if (uploadError) throw uploadError;
 
     const { data } = bucket.getPublicUrl(path);
-    try {
-      await updateProfile(data.publicUrl);
-    } catch (error) {
-      await bucket.remove([path]);
-      throw error;
-    }
     return { path, publicUrl: data.publicUrl };
   }
 
-  return { profileImageLimit, profileImageTypes, validateProfileImage, selectProfileImage, uploadProfileAvatar };
+  async function uploadProfileAvatar({ bucket, updateProfile, userId, file, timestamp = Date.now() }) {
+    const uploaded = await uploadImage({ bucket, userId, file, timestamp });
+    try {
+      await updateProfile(uploaded.publicUrl);
+    } catch (error) {
+      await bucket.remove([uploaded.path]);
+      throw error;
+    }
+    return uploaded;
+  }
+
+  return { profileImageLimit, profileImageTypes, validateProfileImage, selectProfileImage, uploadImage, uploadProfileAvatar };
 });

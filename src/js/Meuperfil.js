@@ -175,22 +175,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     portfolioSection.innerHTML = '<h3>Meu Portfólio</h3><p>Adicione imagens dos seus trabalhos concluídos.</p>';
     const grid = document.createElement('div'); grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px';
     const add = document.createElement('button'); add.type = 'button'; add.textContent = '+ Adicionar trabalho'; add.style.cssText = 'min-height:150px;border:2px dashed var(--border);background:white;border-radius:12px;cursor:pointer';
-    add.addEventListener('click', async () => {
-      const image_url = prompt('Cole a URL pública da foto do trabalho:'); if (!image_url) return;
-      const description = prompt('Descrição do trabalho (opcional):') || '';
-      try { await api.request('portfolio', { method: 'POST', body: JSON.stringify({ image_url, description }) }); await renderPortfolio(); }
-      catch (error) { alert(error.message); }
-    });
+    add.addEventListener('click', () => openPortfolioUpload());
     grid.appendChild(add);
     items.forEach(item => {
       const card = document.createElement('figure'); card.style.cssText = 'margin:0;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border)';
       const image = document.createElement('img'); image.src = item.image_url; image.alt = item.description || 'Trabalho do portfólio'; image.style.cssText = 'width:100%;height:150px;object-fit:cover;display:block';
       const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = 'Excluir'; remove.style.cssText = 'position:absolute;right:8px;bottom:8px;padding:6px 10px';
-      remove.addEventListener('click', async () => { if (confirm('Excluir esta imagem?')) { await api.request(`portfolio/${item.id}`, { method: 'DELETE' }); await renderPortfolio(); } });
+      remove.addEventListener('click', async () => {
+        if (!confirm('Excluir esta imagem?')) return;
+        await api.request(`portfolio/${item.id}`, { method: 'DELETE' });
+        if (item.storage_path) await api.supabase.storage.from('avatars').remove([item.storage_path]);
+        await renderPortfolio();
+      });
       card.append(image, remove); grid.appendChild(card);
     });
     portfolioSection.appendChild(grid);
   }
+
+  const portfolioModal = document.createElement('div');
+  portfolioModal.className = 'avatar-modal'; portfolioModal.hidden = true; portfolioModal.setAttribute('role', 'dialog'); portfolioModal.setAttribute('aria-modal', 'true');
+  portfolioModal.innerHTML = `<section class="avatar-modal__panel"><header class="avatar-modal__header"><div><h2>Adicionar trabalho</h2><p>Escolha uma imagem de até 5 MB.</p></div><button class="avatar-modal__close" type="button" aria-label="Fechar painel">×</button></header><button class="avatar-dropzone" type="button"><span class="avatar-dropzone__preview"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg></span><strong>Arraste a imagem para cá</strong><span>ou clique para selecionar no dispositivo</span><small>JPG, PNG, GIF ou WebP · máximo de 5 MB</small></button><input type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden><label class="portfolio-description">Descrição (opcional)<input type="text" maxlength="160" placeholder="Descreva este trabalho"></label><p class="avatar-upload-message" role="status" aria-live="polite"></p><footer class="avatar-modal__actions"><button type="button" class="avatar-modal__cancel">Cancelar</button><button type="button" class="btn-solid" disabled>Salvar trabalho</button></footer></section>`;
+  document.body.appendChild(portfolioModal);
+  const portfolioDropzone = portfolioModal.querySelector('.avatar-dropzone');
+  const portfolioInput = portfolioModal.querySelector('input[type=file]');
+  const portfolioPreview = portfolioModal.querySelector('.avatar-dropzone__preview');
+  const portfolioMessage = portfolioModal.querySelector('.avatar-upload-message');
+  const portfolioDescription = portfolioModal.querySelector('.portfolio-description input');
+  const portfolioSave = portfolioModal.querySelector('.btn-solid');
+  let selectedPortfolio = null; let portfolioPreviewUrl = null;
+  function clearPortfolioSelection() { if (portfolioPreviewUrl) URL.revokeObjectURL(portfolioPreviewUrl); portfolioPreviewUrl = null; selectedPortfolio = null; portfolioInput.value = ''; portfolioPreview.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg>'; portfolioDescription.value = ''; portfolioMessage.textContent = ''; portfolioSave.disabled = true; }
+  function choosePortfolio(files) { const selected = window.NexlarProfileUpload.selectProfileImage(files); clearPortfolioSelection(); if (!selected.validation.valid) { portfolioMessage.textContent = selected.validation.error; return; } selectedPortfolio = selected.file; portfolioPreviewUrl = URL.createObjectURL(selected.file); const image = document.createElement('img'); image.src = portfolioPreviewUrl; image.alt = `Prévia de ${selected.file.name}`; portfolioPreview.replaceChildren(image); portfolioMessage.textContent = 'Imagem pronta para salvar.'; portfolioMessage.className = 'avatar-upload-message is-success'; portfolioSave.disabled = false; }
+  function openPortfolioUpload() { clearPortfolioSelection(); portfolioModal.hidden = false; portfolioDropzone.focus(); }
+  function closePortfolioUpload() { portfolioModal.hidden = true; clearPortfolioSelection(); }
+  portfolioDropzone.addEventListener('click', () => portfolioInput.click()); portfolioInput.addEventListener('change', () => choosePortfolio(portfolioInput.files));
+  ['dragenter', 'dragover'].forEach(type => portfolioDropzone.addEventListener(type, event => { event.preventDefault(); portfolioDropzone.classList.add('is-dragging'); }));
+  ['dragleave', 'dragend'].forEach(type => portfolioDropzone.addEventListener(type, () => portfolioDropzone.classList.remove('is-dragging')));
+  portfolioDropzone.addEventListener('drop', event => { event.preventDefault(); portfolioDropzone.classList.remove('is-dragging'); choosePortfolio(event.dataTransfer.files); });
+  portfolioModal.querySelector('.avatar-modal__close').addEventListener('click', closePortfolioUpload); portfolioModal.querySelector('.avatar-modal__cancel').addEventListener('click', closePortfolioUpload); portfolioModal.addEventListener('click', event => { if (event.target === portfolioModal) closePortfolioUpload(); });
+  portfolioSave.addEventListener('click', async () => { if (!selectedPortfolio) return; portfolioSave.disabled = true; try { const uploaded = await window.NexlarProfileUpload.uploadImage({ bucket: api.supabase.storage.from('avatars'), userId: session.user.id, file: selectedPortfolio, folder: 'portfolio' }); await api.request('portfolio', { method: 'POST', body: JSON.stringify({ image_url: uploaded.publicUrl, storage_path: uploaded.path, description: portfolioDescription.value.trim() }) }); closePortfolioUpload(); await renderPortfolio(); } catch (error) { portfolioMessage.textContent = error.message || 'Não foi possível salvar o trabalho.'; portfolioSave.disabled = false; } });
 
   tabs.forEach((tab, index) => tab.addEventListener('click', () => {
     tabs.forEach(item => item.classList.remove('active')); tab.classList.add('active');

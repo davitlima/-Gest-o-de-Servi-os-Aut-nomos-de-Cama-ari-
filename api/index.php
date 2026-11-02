@@ -189,8 +189,9 @@ try {
     if ($route === 'portfolio' && $method === 'POST') {
         if (!Domain::canOfferServices($me['role'])) throw new HttpError(403, 'Seu perfil não possui portfólio.');
         $data = input(); $imageUrl = trim((string) ($data['image_url'] ?? ''));
-        if (!filter_var($imageUrl, FILTER_VALIDATE_URL)) throw new HttpError(422, 'Informe uma URL de imagem válida.');
-        $row = ['owner_id' => $userId, 'image_url' => $imageUrl, 'description' => trim((string) ($data['description'] ?? '')) ?: null];
+        $storagePath = trim((string) ($data['storage_path'] ?? ''));
+        if (!filter_var($imageUrl, FILTER_VALIDATE_URL) || !str_starts_with($storagePath, $userId . '/portfolio/')) throw new HttpError(422, 'Imagem de portfólio inválida.');
+        $row = ['owner_id' => $userId, 'image_url' => $imageUrl, 'storage_path' => $storagePath, 'description' => trim((string) ($data['description'] ?? '')) ?: null];
         respond($db->rest('POST', 'portfolio_items', [$row], $token)[0] ?? $row, 201);
     }
 

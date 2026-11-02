@@ -5,6 +5,7 @@ const links = ['inicio.html', 'Meuperfil.html', 'Painelfinanceiro.html', 'painel
 for (const href of links) assert.ok(renderNavigation('perfil').includes(`href="${href}"`));
 assert.match(renderNavigation('financeiro'), /href="Painelfinanceiro\.html"[^>]*aria-current="page"/);
 assert.doesNotMatch(renderNavigation('invalida'), /aria-current="page"/);
+assert.doesNotMatch(renderNavigation('inicio', false), /Painelfinanceiro\.html/);
 
 function classList() {
   const values = new Set();
