@@ -99,6 +99,13 @@ expect(!str_contains($api, 'monthly_goals?owner_id=eq.$userId&year='), 'API não
 expect(!str_contains($api, "auth/email-step/start"), 'API não deve exigir segunda etapa por e-mail');
 expect(!str_contains($api, "auth/email-step/complete"), 'API não deve concluir segunda etapa por e-mail');
 
+$deletionMigrationFiles = glob($root . '/supabase/migrations/*_account_delete_mfa_optional.sql') ?: [];
+expect(count($deletionMigrationFiles) === 1, 'Regra de exclusão deve diferenciar contas com e sem MFA configurada');
+$deletionMigration = file_get_contents($deletionMigrationFiles[0]);
+expect(str_contains($deletionMigration, 'auth.mfa_factors'), 'Exclusão deve verificar se existe fator MFA confirmado');
+expect(str_contains($deletionMigration, "status = 'verified'"), 'Fatores MFA não confirmados não podem bloquear a exclusão');
+expect(str_contains($deletionMigration, "is distinct from 'aal2'"), 'Conta com MFA confirmado ainda exige nível AAL2');
+
 $avatarMigration = file_get_contents($root . '/supabase/migrations/20261101120000_profile_avatar_storage.sql');
 expect(str_contains($avatarMigration, 'file_size_limit'), 'Bucket de avatar deve impor limite de tamanho no Storage');
 expect(str_contains($avatarMigration, 'allowed_mime_types'), 'Bucket de avatar deve impor os tipos permitidos no Storage');
@@ -183,3 +190,4 @@ foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html
 }
 
 fwrite(STDOUT, "Todos os testes passaram.\n");
+
