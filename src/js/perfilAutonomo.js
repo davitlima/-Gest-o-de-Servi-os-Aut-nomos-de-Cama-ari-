@@ -22,8 +22,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const portfolio = document.querySelector('.portfolio-grid'); portfolio.innerHTML = '';
     (profile.portfolio_items || []).forEach(item => {
       const work = document.createElement('figure'); work.className = 'portfolio-entry';
-      const image = document.createElement('img'); image.src = item.image_url; image.alt = item.title || item.description || 'Trabalho do profissional'; image.className = 'portfolio-item'; image.loading = 'lazy';
-      work.appendChild(image);
+      const images = item.portfolio_item_images?.length ? item.portfolio_item_images : item.images?.length ? item.images : item.image_url ? [{ image_url: item.image_url }] : [];
+      const gallery = document.createElement('div'); gallery.className = 'portfolio-entry__gallery';
+      images.forEach((entry, index) => {
+        const image = document.createElement('img'); image.src = entry.image_url; image.alt = `${item.title || 'Oferta'} — exemplo ${index + 1} de ${images.length}`; image.className = 'portfolio-item'; image.loading = index ? 'lazy' : 'eager';
+        gallery.appendChild(image);
+      });
+      work.appendChild(gallery);
       const body = document.createElement('div'); body.className = 'portfolio-entry__body';
       const title = document.createElement('h3'); title.textContent = item.title || 'Trabalho realizado'; body.appendChild(title);
       if (item.description) {
@@ -82,7 +87,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     star.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); star.click(); } });
   });
 });
-
 
 
 

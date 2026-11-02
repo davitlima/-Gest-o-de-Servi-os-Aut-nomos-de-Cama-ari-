@@ -4,6 +4,7 @@
   else root.NexlarProfileUpload = api;
 })(typeof globalThis !== 'undefined' ? globalThis : window, function () {
   const profileImageLimit = 5 * 1024 * 1024;
+  const portfolioImageCountLimit = 5;
   const profileImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
   function validateProfileImage(file) {
@@ -15,6 +16,14 @@
   function selectProfileImage(files) {
     const file = files?.[0] || null;
     return { file, validation: validateProfileImage(file) };
+  }
+
+  function selectPortfolioImages(files) {
+    const selected = Array.from(files || []);
+    if (!selected.length) return { files: [], validation: { valid: false, error: 'Adicione pelo menos uma imagem ao trabalho.' } };
+    if (selected.length > portfolioImageCountLimit) return { files: [], validation: { valid: false, error: 'Cada oferta pode ter no máximo cinco imagens.' } };
+    const invalid = selected.map(validateProfileImage).find(result => !result.valid);
+    return invalid ? { files: [], validation: invalid } : { files: selected, validation: { valid: true } };
   }
 
   async function uploadImage({ bucket, userId, file, folder = '', timestamp = Date.now() }) {
@@ -38,5 +47,5 @@
     return uploaded;
   }
 
-  return { profileImageLimit, profileImageTypes, validateProfileImage, selectProfileImage, uploadImage, uploadProfileAvatar };
+  return { profileImageLimit, portfolioImageCountLimit, profileImageTypes, validateProfileImage, selectProfileImage, selectPortfolioImages, uploadImage, uploadProfileAvatar };
 });

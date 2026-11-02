@@ -15,8 +15,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const profilePhoto = document.querySelector('.profile-photo');
   const tabs = document.querySelectorAll('.tabs .tab');
   const profileCard = document.querySelector('.profile-card');
-  const profileTitle = profileCard.querySelector('h3');
+  const profileTab = document.getElementById('profileTab');
   const portfolioTab = document.getElementById('portfolioTab');
+  const portfolioSection = document.getElementById('portfolio-content');
+  const portfolioGrid = document.getElementById('portfolioGrid');
+  const portfolioFeedback = document.getElementById('portfolioFeedback');
+  const portfolioAdd = document.getElementById('addPortfolioOffer');
 
   document.getElementById('profileName').value = me.full_name || '';
   document.getElementById('profilePhone').value = me.phone || '';
@@ -162,95 +166,88 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  let portfolioSection = null;
   if (canOffer) {
-    portfolioSection = document.createElement('section');
-    portfolioSection.id = 'portfolio-content';
-    portfolioSection.className = 'portfolio-content';
-    portfolioSection.hidden = true;
-    profileCard.appendChild(portfolioSection);
+    portfolioAdd.addEventListener('click', () => openPortfolioUpload());
     await renderPortfolio();
   } else {
     portfolioTab.hidden = true;
   }
 
   async function renderPortfolio() {
-    portfolioSection.replaceChildren();
-    const heading = document.createElement('h3');
-    heading.textContent = 'Serviços e trabalhos';
-    const intro = document.createElement('p');
-    intro.textContent = 'Monte ofertas claras para seus clientes: mostre o resultado, explique o que está incluído e informe preço e prazo.';
-    const feedback = document.createElement('p');
-    feedback.className = 'portfolio-feedback';
-    feedback.setAttribute('role', 'status');
-    feedback.setAttribute('aria-live', 'polite');
-    portfolioSection.append(heading, intro, feedback);
-
+    portfolioFeedback.className = 'portfolio-feedback';
+    portfolioFeedback.textContent = 'Carregando suas ofertas…';
+    portfolioGrid.replaceChildren();
     let items;
     try { items = await api.request('portfolio'); }
     catch (error) {
-      feedback.textContent = error.message || 'Não foi possível carregar seu portfólio.';
+      portfolioFeedback.textContent = error.message || 'Não foi possível carregar seu portfólio.';
+      portfolioFeedback.classList.add('is-error');
       const retry = document.createElement('button');
-      retry.type = 'button'; retry.className = 'portfolio-add-button'; retry.textContent = 'Tentar novamente';
+      retry.type = 'button'; retry.className = 'portfolio-retry'; retry.textContent = 'Tentar novamente';
       retry.addEventListener('click', renderPortfolio);
-      portfolioSection.appendChild(retry);
+      portfolioGrid.appendChild(retry);
       return;
     }
 
-    const grid = document.createElement('div');
-    grid.className = 'portfolio-grid portfolio-grid--manage';
-    const add = document.createElement('button');
-    add.type = 'button'; add.className = 'portfolio-add-button'; add.textContent = '+ Criar oferta de serviço';
-    add.addEventListener('click', () => openPortfolioUpload());
-    grid.appendChild(add);
-
+    portfolioFeedback.textContent = items.length
+      ? `${items.length} ${items.length === 1 ? 'oferta publicada' : 'ofertas publicadas'}.`
+      : 'Seu portfólio ainda está vazio. Crie sua primeira oferta para apresentar seu trabalho.';
+    portfolioFeedback.classList.toggle('is-empty', items.length === 0);
     items.forEach(item => {
-      const card = document.createElement('figure');
+      const card = document.createElement('article');
       card.className = 'portfolio-work';
-      const image = document.createElement('img');
-      image.src = item.image_url;
-      image.alt = item.title || item.description || 'Trabalho do portfólio';
-      image.loading = 'lazy';
+      const images = portfolioImages(item);
+      const gallery = document.createElement('div'); gallery.className = 'portfolio-work__gallery';
+      images.forEach((entry, index) => {
+        const image = document.createElement('img');
+        image.src = entry.image_url;
+        image.alt = `${item.title || 'Oferta'} — imagem ${index + 1} de ${images.length}`;
+        image.loading = index ? 'lazy' : 'eager';
+        gallery.appendChild(image);
+      });
       const body = document.createElement('div'); body.className = 'portfolio-work__body';
-      const title = document.createElement('h4'); title.textContent = item.title || 'Trabalho realizado'; body.appendChild(title);
-      if (item.description) { const description = document.createElement('p'); description.textContent = item.description; body.appendChild(description); }
+      const title = document.createElement('h3'); title.textContent = item.title || 'Trabalho realizado'; body.appendChild(title);
+      if (item.description) { const description = document.createElement('p'); description.className = 'portfolio-work__description'; description.textContent = item.description; body.appendChild(description); }
+      const details = document.createElement('div'); details.className = 'portfolio-work__details';
       const price = document.createElement('p'); price.className = 'portfolio-work__price';
       if (item.price_mode === 'fixo' && Number(item.price) > 0) price.textContent = `R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
       else if (item.price_mode === 'a_partir_de' && Number(item.price) > 0) price.textContent = `A partir de R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
       else price.textContent = 'Preço sob consulta';
-      body.appendChild(price);
-      if (item.estimated_duration) { const duration = document.createElement('p'); duration.className = 'portfolio-work__duration'; duration.textContent = `Prazo estimado: ${item.estimated_duration}`; body.appendChild(duration); }
+      details.appendChild(price);
+      if (item.estimated_duration) { const duration = document.createElement('p'); duration.className = 'portfolio-work__duration'; duration.textContent = `Prazo estimado: ${item.estimated_duration}`; details.appendChild(duration); }
+      body.append(details);
       const actions = document.createElement('div'); actions.className = 'portfolio-work__actions';
-      const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'portfolio-edit'; edit.textContent = 'Editar'; edit.addEventListener('click', () => openPortfolioUpload(item));
+      const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'portfolio-edit'; edit.textContent = 'Editar oferta'; edit.addEventListener('click', () => openPortfolioUpload(item));
       const remove = document.createElement('button');
       remove.type = 'button'; remove.className = 'portfolio-remove'; remove.textContent = 'Excluir';
       remove.addEventListener('click', async () => {
-        if (!confirm('Excluir este trabalho do portfólio?')) return;
+        if (!confirm('Excluir esta oferta e suas imagens do portfólio?')) return;
         remove.disabled = true;
         try {
           await api.request(`portfolio/${item.id}`, { method: 'DELETE' });
+          const paths = images.map(image => image.storage_path).filter(Boolean);
           let cleanupFailed = false;
-          if (item.storage_path) {
-            try {
-              const { error } = await api.supabase.storage.from('avatars').remove([item.storage_path]);
-              cleanupFailed = Boolean(error);
-            } catch (_) { cleanupFailed = true; }
+          if (paths.length) {
+            try { const { error } = await api.supabase.storage.from('avatars').remove(paths); cleanupFailed = Boolean(error); }
+            catch (_) { cleanupFailed = true; }
           }
           await renderPortfolio();
-          if (cleanupFailed) {
-            const status = portfolioSection.querySelector('.portfolio-feedback');
-            status.textContent = 'O trabalho foi excluído, mas a imagem não pôde ser removida do armazenamento.';
-          }
+          if (cleanupFailed) { portfolioFeedback.textContent = 'A oferta foi excluída, mas algumas imagens não puderam ser removidas do armazenamento.'; portfolioFeedback.classList.add('is-error'); }
         } catch (error) {
           remove.disabled = false;
-          feedback.textContent = error.message || 'Não foi possível excluir este trabalho.';
+          portfolioFeedback.textContent = error.message || 'Não foi possível excluir esta oferta.';
+          portfolioFeedback.classList.add('is-error');
         }
       });
       actions.append(edit, remove);
-      card.append(image, body, actions);
-      grid.appendChild(card);
+      card.append(gallery, body, actions);
+      portfolioGrid.appendChild(card);
     });
-    portfolioSection.appendChild(grid);
+  }
+
+  function portfolioImages(item) {
+    const images = item.images?.length ? item.images : item.portfolio_item_images?.length ? item.portfolio_item_images : [];
+    return images.length ? images : item.image_url ? [{ image_url: item.image_url, storage_path: item.storage_path || null }] : [];
   }
 
   const portfolioModal = document.createElement('div');
@@ -260,7 +257,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   portfolioModal.setAttribute('role', 'dialog');
   portfolioModal.setAttribute('aria-modal', 'true');
   portfolioModal.setAttribute('aria-labelledby', 'portfolioUploadTitle');
-  portfolioModal.innerHTML = `<section class="avatar-modal__panel portfolio-upload-panel" aria-describedby="portfolioUploadDescription"><header class="avatar-modal__header"><div><h2 id="portfolioUploadTitle">Criar oferta de serviço</h2><p id="portfolioUploadDescription">Mostre um trabalho e informe ao cliente o que esperar.</p></div><button class="avatar-modal__close" id="closePortfolioUpload" type="button" aria-label="Fechar painel">×</button></header><button class="avatar-dropzone portfolio-dropzone" id="portfolioDropzone" type="button" aria-label="Arraste ou selecione uma imagem"><span class="avatar-dropzone__preview" id="portfolioUploadPreview" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg></span><strong>Arraste uma foto do trabalho</strong><span>ou clique para selecionar no dispositivo</span><small id="portfolioFileHint">JPG, PNG, GIF ou WebP · máximo de 5 MB</small></button><input id="portfolioFileInput" type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden><div class="portfolio-offer-fields"><label class="portfolio-description" for="portfolioTitle">Nome do serviço<input id="portfolioTitle" type="text" maxlength="90" required placeholder="Ex.: Pintura de quarto"></label><label class="portfolio-description" for="portfolioDescription">Descrição e o que está incluído<textarea id="portfolioDescription" maxlength="1000" rows="3" placeholder="Explique o serviço, materiais, acabamento ou detalhes importantes"></textarea></label><div class="portfolio-offer-fields__row"><label class="portfolio-description" for="portfolioPriceMode">Como informar o preço<select id="portfolioPriceMode"><option value="fixo">Preço fechado</option><option value="a_partir_de">A partir de</option><option value="sob_consulta">Sob consulta</option></select></label><label class="portfolio-description" id="portfolioPriceGroup" for="portfolioPrice">Valor em reais<input id="portfolioPrice" type="number" min="0.01" max="1000000" step="0.01" placeholder="0,00"></label></div><label class="portfolio-description" for="portfolioDuration">Prazo estimado<input id="portfolioDuration" type="text" maxlength="80" placeholder="Ex.: 2 dias úteis"></label></div><p class="avatar-upload-message" id="portfolioUploadMessage" role="status" aria-live="polite"></p><footer class="avatar-modal__actions"><button type="button" class="avatar-action avatar-action--secondary" id="cancelPortfolioUpload">Cancelar</button><button type="button" class="avatar-action avatar-action--primary" id="savePortfolioUpload" disabled>Salvar oferta</button></footer></section>`;
+  portfolioModal.innerHTML = `<section class="avatar-modal__panel portfolio-upload-panel" aria-describedby="portfolioUploadDescription"><header class="avatar-modal__header"><div><h2 id="portfolioUploadTitle">Criar oferta de serviço</h2><p id="portfolioUploadDescription">Apresente o serviço e mostre exemplos reais do seu trabalho.</p></div><button class="avatar-modal__close" id="closePortfolioUpload" type="button" aria-label="Fechar painel">×</button></header><div class="portfolio-image-manager"><button class="avatar-dropzone portfolio-dropzone" id="portfolioDropzone" type="button" aria-label="Adicionar imagens ao portfólio"><span class="avatar-dropzone__preview" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2v-4" /></svg></span><strong>Adicione fotos dos seus trabalhos</strong><span>Arraste as imagens ou selecione no dispositivo</span><small id="portfolioFileHint">Até 5 imagens · JPG, PNG, GIF ou WebP · 5 MB cada</small></button><input id="portfolioFileInput" type="file" accept="image/jpeg,image/png,image/gif,image/webp" multiple hidden><div class="portfolio-upload-preview" id="portfolioUploadPreview" aria-live="polite"></div></div><div class="portfolio-offer-fields"><label class="portfolio-description" for="portfolioTitle">Título da oferta<input id="portfolioTitle" type="text" maxlength="90" required placeholder="Ex.: Pintura de quarto"></label><label class="portfolio-description" for="portfolioDescription">Descrição e o que está incluído<textarea id="portfolioDescription" maxlength="1000" rows="3" placeholder="Descreva o serviço, materiais, acabamento e o que está incluído"></textarea></label><div class="portfolio-offer-fields__row"><label class="portfolio-description" for="portfolioPriceMode">Como informar o preço<select id="portfolioPriceMode"><option value="fixo">Preço fechado</option><option value="a_partir_de">A partir de</option><option value="sob_consulta">Sob consulta</option></select></label><label class="portfolio-description" id="portfolioPriceGroup" for="portfolioPrice">Valor em reais<input id="portfolioPrice" type="number" min="0.01" max="1000000" step="0.01" placeholder="0,00"></label></div><label class="portfolio-description" for="portfolioDuration">Prazo estimado<input id="portfolioDuration" type="text" maxlength="80" placeholder="Ex.: 2 dias úteis"></label></div><p class="avatar-upload-message" id="portfolioUploadMessage" role="status" aria-live="polite"></p><footer class="avatar-modal__actions"><button type="button" class="avatar-action avatar-action--secondary" id="cancelPortfolioUpload">Cancelar</button><button type="button" class="avatar-action avatar-action--primary" id="savePortfolioUpload" disabled>Salvar oferta</button></footer></section>`;
   document.body.appendChild(portfolioModal);
   const portfolioDropzone = portfolioModal.querySelector('.avatar-dropzone');
   const portfolioPanel = portfolioModal.querySelector('.portfolio-upload-panel');
@@ -277,52 +274,80 @@ document.addEventListener('DOMContentLoaded', async () => {
   const portfolioFileHint = document.getElementById('portfolioFileHint');
   const portfolioSave = document.getElementById('savePortfolioUpload');
   const portfolioCloseButtons = [document.getElementById('closePortfolioUpload'), document.getElementById('cancelPortfolioUpload')];
-  const emptyPortfolioPreview = portfolioPreview.innerHTML;
-  let selectedPortfolio = null;
-  let portfolioPreviewUrl = null;
+  let selectedPortfolioFiles = [];
+  let portfolioExistingImages = [];
+  let portfolioOriginalImages = [];
   let portfolioSaving = false;
   let portfolioEditingItem = null;
+  let portfolioReturnFocus = portfolioAdd;
 
-  function clearPortfolioSelection({ keepFields = false } = {}) {
-    if (portfolioPreviewUrl) URL.revokeObjectURL(portfolioPreviewUrl);
-    portfolioPreviewUrl = null;
-    selectedPortfolio = null;
+  function clearPortfolioSelection() {
+    selectedPortfolioFiles.forEach(entry => URL.revokeObjectURL(entry.previewUrl));
+    selectedPortfolioFiles = [];
+    portfolioExistingImages = [];
+    portfolioOriginalImages = [];
     portfolioInput.value = '';
-    portfolioPreview.innerHTML = emptyPortfolioPreview;
-    if (!keepFields) {
-      portfolioDescription.value = '';
-      portfolioTitle.value = '';
-      portfolioPriceMode.value = 'fixo';
-      portfolioPrice.value = '';
-      portfolioDuration.value = '';
-      portfolioPriceGroup.hidden = false;
-      portfolioPrice.required = true;
-    }
+    portfolioPreview.replaceChildren();
+    portfolioDescription.value = '';
+    portfolioTitle.value = '';
+    portfolioPriceMode.value = 'fixo';
+    portfolioPrice.value = '';
+    portfolioDuration.value = '';
+    portfolioPriceGroup.hidden = false;
+    portfolioPrice.required = true;
     portfolioMessage.textContent = '';
     portfolioMessage.className = 'avatar-upload-message';
     portfolioSave.disabled = true;
     portfolioDropzone.classList.remove('is-dragging');
   }
 
+  function renderPortfolioPreview() {
+    portfolioPreview.replaceChildren();
+    [...portfolioExistingImages.map(image => ({ image, previewUrl: image.image_url, existing: true })),
+      ...selectedPortfolioFiles.map(entry => ({ image: entry.file, previewUrl: entry.previewUrl, existing: false }))]
+      .forEach((entry, index) => {
+        const tile = document.createElement('figure'); tile.className = 'portfolio-upload-preview__item';
+        const image = document.createElement('img'); image.src = entry.previewUrl;
+        image.alt = `Imagem ${index + 1} da oferta`;
+        const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'portfolio-upload-preview__remove';
+        remove.textContent = 'Remover'; remove.setAttribute('aria-label', `Remover imagem ${index + 1}`);
+        remove.addEventListener('click', () => {
+          if (entry.existing) portfolioExistingImages = portfolioExistingImages.filter(item => item !== entry.image);
+          else {
+            const selected = selectedPortfolioFiles.find(item => item.file === entry.image);
+            if (selected) { URL.revokeObjectURL(selected.previewUrl); selectedPortfolioFiles = selectedPortfolioFiles.filter(item => item !== selected); }
+          }
+          renderPortfolioPreview();
+          updatePortfolioSaveState();
+        });
+        tile.append(image, remove);
+        portfolioPreview.appendChild(tile);
+      });
+    const total = portfolioExistingImages.length + selectedPortfolioFiles.length;
+    portfolioFileHint.textContent = `${total} de 5 imagens · JPG, PNG, GIF ou WebP · 5 MB cada`;
+  }
+
+  function updatePortfolioSaveState() {
+    portfolioSave.disabled = portfolioSaving || (!portfolioExistingImages.length && !selectedPortfolioFiles.length);
+  }
+
   function choosePortfolio(files) {
-    const { file, validation } = window.NexlarProfileUpload.selectProfileImage(files);
-    clearPortfolioSelection({ keepFields: true });
-    if (!validation.valid) {
-      portfolioMessage.textContent = validation.error;
+    const { files: selected, validation } = window.NexlarProfileUpload.selectPortfolioImages(files);
+    portfolioInput.value = '';
+    if (!validation.valid) { portfolioMessage.textContent = validation.error; return; }
+    if (portfolioExistingImages.length + selectedPortfolioFiles.length + selected.length > window.NexlarProfileUpload.portfolioImageCountLimit) {
+      portfolioMessage.textContent = 'Cada oferta pode ter no máximo cinco imagens.';
       return;
     }
-    selectedPortfolio = file;
-    portfolioPreviewUrl = URL.createObjectURL(file);
-    const image = document.createElement('img');
-    image.src = portfolioPreviewUrl;
-    image.alt = `Prévia de ${file.name}`;
-    portfolioPreview.replaceChildren(image);
-    portfolioMessage.textContent = 'Imagem pronta para salvar.';
-    portfolioMessage.classList.add('is-success');
-    portfolioSave.disabled = false;
+    selectedPortfolioFiles.push(...selected.map(file => ({ file, previewUrl: URL.createObjectURL(file) })));
+    portfolioMessage.textContent = 'As imagens estão prontas para salvar.';
+    portfolioMessage.className = 'avatar-upload-message is-success';
+    renderPortfolioPreview();
+    updatePortfolioSaveState();
   }
 
   function openPortfolioUpload(item = null) {
+    portfolioReturnFocus = document.activeElement;
     clearPortfolioSelection();
     portfolioEditingItem = item;
     if (item) {
@@ -332,19 +357,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       portfolioPriceMode.value = ['fixo', 'a_partir_de', 'sob_consulta'].includes(item.price_mode) ? item.price_mode : 'sob_consulta';
       portfolioPrice.value = item.price ?? '';
       portfolioDuration.value = item.estimated_duration || '';
-      portfolioFileHint.textContent = 'A imagem atual será mantida se você não escolher outra.';
-      if (item.image_url) {
-        const image = document.createElement('img'); image.src = item.image_url; image.alt = 'Imagem atual do trabalho'; portfolioPreview.replaceChildren(image);
-      }
-      portfolioSave.disabled = false;
+      portfolioOriginalImages = portfolioImages(item);
+      portfolioExistingImages = [...portfolioOriginalImages];
       portfolioSave.textContent = 'Salvar alterações';
     } else {
       portfolioModalTitle.textContent = 'Criar oferta de serviço';
-      portfolioFileHint.textContent = 'JPG, PNG, GIF ou WebP · máximo de 5 MB';
       portfolioSave.textContent = 'Salvar oferta';
     }
-      portfolioPriceGroup.hidden = portfolioPriceMode.value === 'sob_consulta';
-      portfolioPrice.required = portfolioPriceMode.value !== 'sob_consulta';
+    portfolioPriceGroup.hidden = portfolioPriceMode.value === 'sob_consulta';
+    portfolioPrice.required = portfolioPriceMode.value !== 'sob_consulta';
+    renderPortfolioPreview();
+    updatePortfolioSaveState();
     portfolioModal.hidden = false;
     document.body.classList.add('avatar-modal-open');
     document.getElementById('closePortfolioUpload').focus();
@@ -355,7 +378,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     portfolioModal.hidden = true;
     document.body.classList.remove('avatar-modal-open');
     clearPortfolioSelection();
-    portfolioTab.focus();
+    if (portfolioReturnFocus?.isConnected) portfolioReturnFocus.focus();
   }
 
   portfolioDropzone.addEventListener('click', () => portfolioInput.click());
@@ -364,15 +387,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     portfolioPriceGroup.hidden = quote;
     portfolioPrice.required = !quote;
     if (quote) portfolioPrice.value = '';
-    if (selectedPortfolio || portfolioEditingItem) portfolioSave.disabled = false;
+    updatePortfolioSaveState();
   });
   portfolioInput.addEventListener('change', () => choosePortfolio(portfolioInput.files));
   ['dragenter', 'dragover'].forEach(type => portfolioDropzone.addEventListener(type, event => {
     event.preventDefault(); portfolioDropzone.classList.add('is-dragging');
   }));
   ['dragleave', 'dragend'].forEach(type => portfolioDropzone.addEventListener(type, () => portfolioDropzone.classList.remove('is-dragging')));
-  portfolioDropzone.addEventListener('drop', event => {
-    event.preventDefault(); choosePortfolio(event.dataTransfer.files);
+  portfolioDropzone.addEventListener('drop', event => { event.preventDefault(); choosePortfolio(event.dataTransfer.files); });
+  portfolioDropzone.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); portfolioInput.click(); }
   });
   portfolioCloseButtons.forEach(button => button.addEventListener('click', closePortfolioUpload));
   portfolioModal.addEventListener('click', event => { if (event.target === portfolioModal) closePortfolioUpload(); });
@@ -380,24 +404,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (portfolioModal.hidden) return;
     if (event.key === 'Escape') { event.preventDefault(); closePortfolioUpload(); return; }
     if (event.key !== 'Tab') return;
-    const controls = [...portfolioPanel.querySelectorAll('button:not(:disabled), input:not([type="file"]):not(:disabled)')];
+    const controls = [...portfolioPanel.querySelectorAll('button:not(:disabled), input:not([type="file"]):not(:disabled), select:not(:disabled), textarea:not(:disabled)')];
     const first = controls[0]; const last = controls[controls.length - 1];
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   });
 
   portfolioSave.addEventListener('click', async () => {
-    if ((!selectedPortfolio && !portfolioEditingItem) || portfolioSaving) return;
+    if (portfolioSaving || (!portfolioExistingImages.length && !selectedPortfolioFiles.length)) return;
     if (!portfolioTitle.value.trim()) { portfolioMessage.textContent = 'Informe um nome para o serviço.'; portfolioTitle.focus(); return; }
     if (portfolioPriceMode.value !== 'sob_consulta' && !(Number(portfolioPrice.value) > 0)) { portfolioMessage.textContent = 'Informe um valor válido ou escolha “Sob consulta”.'; portfolioPrice.focus(); return; }
     portfolioSaving = true;
     portfolioSave.disabled = true;
     portfolioSave.textContent = 'Salvando...';
     portfolioPanel.setAttribute('aria-busy', 'true');
-    portfolioMessage.textContent = selectedPortfolio ? 'Enviando imagem e salvando oferta...' : 'Salvando oferta...';
+    portfolioMessage.textContent = selectedPortfolioFiles.length ? 'Enviando imagens e salvando oferta…' : 'Salvando oferta…';
     portfolioMessage.className = 'avatar-upload-message';
     const bucket = api.supabase.storage.from('avatars');
-    let uploaded = null;
+    const uploaded = [];
     let persisted = false;
     try {
       const data = {
@@ -407,25 +431,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         price: portfolioPriceMode.value === 'sob_consulta' ? null : Number(portfolioPrice.value),
         estimated_duration: portfolioDuration.value.trim(),
       };
-      if (selectedPortfolio) {
-        uploaded = await window.NexlarProfileUpload.uploadImage({ bucket, userId: session.user.id, file: selectedPortfolio, folder: 'portfolio' });
-        data.image_url = uploaded.publicUrl; data.storage_path = uploaded.path;
+      for (const [index, entry] of selectedPortfolioFiles.entries()) {
+        uploaded.push(await window.NexlarProfileUpload.uploadImage({
+          bucket, userId: session.user.id, file: entry.file, folder: 'portfolio', timestamp: Date.now() + index,
+        }));
       }
+      data.images = [
+        ...portfolioExistingImages.map(image => ({ image_url: image.image_url, storage_path: image.storage_path || null })),
+        ...uploaded.map(image => ({ image_url: image.publicUrl, storage_path: image.path })),
+      ];
       await api.request(portfolioEditingItem ? `portfolio/${portfolioEditingItem.id}` : 'portfolio', {
         method: portfolioEditingItem ? 'PATCH' : 'POST', body: JSON.stringify(data),
       });
       persisted = true;
       portfolioSaving = false;
+      const retainedPaths = new Set(portfolioExistingImages.map(image => image.storage_path).filter(Boolean));
+      const removedPaths = portfolioOriginalImages.map(image => image.storage_path).filter(path => path && !retainedPaths.has(path));
+      const focusAfterSave = portfolioAdd;
       closePortfolioUpload();
-      if (uploaded && portfolioEditingItem?.storage_path) {
-        try { await bucket.remove([portfolioEditingItem.storage_path]); }
-        catch (_) { console.error('[Nexlar] Não foi possível remover a imagem substituída do portfólio.'); }
+      let cleanupFailed = false;
+      if (removedPaths.length) {
+        try { const { error } = await bucket.remove(removedPaths); cleanupFailed = Boolean(error); }
+        catch (_) { cleanupFailed = true; }
       }
       await renderPortfolio();
+      if (focusAfterSave?.isConnected) focusAfterSave.focus();
+      if (cleanupFailed) {
+        portfolioFeedback.textContent = 'A oferta foi salva, mas algumas imagens removidas ainda estão no armazenamento.';
+        portfolioFeedback.classList.add('is-error');
+      }
     } catch (error) {
-      if (uploaded && !persisted) {
+      if (uploaded.length && !persisted) {
         try {
-          const { error: cleanupError } = await bucket.remove([uploaded.path]);
+          const { error: cleanupError } = await bucket.remove(uploaded.map(image => image.path));
           if (cleanupError) console.error('[Nexlar] Não foi possível limpar um upload de portfólio incompleto.');
         } catch (_) { console.error('[Nexlar] Não foi possível limpar um upload de portfólio incompleto.'); }
       }
@@ -439,14 +477,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  tabs.forEach((tab, index) => tab.addEventListener('click', () => {
-    tabs.forEach(item => item.classList.remove('active')); tab.classList.add('active');
-    const portfolioOpen = index === 1 && portfolioSection;
-    form.hidden = Boolean(portfolioOpen);
-    profilePhoto.hidden = Boolean(portfolioOpen);
-    profileTitle.hidden = Boolean(portfolioOpen);
-    if (portfolioSection) portfolioSection.hidden = !portfolioOpen;
-  }));
+  function activateTab(tab, moveFocus = false) {
+    const portfolioOpen = tab === portfolioTab && canOffer;
+    tabs.forEach(item => {
+      const active = item === tab;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-selected', String(active));
+      item.tabIndex = active ? 0 : -1;
+    });
+    profileCard.hidden = portfolioOpen;
+    portfolioSection.hidden = !portfolioOpen;
+    if (moveFocus) tab.focus();
+    if (portfolioOpen) portfolioTab.dataset.visited = 'true';
+    else if (profileTab) profileTab.dataset.visited = 'true';
+  }
+
+  tabs.forEach(tab => tab.addEventListener('click', () => activateTab(tab)));
+  document.querySelector('.tabs').addEventListener('keydown', event => {
+    const available = [...tabs].filter(tab => !tab.hidden);
+    const currentIndex = available.indexOf(document.activeElement);
+    let nextIndex = currentIndex;
+    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % available.length;
+    else if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + available.length) % available.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = available.length - 1;
+    else return;
+    event.preventDefault();
+    activateTab(available[nextIndex], true);
+  });
 
   form.addEventListener('submit', async event => {
     event.preventDefault(); const button = form.querySelector('.btn-save'); button.disabled = true; button.textContent = 'Salvando...';
@@ -476,4 +534,3 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   document.querySelector('.btn-danger').addEventListener('click', () => alert('Para excluir sua conta com segurança, solicite ao suporte Nexlar.'));
 });
-

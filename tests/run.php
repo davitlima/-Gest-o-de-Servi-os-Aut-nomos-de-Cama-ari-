@@ -26,6 +26,16 @@ expect(Domain::validPortfolioImage('https://project.supabase.co/storage/v1/objec
 expect(!Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/other/portfolio/123-foto.png', 'other/portfolio/123-foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita objeto de outro usuário');
 expect(!Domain::validPortfolioImage('https://evil.example/user-1/portfolio/foto.png', 'user-1/portfolio/foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita URL externa');
 expect(!Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/user-1/avatar.png', 'user-1/avatar.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita caminho fora da pasta de portfólio');
+expect(Domain::validPortfolioImages([
+    ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/1-a.png', 'storage_path' => 'user-1/portfolio/1-a.png'],
+    ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/2-b.png', 'storage_path' => 'user-1/portfolio/2-b.png'],
+], 'user-1', 'https://project.supabase.co'), 'Galeria aceita até cinco imagens próprias');
+expect(!Domain::validPortfolioImages([], 'user-1', 'https://project.supabase.co'), 'Oferta exige ao menos uma imagem');
+expect(!Domain::validPortfolioImages(array_fill(0, 6, ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/1-a.png', 'storage_path' => 'user-1/portfolio/1-a.png']), 'user-1', 'https://project.supabase.co'), 'Galeria limita a cinco imagens');
+expect(!Domain::validPortfolioImages([
+    ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/1-a.png', 'storage_path' => 'user-1/portfolio/1-a.png'],
+    ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/1-a.png', 'storage_path' => 'user-1/portfolio/1-a.png'],
+], 'user-1', 'https://project.supabase.co'), 'Galeria rejeita imagens duplicadas');
 expect(Domain::validPortfolioOffer('Pintura de quarto', 'a_partir_de', 350, 'Tinta e acabamento inclusos.', '2 dias úteis'), 'Oferta aceita preço inicial e prazo válidos');
 expect(Domain::validPortfolioOffer('Instalação elétrica', 'sob_consulta', null, '', ''), 'Oferta aceita orçamento sob consulta sem preço');
 expect(!Domain::validPortfolioOffer('x', 'fixo', 100, '', ''), 'Oferta exige título legível');
@@ -102,6 +112,15 @@ $portfolioOffersMigration = file_get_contents($root . '/supabase/migrations/2026
 foreach (['add column if not exists title text', 'add column if not exists price_mode', 'add column if not exists price numeric', 'add column if not exists estimated_duration', 'portfolio_items_price_valid'] as $offerRequirement) {
     expect(str_contains($portfolioOffersMigration, $offerRequirement), 'Migração de ofertas deve incluir ' . $offerRequirement);
 }
+$portfolioGalleryMigrations = glob($root . '/supabase/migrations/*_portfolio_item_images.sql') ?: [];
+expect(count($portfolioGalleryMigrations) === 1, 'Galeria deve possuir uma migração versionada');
+$portfolioGalleryMigration = file_get_contents($portfolioGalleryMigrations[0]);
+foreach (['create table public.portfolio_item_images', 'references public.portfolio_items(id) on delete cascade', 'alter table public.portfolio_item_images enable row level security', 'portfolio_images_public_read', 'portfolio_images_owner_insert', 'portfolio_images_owner_update', 'portfolio_images_owner_delete', 'insert into public.portfolio_item_images', 'portfolio_item_images_position_unique'] as $galleryRequirement) {
+    expect(str_contains($portfolioGalleryMigration, $galleryRequirement), 'Migração de galeria deve incluir ' . $galleryRequirement);
+}
+$portfolioApi = file_get_contents($root . '/api/index.php');
+expect(str_contains($portfolioApi, 'portfolio_item_images'), 'API deve ler e persistir imagens relacionadas à oferta');
+expect(str_contains($portfolioApi, 'validPortfolioImages'), 'API deve validar a galeria por usuário antes de persistir');
 
 $chatHtml = file_get_contents($root . '/src/pages/painelmensagens.html');
 expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença online');
@@ -159,4 +178,3 @@ foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html
 }
 
 fwrite(STDOUT, "Todos os testes passaram.\n");
-

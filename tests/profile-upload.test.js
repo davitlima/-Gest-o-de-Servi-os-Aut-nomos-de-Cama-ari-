@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { validateProfileImage, selectProfileImage, uploadProfileAvatar, uploadImage, profileImageLimit } = require('../src/js/profile-upload-core.js');
+const { validateProfileImage, selectProfileImage, selectPortfolioImages, uploadProfileAvatar, uploadImage, profileImageLimit } = require('../src/js/profile-upload-core.js');
 
 assert.equal(profileImageLimit, 5 * 1024 * 1024);
 assert.deepEqual(validateProfileImage({ type: 'image/jpeg', size: 1024 }), { valid: true });
@@ -19,6 +19,10 @@ assert.deepEqual(selectProfileImage([firstImage, secondImage]), {
 });
 assert.equal(selectProfileImage([{ name: 'arquivo.pdf', type: 'application/pdf', size: 1024 }]).validation.valid, false);
 assert.equal(selectProfileImage([{ name: 'grande.webp', type: 'image/webp', size: profileImageLimit + 1 }]).validation.valid, false);
+assert.deepEqual(selectPortfolioImages([firstImage, secondImage]), { files: [firstImage, secondImage], validation: { valid: true } });
+assert.equal(selectPortfolioImages([]).validation.valid, false, 'Oferta deve ter ao menos uma imagem');
+assert.equal(selectPortfolioImages(Array(6).fill(firstImage)).validation.valid, false, 'Galeria deve aceitar no máximo cinco imagens');
+assert.equal(selectPortfolioImages([firstImage, { name: 'arquivo.svg', type: 'image/svg+xml', size: 100 }]).validation.valid, false, 'Galeria rejeita arquivo inválido');
 
 (async () => {
   const storedPaths = new Set();

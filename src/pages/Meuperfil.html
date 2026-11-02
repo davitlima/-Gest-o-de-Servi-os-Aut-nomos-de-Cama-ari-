@@ -43,12 +43,12 @@
             </div>
         </header>
 
-        <nav class="tabs">
-            <button class="tab active">Informações Pessoais</button>
-            <button class="tab" id="portfolioTab">Portfólio</button>
+        <nav class="tabs" role="tablist" aria-label="Seções do perfil">
+            <button class="tab active" id="profileTab" type="button" role="tab" aria-selected="true" aria-controls="profile-personal-panel" tabindex="0">Informações Pessoais</button>
+            <button class="tab" id="portfolioTab" type="button" role="tab" aria-selected="false" aria-controls="portfolio-content" tabindex="-1">Portfólio</button>
         </nav>
 
-        <section class="profile-card">
+        <section class="profile-card" id="profile-personal-panel" role="tabpanel" aria-labelledby="profileTab" tabindex="0">
 
             <div class="profile-photo">
                 <div class="avatar">?</div>
@@ -114,6 +114,19 @@
             </form>
 
         </section>
+
+        <section class="portfolio-content" id="portfolio-content" role="tabpanel" aria-labelledby="portfolioTab" tabindex="0" hidden>
+            <header class="portfolio-content__header">
+                <div>
+                    <h2>Meu portfólio</h2>
+                    <p>Organize suas ofertas e mostre exemplos reais do seu trabalho.</p>
+                </div>
+                <button class="portfolio-add-button" id="addPortfolioOffer" type="button">+ Criar oferta</button>
+            </header>
+            <p class="portfolio-feedback" id="portfolioFeedback" role="status" aria-live="polite">Carregando suas ofertas…</p>
+            <div class="portfolio-grid portfolio-grid--manage" id="portfolioGrid"></div>
+        </section>
+
 
     </main>
 

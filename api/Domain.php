@@ -27,6 +27,40 @@ final class Domain
         return hash_equals($expectedUrl, $imageUrl);
     }
 
+    public static function validPortfolioImages(array $images, string $userId, string $supabaseUrl, array $legacyImages = []): bool
+    {
+        if (count($images) < 1 || count($images) > 5) {
+            return false;
+        }
+
+        $paths = [];
+        foreach ($images as $image) {
+            if (!is_array($image) || !isset($image['image_url'])) {
+                return false;
+            }
+            if (isset($image['storage_path'])) {
+                if (!self::validPortfolioImage((string) $image['image_url'], (string) $image['storage_path'], $userId, $supabaseUrl)
+                    || in_array($image['storage_path'], $paths, true)) {
+                    return false;
+                }
+                $paths[] = $image['storage_path'];
+                continue;
+            }
+            $retainsLegacyImage = false;
+            foreach ($legacyImages as $legacy) {
+                if (($legacy['image_url'] ?? null) === $image['image_url'] && empty($legacy['storage_path'])) {
+                    $retainsLegacyImage = true;
+                    break;
+                }
+            }
+            if (!$retainsLegacyImage) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static function validPortfolioOffer(string $title, string $priceMode, mixed $price, string $description, string $duration): bool
     {
         if (mb_strlen(trim($title)) < 2 || mb_strlen(trim($title)) > 90
@@ -75,7 +109,6 @@ final class Domain
     }
 
 }
-
 
 
 

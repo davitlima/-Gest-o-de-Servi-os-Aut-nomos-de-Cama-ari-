@@ -61,6 +61,32 @@ function profile(Supabase $db, string $token, string $userId): array
     return array_merge($rows[0], $private[0] ?? ['phone' => null, 'document' => null]);
 }
 
+function portfolioInputImages(array $data): array
+{
+    if (isset($data['images']) && is_array($data['images'])) {
+        return array_values(array_map(static fn (array $image): array => [
+            'image_url' => trim((string) ($image['image_url'] ?? '')),
+            'storage_path' => isset($image['storage_path']) ? trim((string) $image['storage_path']) : null,
+        ], array_filter($data['images'], 'is_array')));
+    }
+    if (isset($data['image_url'], $data['storage_path'])) {
+        return [[
+            'image_url' => trim((string) $data['image_url']),
+            'storage_path' => trim((string) $data['storage_path']),
+        ]];
+    }
+    return [];
+}
+
+function portfolioRpcResult(array $response, string $function): array
+{
+    $result = $response[0][$function] ?? $response[$function] ?? $response[0] ?? $response;
+    if (!is_array($result)) {
+        throw new HttpError(502, 'Não foi possível salvar a oferta.');
+    }
+    return $result;
+}
+
 function mercadoPago(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null): array
 {
     $headers = ['Authorization: Bearer ' . Config::get('MERCADO_PAGO_ACCESS_TOKEN'), 'Content-Type: application/json'];
@@ -99,7 +125,7 @@ try {
     if ($route === 'public/profile' && $method === 'GET') {
         $profileId = query('id');
         if ($profileId === '') throw new HttpError(422, 'Perfil não informado.');
-        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*),reviews!reviews_provider_id_fkey(contract_id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
+        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*,portfolio_item_images(id,image_url,storage_path,position,created_at)),reviews!reviews_provider_id_fkey(contract_id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))&portfolio_item_images.order=position.asc', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
         if (!isset($profiles[0])) throw new HttpError(404, 'Perfil não encontrado.');
         respond($profiles[0]);
     }
@@ -183,42 +209,65 @@ try {
     }
 
     if ($route === 'portfolio' && $method === 'GET') {
-        respond($db->rest('GET', 'portfolio_items?owner_id=eq.' . $userId . '&select=*&order=created_at.desc', null, $token));
+        respond($db->rest('GET', 'portfolio_items?owner_id=eq.' . $userId . '&select=*,portfolio_item_images(id,image_url,storage_path,position,created_at)&portfolio_item_images.order=position.asc&order=created_at.desc', null, $token));
     }
 
     if ($route === 'portfolio' && $method === 'POST') {
         if (!Domain::canOfferServices($me['role'])) throw new HttpError(403, 'Seu perfil não possui portfólio.');
-        $data = input(); $imageUrl = trim((string) ($data['image_url'] ?? ''));
-        $storagePath = trim((string) ($data['storage_path'] ?? ''));
+        $data = input();
+        $images = portfolioInputImages($data);
         $description = trim((string) ($data['description'] ?? ''));
-        if (!Domain::validPortfolioImage($imageUrl, $storagePath, $userId, Config::get('SUPABASE_URL'))) throw new HttpError(422, 'Imagem de portfólio inválida.');
+        if (!Domain::validPortfolioImages($images, $userId, Config::get('SUPABASE_URL'))) throw new HttpError(422, 'Adicione de uma a cinco imagens válidas do seu portfólio.');
         $title = trim((string) ($data['title'] ?? ''));
         $priceMode = (string) ($data['price_mode'] ?? '');
         $price = $data['price'] ?? null;
         $duration = trim((string) ($data['estimated_duration'] ?? ''));
         if (!Domain::validPortfolioOffer($title, $priceMode, $price, $description, $duration)) throw new HttpError(422, 'Revise o nome, descrição, preço e prazo da oferta.');
         if ($priceMode === 'sob_consulta') $price = null;
-        $row = ['owner_id' => $userId, 'image_url' => $imageUrl, 'storage_path' => $storagePath, 'title' => $title, 'description' => $description ?: null, 'price_mode' => $priceMode, 'price' => $price === null ? null : (float) $price, 'estimated_duration' => $duration ?: null];
-        respond($db->rest('POST', 'portfolio_items', [$row], $token)[0] ?? $row, 201);
+        $result = $db->rest('POST', 'rpc/create_portfolio_offer', [
+            'p_title' => $title,
+            'p_description' => $description,
+            'p_price_mode' => $priceMode,
+            'p_price' => $price === null ? null : (float) $price,
+            'p_estimated_duration' => $duration,
+            'p_images' => $images,
+        ], $token);
+        respond(portfolioRpcResult($result, 'create_portfolio_offer'), 201);
     }
 
     if (preg_match('#^portfolio/(\d+)$#', $route, $match) && $method === 'PATCH') {
         if (!Domain::canOfferServices($me['role'])) throw new HttpError(403, 'Seu perfil não possui portfólio.');
         $data = input();
-        $title = trim((string) ($data['title'] ?? ''));
-        $description = trim((string) ($data['description'] ?? ''));
-        $priceMode = (string) ($data['price_mode'] ?? '');
-        $price = $data['price'] ?? null;
-        $duration = trim((string) ($data['estimated_duration'] ?? ''));
+        $existingRows = $db->rest('GET', 'portfolio_items?id=eq.' . $match[1] . '&owner_id=eq.' . $userId . '&select=*,portfolio_item_images(id,image_url,storage_path,position,created_at)&portfolio_item_images.order=position.asc', null, $token);
+        $existing = $existingRows[0] ?? null;
+        if (!$existing) throw new HttpError(404, 'Oferta não encontrada.');
+        $title = trim((string) ($data['title'] ?? $existing['title'] ?? ''));
+        $description = trim((string) ($data['description'] ?? $existing['description'] ?? ''));
+        $priceMode = (string) ($data['price_mode'] ?? $existing['price_mode'] ?? '');
+        $price = array_key_exists('price', $data) ? $data['price'] : ($existing['price'] ?? null);
+        $duration = trim((string) ($data['estimated_duration'] ?? $existing['estimated_duration'] ?? ''));
         if (!Domain::validPortfolioOffer($title, $priceMode, $price, $description, $duration)) throw new HttpError(422, 'Revise o nome, descrição, preço e prazo da oferta.');
         if ($priceMode === 'sob_consulta') $price = null;
-        $row = ['title' => $title, 'description' => $description ?: null, 'price_mode' => $priceMode, 'price' => $price === null ? null : (float) $price, 'estimated_duration' => $duration ?: null];
-        if (array_key_exists('image_url', $data) || array_key_exists('storage_path', $data)) {
-            $imageUrl = trim((string) ($data['image_url'] ?? ''));
-            $storagePath = trim((string) ($data['storage_path'] ?? ''));
-            if (!Domain::validPortfolioImage($imageUrl, $storagePath, $userId, Config::get('SUPABASE_URL'))) throw new HttpError(422, 'Imagem de portfólio inválida.');
-            $row['image_url'] = $imageUrl; $row['storage_path'] = $storagePath;
+        $hasImages = array_key_exists('images', $data) || array_key_exists('image_url', $data) || array_key_exists('storage_path', $data);
+        if ($hasImages) {
+            $images = portfolioInputImages($data);
+            $legacyImages = $existing['portfolio_item_images'] ?? [];
+            if (!$legacyImages && !empty($existing['image_url'])) {
+                $legacyImages[] = ['image_url' => $existing['image_url'], 'storage_path' => $existing['storage_path'] ?? null];
+            }
+            if (!Domain::validPortfolioImages($images, $userId, Config::get('SUPABASE_URL'), $legacyImages)) throw new HttpError(422, 'Revise as imagens da oferta.');
+            $result = $db->rest('POST', 'rpc/replace_portfolio_offer', [
+                'p_id' => (int) $match[1],
+                'p_title' => $title,
+                'p_description' => $description,
+                'p_price_mode' => $priceMode,
+                'p_price' => $price === null ? null : (float) $price,
+                'p_estimated_duration' => $duration,
+                'p_images' => $images,
+            ], $token);
+            respond(portfolioRpcResult($result, 'replace_portfolio_offer'));
         }
+        $row = ['title' => $title, 'description' => $description ?: null, 'price_mode' => $priceMode, 'price' => $price === null ? null : (float) $price, 'estimated_duration' => $duration ?: null];
         $updated = $db->rest('PATCH', 'portfolio_items?id=eq.' . $match[1] . '&owner_id=eq.' . $userId, $row, $token);
         if (!isset($updated[0])) throw new HttpError(404, 'Oferta não encontrada.');
         respond($updated[0]);
@@ -386,7 +435,6 @@ try {
     error_log($error->getMessage());
     respond(['error' => 'Erro interno do servidor.'], 500);
 }
-
 
 
 

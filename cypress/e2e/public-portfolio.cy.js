@@ -16,17 +16,22 @@ describe('Portfólio público do profissional', () => {
               id: 4, image_url: '/portfolio.png', title: 'Instalação de quadro elétrico',
               description: 'Quadro elétrico instalado', price_mode: 'fixo', price: 480,
               estimated_duration: '1 dia útil',
+              portfolio_item_images: [
+                { id: 11, image_url: '/portfolio.png', position: 0 },
+                { id: 12, image_url: '/portfolio-detail.png', position: 1 },
+              ],
             }],
           };
           throw new Error(`Rota inesperada: ${route}`);
         },
       };
     } });
-    cy.get('#portfolio .portfolio-entry img').should('have.attr', 'src', '/portfolio.png');
+    cy.get('#portfolio .portfolio-entry__gallery img').should('have.length', 2).first().should('have.attr', 'src', '/portfolio.png');
     cy.get('#portfolio .portfolio-entry').should('contain', 'Instalação de quadro elétrico')
       .and('contain', 'Quadro elétrico instalado').and('contain', 'R$ 480,00').and('contain', 'Prazo estimado: 1 dia útil');
     cy.contains('#portfolio .portfolio-entry__contact', 'Conversar sobre este serviço')
       .should('have.attr', 'href', '/src/pages/painelmensagens.html?provider_id=provider-1');
+    cy.get('.left-col > section').first().should('have.id', 'portfolio');
     cy.viewport(390, 844);
     cy.get('.navbar').should('be.visible').invoke('outerHeight').should('be.at.most', 55);
     cy.contains('#portfolio .portfolio-entry__contact', 'Conversar sobre este serviço').should('be.visible');
@@ -35,4 +40,3 @@ describe('Portfólio público do profissional', () => {
     });
   });
 });
-
