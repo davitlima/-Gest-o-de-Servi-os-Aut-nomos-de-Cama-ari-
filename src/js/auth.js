@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             phone: value('contato'),
             document: documentValue,
             company_name: role === 'empresa' ? value('nome') : null,
+            service_category: role === 'cliente' ? null : value('serviceCategory'),
+            neighborhood: role === 'cliente' ? null : value('providerNeighborhood'),
           },
         },
       });

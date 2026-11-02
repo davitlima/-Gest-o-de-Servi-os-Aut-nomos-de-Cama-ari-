@@ -2,17 +2,13 @@
   @view-transition { navigation: auto; }
 
   ::view-transition-old(root) {
-    animation: page-fade-out 150ms ease both;
+    animation: page-fade-out 100ms ease both;
   }
 
   ::view-transition-new(root) {
-    animation: page-fade-in 220ms ease both;
+    animation: page-fade-in 170ms ease both;
   }
 
-  html.page-leaving body {
-    opacity: 0;
-    transition: opacity 140ms ease;
-  }
 }
 
 @keyframes page-fade-out {
@@ -22,4 +18,8 @@
 @keyframes page-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation:none !important; }
 }

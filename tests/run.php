@@ -109,35 +109,176 @@ expect(str_contains($profileHtml, 'aria-modal="true"'), 'Modal de avatar deve bl
 
 foreach (['Meuperfil' => 'perfil', 'Painelfinanceiro' => 'financeiro', 'painelmensagens' => 'mensagens'] as $page => $active) {
     $html = file_get_contents($root . '/src/pages/' . $page . '.html');
-    expect(substr_count($html, '<nexlar-panel-nav ') === 1, $page . ' deve usar uma Ãºnica navegaÃ§Ã£o compartilhada');
-    expect(str_contains($html, '<nexlar-panel-nav active="' . $active . '"></nexlar-panel-nav>'), $page . ' deve informar a rota ativa correta');
-    expect(substr_count($html, '/src/css/panel-nav.css') === 1, $page . ' deve carregar o CSS compartilhado uma Ãºnica vez');
-    expect(substr_count($html, '/src/js/panel-nav.js') === 1, $page . ' deve carregar o componente uma Ãºnica vez');
-    expect(strpos($html, '/src/css/panel-nav.css') < strpos($html, '<script'), $page . ' deve agrupar os estilos antes dos scripts');
-    expect(strpos($html, '/src/js/panel-nav.js') < strpos($html, '/src/js/' . $page . '.js'), $page . ' deve carregar a navegaÃ§Ã£o antes do script da pÃ¡gina');
-    expect(!preg_match('/<aside\b|id="(?:financeSidebar|financeOverlay|financeMenuButton|sidebarClose|hamburger|overlay)"/', $html), $page . ' nÃ£o deve duplicar o drawer');
-    $css = file_get_contents($root . '/src/css/' . $page . '.css');
-    expect(!preg_match('/\.(?:sidebar|nav-link|nav-item|hamburger|menu-toggle|finance-overlay)\b/', $css), $page . ' nÃ£o deve duplicar estilos da navegaÃ§Ã£o');
-    expect(substr_count($css, '{') === substr_count($css, '}'), $page . ' deve manter o CSS balanceado');
-    $js = file_get_contents($root . '/src/js/' . $page . '.js');
-    expect(!preg_match('/financeSidebar|financeOverlay|financeMenuButton|definirEstadoMenuFinanceiro|financeNav|sidebarClose|hamburger|drawer-open/', $js), $page . ' nÃ£o deve controlar nem ocultar a navegaÃ§Ã£o compartilhada');
-}
+    expect(substr_count($html, '<nexlar-panel-nav ') === 1, $page . ' deve usar }µã‹h‘éì¶»§q«^uË˜™K˜]›[ÜÝ
+Œ
+NÂˆ^XÝ
+ÙXÛÛ™›Y
+KË˜™K˜]›X\Ý
+š\œÝœšYÚ
+NÂˆ^XÝ
+ÙXÛÛ™Ü
+KË™\]X[
+š\œÝÜ
+NÂˆJNÂˆÞK˜ÛÛZ[œÊ	ÈØØ\™È˜Ø\™	Ë	ÓX\šXHÛÜÝIÊKœÚÝ[
+	Ø™Kš\ÚX›IÊNÂˆJNÂ‚ˆ]
+	Ý\ØHÜÈY\Û[ÜÈš[›ÜÈ˜HÛY\YÙH0î˜›XØIË
 
-$clientSignup = file_get_contents($root . '/src/pages/cadastrocliente.html');
-expect(substr_count($clientSignup, 'vlibras-plugin.js') === 1, 'Cadastro de cliente deve carregar VLibras uma Ãºnica vez');
-expect(str_contains($clientSignup, 'aria-label="CPF"'), 'Campo CPF precisa de nome acessÃ­vel');
+HOˆÂˆÞKš\Ú]
+	ËÉÊNÂˆÞK™Ù]
+	ÈØØ\™È˜Ø\™	ÊKœÚÝ[
+	Ú]™K›[™Ý	ËÊNÂˆÞK™Ù]
+	ÈÜÙ[X˜Z\œ›ÉÊKœÙ[XÝ
+	ÙÛX˜KXIÊNÂˆÞK™Ù]
+	ÈØØ\™È˜Ø\™š\ÚX›IÊKœÚÝ[
+	Ú]™K›[™Ý	ËJK˜[™
+	ØÛÛZ[‰Ë	Ò›ðèÛÈÚ[˜IÊNÂˆJNÂŸJNÂ‚™\ØÜšX™J	ÐØY\Ý›ÈH™\ÝYÜ‰Ë
 
-$realtimeMigrations = glob($root . '/supabase/migrations/*realtime_chat_activity.sql') ?: [];
-expect(count($realtimeMigrations) === 1, 'Chat deve possuir migraÃ§Ã£o Realtime versionada');
-$realtimeMigration = file_get_contents($realtimeMigrations[0]);
-expect(str_contains($realtimeMigration, 'alter publication supabase_realtime add table public.messages'), 'Mensagens devem ser publicadas no Realtime');
-expect(str_contains($realtimeMigration, 'update public.conversations'), 'Nova mensagem deve atualizar a atividade da conversa');
+HOˆÂˆ]
+	ÜÛÛXÚ]HÙ\špéÛÈH˜Z\œ›ÈØ[°íšXÛÜÈ›ÈØY\Ý›È]]0í›Û[ÈH[\™\Ø\šX[	Ë
 
-$signupChooser = file_get_contents($root . '/src/pages/cadastro.html');
-foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html'] as $signupPage) {
-    expect(str_contains($signupChooser, $signupPage), 'Seletor de cadastro deve apontar para ' . $signupPage);
-}
+HOˆÂˆÞKš[\˜Ù\
+	ÑÑU	Ë	ËÜÜ˜ËÚœËØ\KšœÉËÈ›ÙNˆ	ÝÚ[™ÝË›™^\”™XYOT›ÛZ\ÙKœ™\ÛÛ™JÜÝ\X˜\ÙNžØ]]žÜÚYÛ•\˜\Þ[˜Ê
+OOŠÙ\œ›ÜŽ›[JKÚYÛ“Ý]˜\Þ[˜Ê
+OOŠÙ\œ›ÜŽ›[J___JIÈJNÂˆ›Üˆ
+ÛÛœÝ]ÙˆÉØØY\Ý›Ø]]Û›Û[Ëš[	Ë	ØØY\Ý›Ù[\™\ØKš[	×JHÂˆÞKš\Ú]
+ÜÜ˜ËÜYÙ\ËÉÜ]XÈÛ™Y›Ü™SØY
+Ú[ŠHÈÚ[‹—×Û™^\\HHÈÝ\X˜\ÙNˆÈ]]ˆÈÚYÛ•\ˆ\Þ[˜È
 
-fwrite(STDOUT, "Todos os testes passaram.\n");
+HOˆ
+È\œ›ÜŽˆ[JKÚYÛ“Ý]ˆ\Þ[˜È
+
+HOˆ
+È\œ›ÜŽˆ[JHHHNÈHJNÂˆÞK™Ù]
+	ÈÜÙ\šXÙPØ]YÛÜžIÊKœÚÝ[
+	Ú]™K˜]‰Ë	Ü™\]Z\™Y	ÊNÂˆÞK™Ù]
+	ÈÜÙ\šXÙPØ]YÛÜžHÜ[Û‰ÊKœÚÝ[
+	ØÛÛZ[‰Ë	Ñ[0ê]šXØIÊNÂˆÞK™Ù]
+	ÈÜ›ÝšY\“™ZYÚ›ÜšÛÙ	ÊKœÚÝ[
+	Ú]™K˜]‰Ë	Ü™\]Z\™Y	ÊNÂˆÞK™Ù]
+	ÈÜ›ÝšY\“™ZYÚ›ÜšÛÙÜ[Û‰ÊKœÚÝ[
+	ØÛÛZ[‰Ë	ÑÛX˜HIÊNÂˆBˆJNÂ‚ˆ]
+	Ù[šXHÙ\špéÛÈH˜Z\œ›È›ÜÈY]YYÜÈH]]0í›Û[ÜÈH[\™\Ø\ÉË
+
+HOˆÂˆÞKš[\˜Ù\
+	ÑÑU	Ë	ËÜÜ˜ËÚœËØ\KšœÉËÈ›ÙNˆ	ÝÚ[™ÝË›™^\”™XYOT›ÛZ\ÙKœ™\ÛÛ™JÚ[™ÝË—×Û™^\\JIÈJNÂˆ›Üˆ
+ÛÛœÝXØÛÝ[ÙˆÂˆÈ]ˆ	ØØY\Ý›Ø]]Û›Û[Ëš[	ËØÝ[Y[Yˆ	ØÜ‰ËØÝ[Y[˜[YNˆ	ÍLŽNNŒÌIÈKˆÈ]ˆ	ØØY\Ý›Ù[\™\ØKš[	ËØÝ[Y[Yˆ	ØÛœ‰ËØÝ[Y[˜[YNˆ	ÌLŒÍMÎNL	ÈKˆJHÂˆÞKš\Ú]
+ÜÜ˜ËÜYÙ\ËÉØXØÛÝ[œ]XÈÛ™Y›Ü™SØY
+Ú[ŠHÂˆÚ[‹—×Û™^\\HHÈÝ\X˜\ÙNˆÈ]]ˆÂˆÚYÛ•\ˆ\Þ[˜ÈÜ[ÛœÈOˆÈÚ[‹—×ÜÚYÛ\Ü[ÛœÈHÜ[ÛœÎÈ™]\›ˆÈ\œ›ÜŽˆ[NÈKˆÚYÛ“Ý]ˆ\Þ[˜È
+
+HOˆ
+È\œ›ÜŽˆ[JKˆHHNÂˆHJNÂˆÞK™Ù]
+	ÈÛ›ÛYIÊK\J	Ô™\ÝYÜˆ\ÝIÊNÂˆÞK™Ù]
+	ÈÛ˜\ØÚ[Y[ÉÊK\J	ÌLLNNL	ÊNÂˆÞK™Ù]
+ÉØXØÛÝ[™ØÝ[Y[YX
+K\JXØÛÝ[™ØÝ[Y[˜[YJNÂˆÞK™Ù]
+	ÈØÛÛ]ÉÊK\J	ÍÌNNNNNNNNNIÊNÂˆÞK™Ù]
+	ÈÙ[XZ[	ÊK\J\ÝIØXØÛÝ[œ]P^[\K˜ÛÛX
+NÂˆÞK™Ù]
+	ÈÜÙ[šIÊK\J	ÔÙ[šLLŒÈIÊNÂˆÞK™Ù]
+	ÈØÛÛ™š\›X\”Ù[šIÊK\J	ÔÙ[šLLŒÈIÊNÂˆÞK™Ù]
+	ÈÜÙ\šXÙPØ]YÛÜžIÊKœÙ[XÝ
+	Ñ[0ê]šXØIÊNÂˆÞK™Ù]
+	ÈÜ›ÝšY\“™ZYÚ›ÜšÛÙ	ÊKœÙ[XÝ
+	ÑÛX˜HIÊNÂˆÞK™Ù]
+	ÈÝ\›[ÜÉÊK˜ÚXÚÊ
+NÂˆÞK™Ù]
+	ÈØÛÛ[X\‰ÊK˜ÛXÚÊ
+NÂˆÞKÚ[™ÝÊ
+Kš]Ê	××ÜÚYÛ\Ü[ÛœË›Ü[ÛœË™]IÊKœÚÝ[
+	Ú[˜ÛYIËÂˆ›ÛNˆXØÛÝ[œ]OOH	ØØY\Ý›Ù[\™\ØKš[	ÈÈ	Ù[\™\ØIÈˆ	Ø]]Û›Û[ÉËˆÙ\šXÙWØØ]YÛÜžNˆ	Ñ[0ê]šXØIË™ZYÚ›ÜšÛÙˆ	ÑÛX˜HIËˆJNÂˆBˆJNÂŸJNÂ‚™\ØÜšX™J	ÑYpéðèÛÈÈ\™š[›Ùš\ÜÚ[Û˜[	Ë
+
+HOˆÂˆ™Y›Ü™QXXÚ
 
 
+HOˆÂˆÞKš[\˜Ù\
+	ÑÑU	Ë	ËÜÜ˜ËÚœËØ\KšœÉËÈ›ÙNˆ	ÝÚ[™ÝË›™^\”™XYOT›ÛZ\ÙKœ™\ÛÛ™JÚ[™ÝË—×Û™^\\JIÈJNÂˆJNÂ‚ˆ]
+	Ü\›Z]H[\˜\ˆÙ\špéÛÈH˜Z\œ›ÈH[šXHÜÈ›ÛY\Èš\ðë]™Z\ÉË
+
+HOˆÂˆÞKš\Ú]
+	ËÜÜ˜ËÜYÙ\ËÓY]\\™š[š[	ËÈÛ™Y›Ü™SØY
+Ú[ŠHÂˆÛÛœÝÙ\ÜÚ[ÛˆHÈ\Ù\ŽˆÈYˆ	Ü›ÝšY\‹LIË[XZ[ˆ	Ø[˜P^[\K˜ÛÛIÈKXØÙ\Ü×ÝÚÙ[Žˆ	Ý\Ý]ÚÙ[‰ÈNÂˆÚ[‹—×Û™^\\HHÂˆÝ\X˜\ÙNˆÈ]]ˆÈÚYÛ“Ý]ˆ\Þ[˜È
+
+HOˆ
+È\œ›ÜŽˆ[JHHKˆ™\]Z\™TÙ\ÜÚ[ÛŽˆ\Þ[˜È
+
+HOˆÙ\ÜÚ[Û‹ˆ™\]Y\Ýˆ\Þ[˜È
+›Ý]KÜ[ÛœÊHOˆÂˆYˆ
+›Ý]HOOH	ÛYIÈ	‰ˆ[Ü[ÛœÊH™]\›ˆÈYˆ	Ü›ÝšY\‹LIË›ÛNˆ	Ø]]Û›Û[ÉË[Û˜[YNˆ	Ð[˜H™\ÝYÜ˜IËÛ™Nˆ	ÉË™ZYÚ›ÜšÛÙˆ	ÑÛX˜HIËÙ\šXÙWØØ]YÛÜžNˆ	Ñ[0ê]šXØIËš[Îˆ	ÉË]˜]\—Ý\›ˆ[NÂˆYˆ
+›Ý]HOOH	ÜÜ›Û[ÉÊH™]\›ˆ×NÂˆYˆ
+›Ý]HOOH	ÛYIÈ	‰ˆÜ[ÛœÊHÈÚ[‹—×ÜØ]™Y›Ùš[HH”ÓÓ‹œ\œÙJÜ[ÛœË˜›ÙJNÈ™]\›ˆÈÚÎˆYHNÈBˆ›ÝÈ™]È\œ›ÜŠ[™^XÝY›Ý]H	Ü›Ý]_X
+NÂˆKˆNÂˆHJNÂˆÞK™Ù]
+	ÈÜ›Ùš[TÙ\šXÙIÊKœÚÝ[
+	Ú]™K˜[YIË	Ñ[0ê]šXØIÊKœÙ[XÝ
+	Ô[\˜IÊNÂˆÞK™Ù]
+	ÈÜ›Ùš[S™ZYÚ›ÜšÛÙ	ÊKœÙ[XÝ
+	ÑÛX˜H‰ÊNÂˆÞK™Ù]
+	Ëœ›Ùš[KY›Ü›IÊKœÝX›Z]
+
+NÂˆÞKÚ[™ÝÊ
+Kš]Ê	××ÜØ]™Y›Ùš[IÊKœÚÝ[
+	Ú[˜ÛYIËÈÙ\šXÙWØØ]YÛÜžNˆ	Ô[\˜IË™ZYÚ›ÜšÛÙˆ	ÑÛX˜H‰ÈJNÂˆJNÂ‚ˆ]
+	ÛØÝ[HH^ÛZHØ[\ÜÈH™\ÝYÜˆ[ÈY]\ˆ[H\™š[ÛY[IË
+
+HOˆÂˆÞKš\Ú]
+	ËÜÜ˜ËÜYÙ\ËÓY]\\™š[š[	ËÈÛ™Y›Ü™SØY
+Ú[ŠHÂˆÛÛœÝÙ\ÜÚ[ÛˆHÈ\Ù\ŽˆÈYˆ	ØÛY[LIË[XZ[ˆ	ØÛY[P^[\K˜ÛÛIÈKXØÙ\Ü×ÝÚÙ[Žˆ	Ý\Ý]ÚÙ[‰ÈNÂˆÚ[‹—×Û™^\\HHÂˆÝ\X˜\ÙNˆÈ]]ˆÈÚYÛ“Ý]ˆ\Þ[˜È
+
+HOˆ
+È\œ›ÜŽˆ[JHHKˆ™\]Z\™TÙ\ÜÚ[ÛŽˆ\Þ[˜È
+
+HOˆÙ\ÜÚ[Û‹ˆ™\]Y\Ýˆ\Þ[˜È
+›Ý]KÜ[ÛœÊHOˆÂˆYˆ
+›Ý]HOOH	ÛYIÈ	‰ˆ[Ü[ÛœÊH™]\›ˆÈYˆ	ØÛY[LIË›ÛNˆ	ØÛY[IË[Û˜[YNˆ	ÐÛY[IËÛ™Nˆ	ÉËš[Îˆ	ÉË]˜]\—Ý\›ˆ[NÂˆYˆ
+›Ý]HOOH	ÛYIÈ	‰ˆÜ[ÛœÊHÈÚ[‹—×ÜØ]™Y›Ùš[HH”ÓÓ‹œ\œÙJÜ[ÛœË˜›ÙJNÈ™]\›ˆÈÚÎˆYHNÈBˆ›ÝÈ™]È\œ›ÜŠ[™^XÝY›Ý]H	Ü›Ý]_X
+NÂˆKˆNÂˆHJNÂˆÞK™Ù]
+	ÈÜ›Ùš[S™ZYÚ›ÜšÛÙ	ÊKœÚÝ[
+	Ø™K™\ØX›Y	ÊK˜ÛÜÙ\Ý
+	Ë™›Ü›KYÜ›Ý\	ÊKœÚÝ[
+	Û›Ý˜™Kš\ÚX›IÊNÂˆÞK™Ù]
+	ÈÜ›Ùš[TÙ\šXÙIÊKœÚÝ[
+	Ø™K™\ØX›Y	ÊK˜ÛÜÙ\Ý
+	Ë™›Ü›KYÜ›Ý\	ÊKœÚÝ[
+	Û›Ý˜™Kš\ÚX›IÊNÂˆÞK™Ù]
+	ÈÜ›Ùš[S˜[YIÊKœÚÝ[
+	Ú]™K˜[YIË	ÐÛY[IÊNÂˆÞK™Ù]
+	Ë˜‹\Ø]™IÊK˜ÛXÚÊ
+NÂˆÞKÚ[™ÝÊ
+KœÚÝ[
+Ú[ˆOˆÂˆ^XÝ
+Ú[‹—×ÜØ]™Y›Ùš[JK››ÝËš]™Kœ›Ü\J	Û™ZYÚ›ÜšÛÙ	ÊNÂˆ^XÝ
+Ú[‹—×ÜØ]™Y›Ùš[JK››ÝËš]™Kœ›Ü\J	ÜÙ\šXÙWØØ]YÛÜžIÊNÂˆJNÂˆJNÂŸJNÂ‚™\ØÜšX™J	Ð]˜]\™\È›ÈÚ]	Ë
+
+HOˆÂˆ]
+	Û[ÜÝ˜HH›ÝÈ›ÈÛÛ]ÈH›ÈØX™péØ[ÈÙ[HÛØœ™\Üˆ\È[šXÚXZ\ÉË
+
+HOˆÂˆÞKš[\˜Ù\
+	ÑÑU	Ë	ËÜÜ˜ËÚœËØ\KšœÉËÈ›ÙNˆ	ÝÚ[™ÝË›™^\”™XYOT›ÛZ\ÙKœ™\ÛÛ™JÚ[™ÝË—×Û™^\\JIÈJNÂˆÞKš[\˜Ù\
+	ÑÑU	Ë	ËØ]˜]\‹XÚ]œÝ™ÉËÂˆÝ]\ÐÛÙNˆŒXY\œÎˆÈ	ØÛÛ[]\IÎˆ	Ú[XYÙKÜÝ™ÊÞ[	ÈKˆ›ÙNˆ	ÏÝ™È[œÏHš‹ËÝÝÝËÌË›Ü™ËÌŒÜÝ™ÈˆÚYHˆZYÚHÚ\˜ÛHÞHŒŒˆÞOHŒŒˆHŒŒˆš[H™Ü™Y[ˆ‹ÏÜÝ™Ï‰ËˆJNÂˆÞKš\Ú]
+	ËÜÜ˜ËÜYÙ\ËÜZ[™[Y[œØYÙ[œËš[	ËÈÛ™Y›Ü™SØY
+Ú[ŠHÂˆÛÛœÝÙ\ÜÚ[ÛˆHÈ\Ù\ŽˆÈYˆ	ØÛY[LIË[XZ[ˆ	ØÛY[^[\K˜ÛÛIÈKXØÙ\Ü×ÝÚÙ[Žˆ	Ý\Ý]ÚÙ[‰ÈNÂˆÛÛœÝ›ÝšY\ˆHÈYˆ	Ü›ÝšY\‹LIË[Û˜[YNˆ	Ñ]šH[\ÉË]˜]\—Ý\›ˆ	ËØ]˜]\‹XÚ]œÝ™ÉÈNÂˆÛÛœÝÛÛ™\œØ][ÛˆHÈYˆ	ØÛÛ™\œØ][Û‹LIËÛY[ÚYˆ	ØÛY[LIË›ÝšY\—ÚYˆ	Ü›ÝšY\‹LIËÛY[ˆÈYˆ	ØÛY[LIË[Û˜[YNˆ	ÐÛY[IÈK›ÝšY\‹\]YØ]ˆ	ÌŒ‹LLKL•LŽŒŒ‰ÈNÂˆÛÛœÝÚ[›™[HÈÛŠ
+HÈ™]\›ˆ\ÎÈKÝXœØÜšX™JØ[˜XÚÊHÈØ[˜XÚÊ	ÔÕP”ÐÔ’P‘Q	ÊNÈ™]\›ˆ\ÎÈHNÂˆÚ[‹—×Û™^\\HHÂˆÝ\X˜\ÙNˆÈ]]ˆÈÚYÛ“Ý]ˆ\Þ[˜È
+
+HOˆ
+È\œ›ÜŽˆ[JHKÚ[›™[ˆ
+
+HOˆÚ[›™[™[[Ý™PÚ[›™[ˆ\Þ[˜È
+
+HOˆßHKˆ™\]Z\™TÙ\ÜÚ[ÛŽˆ\Þ[˜È
+
+HOˆÙ\ÜÚ[Û‹ˆ™\]Y\Ýˆ\Þ[˜È›Ý]HOˆÂˆYˆ
+›Ý]HOOH	ÛYIÊH™]\›ˆÈYˆ	ØÛY[LIË›ÛNˆ	ØÛY[IË[Û˜[YNˆ	ÐÛY[IÈNÂˆYˆ
+›Ý]HOOH	ØÛÛ™\œØ][ÛœÉÊH™]\›ˆØÛÛ™\œØ][Û—NÂˆYˆ
+›Ý]KœÝ\ÕÚ]
+	ÛY\ÜØYÙ\É‰ÊH›Ý]KœÝ\ÕÚ]
+	ØÛÛ˜XÝÉ‰ÊJH™]\›ˆ×NÂˆ›ÝÈ™]È\œ›ÜŠ[™^XÝY›Ý]H	Ü›Ý]_X
+NÂˆKˆNÂˆHJNÂˆÞK™Ù]
+	Ë˜ÛÛ™\œØ][Û‹Z][H˜]˜]\‰ÊKœÚÝ[
+	Ú]™K˜Û\ÜÉË	Ú\Ë\ÝÉÊBˆ™š[™
+	Ë˜]˜]\‹Y˜[˜XÚÉÊKœÚÝ[
+	Ú]™K˜ÜÜÉË	Ýš\ÚXš[]IË	ÚY[‰ÊNÂˆÞK™Ù]
+	Ë˜ÛÛ™\œØ][Û‹Z][IÊK˜ÛXÚÊ
+NÂˆÞK™Ù]
+	ÈØÚ]XY\]˜]\‰ÊKœÚÝ[
+	Ú]™K˜Û\ÜÉË	Ú\Ë\ÝÉÊBˆ™š[™
+	Ë˜]˜]\‹Y˜[˜XÚÉÊKœÚÝ[
+	Ú]™K˜ÜÜÉË	Ýš\ÚXš[]IË	ÚY[‰ÊNÂˆJNÂŸJNÂ

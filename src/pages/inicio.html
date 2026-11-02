@@ -105,9 +105,11 @@
       <button class="cat" data-cat="limpeza">Limpeza</button>
       <button class="cat" data-cat="jardinagem">Jardinagem</button>
       <button class="cat" data-cat="mudancas">Mudanças</button>
-      <button class="cat" data-cat="">Mais serviços</button>
+      <button class="cat" data-cat="">Todos os serviços</button>
     </section>
 
+    <div class="results-toolbar"><p id="results-count" aria-live="polite">Carregando profissionais...</p><button id="clear-filters" type="button" hidden>Limpar filtros</button></div>
+    <p class="empty-state" id="no-results" hidden>Nenhum profissional encontrado com esses filtros.</p>
     <section class="cards" id="cards" aria-live="polite">
       <p class="empty-state">Carregando profissionais cadastrados...</p>
     </section>
@@ -116,6 +118,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/src/js/api.js"></script>
   <script src="/src/js/chat-core.js"></script>
+  <script src="/src/js/marketplace-core.js"></script>
+  <script src="/src/js/avatar-ui.js"></script>
   <script src="/src/js/professionals.js"></script>
   <script src="/src/js/page-transition.js"></script>
   <script>

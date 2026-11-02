@@ -89,6 +89,12 @@
   
       </div>
 
+      <div class="provider-fields">
+        <label class="field-label" for="serviceCategory">Serviço oferecido</label>
+        <select id="serviceCategory" required><option value="">Selecione um serviço</option><option>Construção</option><option>Elétrica</option><option>Hidráulica</option><option>Pintura</option><option>Limpeza</option><option>Jardinagem</option><option>Mudanças</option></select>
+        <label class="field-label" for="providerNeighborhood">Bairro em Camaçari</label>
+        <select id="providerNeighborhood" required><option value="">Selecione seu bairro</option><option>Centro</option><option>Gleba A</option><option>Gleba B</option><option>Gleba C</option><option>Gleba E</option><option>Inocoop</option><option>Ponto Certo</option><option>Parque Satélite</option><option>Ficam</option><option>Mangueiral</option><option>Nova Vitória</option><option>Lama Preta</option><option>Verde Horizonte</option><option>Parafuso</option><option>Parque Nascente</option><option>Gravatá</option><option>Phoc I</option><option>Phoc II</option><option>Phoc III</option><option>Busca Vida</option><option>Vila de Abrantes</option><option>Jauá</option><option>Arembepe</option><option>Barra do Jacuípe</option><option>Guarajuba</option><option>Itacimirim</option><option>Monte Gordo</option></select>
+      </div>
       <div class="terms-wrap">
         <input type="checkbox" id="termos" required />
         <label for="termos">Aceito os Termos de Uso</label>
@@ -115,26 +121,11 @@
     </div>
   </div>
 
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-<script>
-    new window.VLibras.Widget({
-        rootPath: 'https://vlibras.gov.br/app',
-        position: 'R' 
-    });
-</script>
 
 
-<script type="text/javascript">
-(function(d){
-    var s = d.createElement("script");
-    s.setAttribute("data-account", "S9u6Q9zXrg"); 
-    s.setAttribute("data-size", "small"); 
-    s.setAttribute("data-position", 6); 
 
-    s.src = "https://cdn.userway.org/widget.js";
-    (d.body || d.head).appendChild(s);
-})(document);
-</script>
 
+
+  <script src="/src/js/deferred-widgets.js"></script>
 </body>
 </html>

@@ -136,6 +136,11 @@ body {
     margin-bottom: 24px;
 }
 
+.provider-fields { display:grid; gap:8px; margin:0 0 20px; }
+.provider-fields select { width:100%; min-height:48px; padding:12px 14px; border:1px solid var(--border); border-radius:10px; background:#fff; color:var(--text-dark); font:inherit; }
+.provider-fields .field-label { color:var(--text-mid); font-size:13px; font-weight:600; }
+.provider-fields select:focus-visible { outline:3px solid #7774ff; outline-offset:2px; }
+
 .terms-wrap input[type="checkbox"] {
     width: 18px;
     height: 18px;

@@ -167,7 +167,15 @@ body.avatar-modal-open {
   justify-content: center;
   font-size: 24px;
   font-weight: bold;
+  position:relative;
+  overflow:hidden;
 }
+.avatar-image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:inherit; }
+.avatar-fallback { display:grid; place-items:center; width:100%; height:100%; }
+.avatar.has-photo .avatar-fallback { visibility:hidden; }
+.profile-form select { width:100%; min-height:48px; padding:12px 14px; border:1px solid #cfd5e2; border-radius:10px; background:#fff; color:#172033; font:inherit; }
+.profile-form .form-group[hidden] { display:none !important; }
+.profile-form select:focus-visible { outline:3px solid #7774ff; outline-offset:2px; border-color:#5753eb; }
 
 .btn-photo {
   display: flex;

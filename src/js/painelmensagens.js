@@ -14,7 +14,6 @@ const contratarBtn = document.getElementById('contratarBtn');
 let api, me, activeConversation, realtimeChannel, realtimeGeneration = 0, openGeneration = 0;
 let conversations = [], activeContracts = [], messageCache = [], fallbackTimer = null, fallbackActive = false;
 
-const initials = name => name.split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
 const otherPerson = conversation => conversation.client_id === me.id ? conversation.provider : conversation.client;
 const formatTime = value => new Date(value).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
@@ -52,11 +51,8 @@ function renderConversationList(filter = '') {
   visible.forEach(item => {
     const person = otherPerson(item);
     const li = document.createElement('li'); li.className = 'conversation-item'; li.dataset.id = item.id; li.tabIndex = 0;
-    const avatar = document.createElement('div'); avatar.className = 'avatar avatar-purple'; avatar.textContent = initials(person.full_name);
-    if (person.avatar_url) {
-      avatar.style.backgroundImage = `url("${person.avatar_url}")`;
-      avatar.classList.add('has-photo');
-    }
+    const avatar = document.createElement('div'); avatar.className = 'avatar avatar-purple';
+    window.NexlarAvatar.render(avatar, person.full_name, person.avatar_url);
     const info = document.createElement('div'); info.className = 'conv-info';
     const top = document.createElement('div'); top.className = 'conv-top';
     const name = document.createElement('span'); name.className = 'conv-name'; name.textContent = person.full_name;
@@ -136,9 +132,7 @@ async function openConversation(conversation) {
   const person = otherPerson(conversation);
   chatHeaderName.textContent = person.full_name;
   chatHeaderName.href = window.NexlarChat.profileUrl(person.id);
-  chatHeaderAvatar.textContent = initials(person.full_name);
-  chatHeaderAvatar.style.backgroundImage = person.avatar_url ? `url("${person.avatar_url}")` : '';
-  chatHeaderAvatar.classList.toggle('has-photo', Boolean(person.avatar_url));
+  window.NexlarAvatar.render(chatHeaderAvatar, person.full_name, person.avatar_url);
   emptyState.style.display = 'none'; chatView.style.display = 'flex'; chatView.style.flexDirection = 'column';
   if (innerWidth <= 600) { messagesPanel.classList.add('hidden'); chatArea.classList.add('visible'); }
   await subscribeRealtime(conversation.id);
@@ -211,12 +205,10 @@ window.addEventListener('storage', event => {
     person.avatar_url = update.avatarUrl;
     const itemAvatar = conversationList.querySelector(`[data-id="${conversation.id}"] .avatar`);
     if (itemAvatar) {
-      itemAvatar.style.backgroundImage = `url("${update.avatarUrl}")`;
-      itemAvatar.classList.add('has-photo');
+      window.NexlarAvatar.render(itemAvatar, person.full_name, update.avatarUrl);
     }
     if (activeConversation?.id === conversation.id) {
-      chatHeaderAvatar.style.backgroundImage = `url("${update.avatarUrl}")`;
-      chatHeaderAvatar.classList.add('has-photo');
+      window.NexlarAvatar.render(chatHeaderAvatar, person.full_name, update.avatarUrl);
     }
   });
 });
