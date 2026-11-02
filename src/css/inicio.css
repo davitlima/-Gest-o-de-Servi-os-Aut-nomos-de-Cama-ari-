@@ -92,6 +92,8 @@ body {
   flex-shrink: 0;
 }
 
+.nav-actions [hidden] { display: none !important; }
+
 .btn-outline {
   border: 1.5px solid #ccc; 
   border-radius: 999px;
