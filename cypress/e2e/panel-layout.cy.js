@@ -32,9 +32,11 @@ describe('Shared panel navigation layout', () => {
         expect(rect.bottom).to.be.at.most(height);
       });
       cy.get('.panel-nav__trigger').click();
+      cy.get('.panel-nav__trigger').should('not.be.visible');
       cy.get('.panel-nav__link').should('have.length', 3);
       cy.get('.panel-nav__link[href="Painelfinanceiro.html"]').should('not.exist');
       cy.get('.panel-nav__close').click();
+      cy.get('.panel-nav__trigger').should('be.visible');
       cy.get('#backBtn').click();
       cy.get('.conversation-item').last().should('be.visible');
     });
@@ -43,8 +45,10 @@ describe('Shared panel navigation layout', () => {
       cy.viewport(width, height);
       visitPanel('Meuperfil');
       cy.get('.panel-nav__trigger').click();
+      cy.get('.panel-nav__trigger').should('not.be.visible');
       cy.get('.panel-nav__link[href="Painelfinanceiro.html"]').should('not.exist');
       cy.get('.panel-nav__close').click();
+      cy.get('.panel-nav__trigger').should('be.visible');
       cy.get('.btn-save').scrollIntoView().should('be.visible');
       cy.document().then(doc => expect(doc.documentElement.scrollWidth).to.be.at.most(width));
     });
@@ -94,4 +98,5 @@ describe('Shared panel navigation layout', () => {
     cy.get('.panel-nav__link[href="Painelfinanceiro.html"]').should('be.visible');
   });
 });
+
 
