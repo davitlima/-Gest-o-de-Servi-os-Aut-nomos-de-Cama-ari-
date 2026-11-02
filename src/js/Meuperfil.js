@@ -163,7 +163,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let portfolioSection = null;
   if (canOffer) {
-    portfolioSection = document.createElement('div'); portfolioSection.id = 'portfolio-content'; portfolioSection.style.display = 'none';
+    portfolioSection = document.createElement('section');
+    portfolioSection.id = 'portfolio-content';
+    portfolioSection.className = 'portfolio-content';
+    portfolioSection.hidden = true;
     profileCard.appendChild(portfolioSection);
     await renderPortfolio();
   } else {
@@ -171,54 +174,217 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function renderPortfolio() {
-    const items = await api.request('portfolio');
-    portfolioSection.innerHTML = '<h3>Meu Portfólio</h3><p>Adicione imagens dos seus trabalhos concluídos.</p>';
-    const grid = document.createElement('div'); grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px';
-    const add = document.createElement('button'); add.type = 'button'; add.textContent = '+ Adicionar trabalho'; add.style.cssText = 'min-height:150px;border:2px dashed var(--border);background:white;border-radius:12px;cursor:pointer';
-    add.addEventListener('click', () => openPortfolioUpload());
+    portfolioSection.replaceChildren();
+    const heading = document.createElement('h3');
+    heading.textContent = 'Meu Portfólio';
+    const intro = document.createElement('p');
+    intro.textContent = 'Apresente seus trabalhos com imagens e uma descrição curta.';
+    const feedback = document.createElement('p');
+    feedback.className = 'portfolio-feedback';
+    feedback.setAttribute('role', 'status');
+    feedback.setAttribute('aria-live', 'polite');
+    portfolioSection.append(heading, intro, feedback);
+
+    let items;
+    try { items = await api.request('portfolio'); }
+    catch (error) {
+      feedback.textContent = error.message || 'Não foi possível carregar seu portfólio.';
+      const retry = document.createElement('button');
+      retry.type = 'button'; retry.className = 'portfolio-add-button'; retry.textContent = 'Tentar novamente';
+      retry.addEventListener('click', renderPortfolio);
+      portfolioSection.appendChild(retry);
+      return;
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'portfolio-grid portfolio-grid--manage';
+    const add = document.createElement('button');
+    add.type = 'button'; add.className = 'portfolio-add-button'; add.textContent = '+ Adicionar trabalho';
+    add.addEventListener('click', openPortfolioUpload);
     grid.appendChild(add);
+
     items.forEach(item => {
-      const card = document.createElement('figure'); card.style.cssText = 'margin:0;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border)';
-      const image = document.createElement('img'); image.src = item.image_url; image.alt = item.description || 'Trabalho do portfólio'; image.style.cssText = 'width:100%;height:150px;object-fit:cover;display:block';
-      const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = 'Excluir'; remove.style.cssText = 'position:absolute;right:8px;bottom:8px;padding:6px 10px';
+      const card = document.createElement('figure');
+      card.className = 'portfolio-work';
+      const image = document.createElement('img');
+      image.src = item.image_url;
+      image.alt = item.description || 'Trabalho do portfólio';
+      image.loading = 'lazy';
+      const remove = document.createElement('button');
+      remove.type = 'button'; remove.className = 'portfolio-remove'; remove.textContent = 'Excluir';
       remove.addEventListener('click', async () => {
-        if (!confirm('Excluir esta imagem?')) return;
-        await api.request(`portfolio/${item.id}`, { method: 'DELETE' });
-        if (item.storage_path) await api.supabase.storage.from('avatars').remove([item.storage_path]);
-        await renderPortfolio();
+        if (!confirm('Excluir este trabalho do portfólio?')) return;
+        remove.disabled = true;
+        try {
+          await api.request(`portfolio/${item.id}`, { method: 'DELETE' });
+          let cleanupFailed = false;
+          if (item.storage_path) {
+            try {
+              const { error } = await api.supabase.storage.from('avatars').remove([item.storage_path]);
+              cleanupFailed = Boolean(error);
+            } catch (_) { cleanupFailed = true; }
+          }
+          await renderPortfolio();
+          if (cleanupFailed) {
+            const status = portfolioSection.querySelector('.portfolio-feedback');
+            status.textContent = 'O trabalho foi excluído, mas a imagem não pôde ser removida do armazenamento.';
+          }
+        } catch (error) {
+          remove.disabled = false;
+          feedback.textContent = error.message || 'Não foi possível excluir este trabalho.';
+        }
       });
-      card.append(image, remove); grid.appendChild(card);
+      card.append(image);
+      if (item.description) {
+        const caption = document.createElement('figcaption');
+        caption.textContent = item.description;
+        card.appendChild(caption);
+      }
+      card.appendChild(remove);
+      grid.appendChild(card);
     });
     portfolioSection.appendChild(grid);
   }
 
   const portfolioModal = document.createElement('div');
-  portfolioModal.className = 'avatar-modal'; portfolioModal.hidden = true; portfolioModal.setAttribute('role', 'dialog'); portfolioModal.setAttribute('aria-modal', 'true');
-  portfolioModal.innerHTML = `<section class="avatar-modal__panel"><header class="avatar-modal__header"><div><h2>Adicionar trabalho</h2><p>Escolha uma imagem de até 5 MB.</p></div><button class="avatar-modal__close" type="button" aria-label="Fechar painel">×</button></header><button class="avatar-dropzone" type="button"><span class="avatar-dropzone__preview"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg></span><strong>Arraste a imagem para cá</strong><span>ou clique para selecionar no dispositivo</span><small>JPG, PNG, GIF ou WebP · máximo de 5 MB</small></button><input type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden><label class="portfolio-description">Descrição (opcional)<input type="text" maxlength="160" placeholder="Descreva este trabalho"></label><p class="avatar-upload-message" role="status" aria-live="polite"></p><footer class="avatar-modal__actions"><button type="button" class="avatar-modal__cancel">Cancelar</button><button type="button" class="btn-solid" disabled>Salvar trabalho</button></footer></section>`;
+  portfolioModal.className = 'avatar-modal';
+  portfolioModal.id = 'portfolioUploadModal';
+  portfolioModal.hidden = true;
+  portfolioModal.setAttribute('role', 'dialog');
+  portfolioModal.setAttribute('aria-modal', 'true');
+  portfolioModal.setAttribute('aria-labelledby', 'portfolioUploadTitle');
+  portfolioModal.innerHTML = `<section class="avatar-modal__panel portfolio-upload-panel" aria-describedby="portfolioUploadDescription"><header class="avatar-modal__header"><div><h2 id="portfolioUploadTitle">Adicionar trabalho</h2><p id="portfolioUploadDescription">Escolha uma imagem nítida de até 5 MB.</p></div><button class="avatar-modal__close" id="closePortfolioUpload" type="button" aria-label="Fechar painel">×</button></header><button class="avatar-dropzone portfolio-dropzone" id="portfolioDropzone" type="button" aria-label="Arraste ou selecione uma imagem"><span class="avatar-dropzone__preview" id="portfolioUploadPreview" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg></span><strong>Arraste a imagem para cá</strong><span>ou clique para selecionar no dispositivo</span><small>JPG, PNG, GIF ou WebP · máximo de 5 MB</small></button><input id="portfolioFileInput" type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden><label class="portfolio-description" for="portfolioDescription">Descrição (opcional)<input id="portfolioDescription" type="text" maxlength="160" placeholder="Descreva este trabalho"></label><p class="avatar-upload-message" id="portfolioUploadMessage" role="status" aria-live="polite"></p><footer class="avatar-modal__actions"><button type="button" class="avatar-action avatar-action--secondary" id="cancelPortfolioUpload">Cancelar</button><button type="button" class="avatar-action avatar-action--primary" id="savePortfolioUpload" disabled>Salvar trabalho</button></footer></section>`;
   document.body.appendChild(portfolioModal);
   const portfolioDropzone = portfolioModal.querySelector('.avatar-dropzone');
-  const portfolioInput = portfolioModal.querySelector('input[type=file]');
-  const portfolioPreview = portfolioModal.querySelector('.avatar-dropzone__preview');
-  const portfolioMessage = portfolioModal.querySelector('.avatar-upload-message');
-  const portfolioDescription = portfolioModal.querySelector('.portfolio-description input');
-  const portfolioSave = portfolioModal.querySelector('.btn-solid');
-  let selectedPortfolio = null; let portfolioPreviewUrl = null;
-  function clearPortfolioSelection() { if (portfolioPreviewUrl) URL.revokeObjectURL(portfolioPreviewUrl); portfolioPreviewUrl = null; selectedPortfolio = null; portfolioInput.value = ''; portfolioPreview.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg>'; portfolioDescription.value = ''; portfolioMessage.textContent = ''; portfolioSave.disabled = true; }
-  function choosePortfolio(files) { const selected = window.NexlarProfileUpload.selectProfileImage(files); clearPortfolioSelection(); if (!selected.validation.valid) { portfolioMessage.textContent = selected.validation.error; return; } selectedPortfolio = selected.file; portfolioPreviewUrl = URL.createObjectURL(selected.file); const image = document.createElement('img'); image.src = portfolioPreviewUrl; image.alt = `Prévia de ${selected.file.name}`; portfolioPreview.replaceChildren(image); portfolioMessage.textContent = 'Imagem pronta para salvar.'; portfolioMessage.className = 'avatar-upload-message is-success'; portfolioSave.disabled = false; }
-  function openPortfolioUpload() { clearPortfolioSelection(); portfolioModal.hidden = false; portfolioDropzone.focus(); }
-  function closePortfolioUpload() { portfolioModal.hidden = true; clearPortfolioSelection(); }
-  portfolioDropzone.addEventListener('click', () => portfolioInput.click()); portfolioInput.addEventListener('change', () => choosePortfolio(portfolioInput.files));
-  ['dragenter', 'dragover'].forEach(type => portfolioDropzone.addEventListener(type, event => { event.preventDefault(); portfolioDropzone.classList.add('is-dragging'); }));
+  const portfolioPanel = portfolioModal.querySelector('.portfolio-upload-panel');
+  const portfolioInput = document.getElementById('portfolioFileInput');
+  const portfolioPreview = document.getElementById('portfolioUploadPreview');
+  const portfolioMessage = document.getElementById('portfolioUploadMessage');
+  const portfolioDescription = document.getElementById('portfolioDescription');
+  const portfolioSave = document.getElementById('savePortfolioUpload');
+  const portfolioCloseButtons = [document.getElementById('closePortfolioUpload'), document.getElementById('cancelPortfolioUpload')];
+  const emptyPortfolioPreview = portfolioPreview.innerHTML;
+  let selectedPortfolio = null;
+  let portfolioPreviewUrl = null;
+  let portfolioSaving = false;
+
+  function clearPortfolioSelection() {
+    if (portfolioPreviewUrl) URL.revokeObjectURL(portfolioPreviewUrl);
+    portfolioPreviewUrl = null;
+    selectedPortfolio = null;
+    portfolioInput.value = '';
+    portfolioPreview.innerHTML = emptyPortfolioPreview;
+    portfolioDescription.value = '';
+    portfolioMessage.textContent = '';
+    portfolioMessage.className = 'avatar-upload-message';
+    portfolioSave.disabled = true;
+    portfolioDropzone.classList.remove('is-dragging');
+  }
+
+  function choosePortfolio(files) {
+    const { file, validation } = window.NexlarProfileUpload.selectProfileImage(files);
+    clearPortfolioSelection();
+    if (!validation.valid) {
+      portfolioMessage.textContent = validation.error;
+      return;
+    }
+    selectedPortfolio = file;
+    portfolioPreviewUrl = URL.createObjectURL(file);
+    const image = document.createElement('img');
+    image.src = portfolioPreviewUrl;
+    image.alt = `Prévia de ${file.name}`;
+    portfolioPreview.replaceChildren(image);
+    portfolioMessage.textContent = 'Imagem pronta para salvar.';
+    portfolioMessage.classList.add('is-success');
+    portfolioSave.disabled = false;
+  }
+
+  function openPortfolioUpload() {
+    clearPortfolioSelection();
+    portfolioModal.hidden = false;
+    document.body.classList.add('avatar-modal-open');
+    document.getElementById('closePortfolioUpload').focus();
+  }
+
+  function closePortfolioUpload() {
+    if (portfolioSaving) return;
+    portfolioModal.hidden = true;
+    document.body.classList.remove('avatar-modal-open');
+    clearPortfolioSelection();
+    portfolioTab.focus();
+  }
+
+  portfolioDropzone.addEventListener('click', () => portfolioInput.click());
+  portfolioInput.addEventListener('change', () => choosePortfolio(portfolioInput.files));
+  ['dragenter', 'dragover'].forEach(type => portfolioDropzone.addEventListener(type, event => {
+    event.preventDefault(); portfolioDropzone.classList.add('is-dragging');
+  }));
   ['dragleave', 'dragend'].forEach(type => portfolioDropzone.addEventListener(type, () => portfolioDropzone.classList.remove('is-dragging')));
-  portfolioDropzone.addEventListener('drop', event => { event.preventDefault(); portfolioDropzone.classList.remove('is-dragging'); choosePortfolio(event.dataTransfer.files); });
-  portfolioModal.querySelector('.avatar-modal__close').addEventListener('click', closePortfolioUpload); portfolioModal.querySelector('.avatar-modal__cancel').addEventListener('click', closePortfolioUpload); portfolioModal.addEventListener('click', event => { if (event.target === portfolioModal) closePortfolioUpload(); });
-  portfolioSave.addEventListener('click', async () => { if (!selectedPortfolio) return; portfolioSave.disabled = true; try { const uploaded = await window.NexlarProfileUpload.uploadImage({ bucket: api.supabase.storage.from('avatars'), userId: session.user.id, file: selectedPortfolio, folder: 'portfolio' }); await api.request('portfolio', { method: 'POST', body: JSON.stringify({ image_url: uploaded.publicUrl, storage_path: uploaded.path, description: portfolioDescription.value.trim() }) }); closePortfolioUpload(); await renderPortfolio(); } catch (error) { portfolioMessage.textContent = error.message || 'Não foi possível salvar o trabalho.'; portfolioSave.disabled = false; } });
+  portfolioDropzone.addEventListener('drop', event => {
+    event.preventDefault(); choosePortfolio(event.dataTransfer.files);
+  });
+  portfolioCloseButtons.forEach(button => button.addEventListener('click', closePortfolioUpload));
+  portfolioModal.addEventListener('click', event => { if (event.target === portfolioModal) closePortfolioUpload(); });
+  document.addEventListener('keydown', event => {
+    if (portfolioModal.hidden) return;
+    if (event.key === 'Escape') { event.preventDefault(); closePortfolioUpload(); return; }
+    if (event.key !== 'Tab') return;
+    const controls = [...portfolioPanel.querySelectorAll('button:not(:disabled), input:not([type="file"]):not(:disabled)')];
+    const first = controls[0]; const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+
+  portfolioSave.addEventListener('click', async () => {
+    if (!selectedPortfolio || portfolioSaving) return;
+    portfolioSaving = true;
+    portfolioSave.disabled = true;
+    portfolioSave.textContent = 'Salvando...';
+    portfolioPanel.setAttribute('aria-busy', 'true');
+    portfolioMessage.textContent = 'Enviando imagem...';
+    portfolioMessage.className = 'avatar-upload-message';
+    const bucket = api.supabase.storage.from('avatars');
+    let uploaded = null;
+    let persisted = false;
+    try {
+      uploaded = await window.NexlarProfileUpload.uploadImage({
+        bucket, userId: session.user.id, file: selectedPortfolio, folder: 'portfolio',
+      });
+      await api.request('portfolio', {
+        method: 'POST',
+        body: JSON.stringify({
+          image_url: uploaded.publicUrl,
+          storage_path: uploaded.path,
+          description: portfolioDescription.value.trim(),
+        }),
+      });
+      persisted = true;
+      portfolioSaving = false;
+      closePortfolioUpload();
+      await renderPortfolio();
+    } catch (error) {
+      if (uploaded && !persisted) {
+        try {
+          const { error: cleanupError } = await bucket.remove([uploaded.path]);
+          if (cleanupError) console.error('[Nexlar] Não foi possível limpar um upload de portfólio incompleto.');
+        } catch (_) { console.error('[Nexlar] Não foi possível limpar um upload de portfólio incompleto.'); }
+      }
+      portfolioMessage.textContent = error.message || 'Não foi possível salvar o trabalho.';
+      portfolioMessage.className = 'avatar-upload-message';
+      portfolioSave.disabled = false;
+    } finally {
+      portfolioSaving = false;
+      portfolioSave.textContent = 'Salvar trabalho';
+      portfolioPanel.removeAttribute('aria-busy');
+    }
+  });
 
   tabs.forEach((tab, index) => tab.addEventListener('click', () => {
     tabs.forEach(item => item.classList.remove('active')); tab.classList.add('active');
     const portfolioOpen = index === 1 && portfolioSection;
-    form.style.display = portfolioOpen ? 'none' : 'flex'; profileTitle.style.display = portfolioOpen ? 'none' : 'block';
-    if (portfolioSection) portfolioSection.style.display = portfolioOpen ? 'block' : 'none';
+    form.hidden = Boolean(portfolioOpen);
+    profileTitle.hidden = Boolean(portfolioOpen);
+    if (portfolioSection) portfolioSection.hidden = !portfolioOpen;
   }));
 
   form.addEventListener('submit', async event => {

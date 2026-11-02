@@ -32,6 +32,7 @@
   })();
 
   window.nexlarReady = ready;
+  ready.then(() => window.dispatchEvent(new Event('nexlar:ready'))).catch(() => {});
 })();
 
 

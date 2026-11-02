@@ -2,8 +2,10 @@ const assert = require('node:assert/strict');
 const { renderNavigation, createDrawerController } = require('../src/js/panel-nav.js');
 
 const links = ['inicio.html', 'Meuperfil.html', 'Painelfinanceiro.html', 'painelmensagens.html'];
-for (const href of links) assert.ok(renderNavigation('perfil').includes(`href="${href}"`));
-assert.match(renderNavigation('financeiro'), /href="Painelfinanceiro\.html"[^>]*aria-current="page"/);
+for (const href of ['inicio.html', 'Meuperfil.html', 'painelmensagens.html']) assert.ok(renderNavigation('perfil').includes(`href="${href}"`));
+assert.doesNotMatch(renderNavigation('perfil'), /Painelfinanceiro\.html/, 'menu não mostra Financeiro enquanto o papel ainda não foi validado');
+assert.ok(renderNavigation('perfil', true).includes('href="Painelfinanceiro.html"'), 'prestadores podem abrir Financeiro');
+assert.match(renderNavigation('financeiro', true), /href="Painelfinanceiro\.html"[^>]*aria-current="page"/);
 assert.doesNotMatch(renderNavigation('invalida'), /aria-current="page"/);
 assert.doesNotMatch(renderNavigation('inicio', false), /Painelfinanceiro\.html/);
 

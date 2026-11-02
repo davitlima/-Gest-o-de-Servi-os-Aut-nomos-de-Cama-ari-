@@ -16,6 +16,17 @@ final class Domain
         return self::canOfferServices($role);
     }
 
+    public static function validPortfolioImage(string $imageUrl, string $storagePath, string $userId, string $supabaseUrl): bool
+    {
+        $pathPattern = '#^' . preg_quote($userId, '#') . '/portfolio/[A-Za-z0-9][A-Za-z0-9._-]*$#D';
+        if (!preg_match($pathPattern, $storagePath) || filter_var($imageUrl, FILTER_VALIDATE_URL) === false) {
+            return false;
+        }
+
+        $expectedUrl = rtrim($supabaseUrl, '/') . '/storage/v1/object/public/avatars/' . $storagePath;
+        return hash_equals($expectedUrl, $imageUrl);
+    }
+
     public static function validMoney(float|int $value): bool
     {
         return is_finite((float) $value) && $value > 0;

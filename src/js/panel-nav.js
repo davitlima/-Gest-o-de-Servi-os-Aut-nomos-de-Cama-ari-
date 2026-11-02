@@ -6,7 +6,7 @@
     { key: 'mensagens', href: 'painelmensagens.html', label: 'Mensagens', icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' }
   ];
 
-  function renderNavigation(active, canUseFinance = true) {
+  function renderNavigation(active, canUseFinance = false) {
     const links = destinations.filter(item => canUseFinance || item.key !== 'financeiro').map(item => {
       const current = item.key === active ? ' aria-current="page"' : '';
       return `<a class="panel-nav__link" href="${item.href}"${current}><svg viewBox="0 0 24 24" aria-hidden="true">${item.icon}</svg><span>${item.label}</span></a>`;
@@ -80,7 +80,7 @@
   if (global && global.HTMLElement && global.customElements && !global.customElements.get('nexlar-panel-nav')) {
     class NexlarPanelNav extends global.HTMLElement {
       connectedCallback() {
-        this.innerHTML = renderNavigation(this.getAttribute('active'));
+        this.innerHTML = renderNavigation(this.getAttribute('active'), false);
         const setupController = () => {
           this.controller?.cleanup();
           this.controller = createDrawerController({
@@ -94,16 +94,17 @@
             links: this.querySelectorAll('nav a')
           });
         };
-        Promise.resolve(global.nexlarReady).then(async api => {
-          if (!api) return;
-          const me = await api.request('me');
-          if (me.role !== 'autonomo' && me.role !== 'empresa') {
+        setupController();
+        const waitForApi = global.nexlarReady
+          ? Promise.resolve(global.nexlarReady)
+          : new Promise(resolve => global.addEventListener('nexlar:ready', () => resolve(global.nexlarReady), { once: true }));
+        waitForApi.then(api => api?.request('me')).then(me => {
+          if (me && ['autonomo', 'empresa'].includes(me.role)) {
             const current = this.querySelector('.panel-nav__sidebar nav');
-            current.innerHTML = renderNavigation(this.getAttribute('active'), false).match(/<nav>([\s\S]*)<\/nav>/)[1];
+            current.innerHTML = renderNavigation(this.getAttribute('active'), true).match(/<nav>([\s\S]*)<\/nav>/)[1];
             setupController();
           }
         }).catch(() => {});
-        setupController();
       }
       disconnectedCallback() { this.controller?.cleanup(); this.controller = null; }
       setOpen(open, returnFocus) { this.controller?.setOpen(open, returnFocus); }

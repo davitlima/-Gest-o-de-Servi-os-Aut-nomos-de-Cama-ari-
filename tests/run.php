@@ -22,6 +22,10 @@ use Nexlar\Domain;
 expect(Domain::canUseFinance('cliente') === false, 'Cliente não acessa financeiro');
 expect(Domain::canUseFinance('autonomo') === true, 'Autônomo acessa financeiro');
 expect(Domain::canUseFinance('empresa') === true, 'Empresa acessa financeiro');
+expect(Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/123-foto.png', 'user-1/portfolio/123-foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio aceita URL pública do próprio usuário');
+expect(!Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/other/portfolio/123-foto.png', 'other/portfolio/123-foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita objeto de outro usuário');
+expect(!Domain::validPortfolioImage('https://evil.example/user-1/portfolio/foto.png', 'user-1/portfolio/foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita URL externa');
+expect(!Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/user-1/avatar.png', 'user-1/avatar.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita caminho fora da pasta de portfólio');
 expect(Domain::platformFee(100.0) === 15.0, 'Taxa Nexlar deve ser 15%');
 expect(Domain::providerNet(100.0) === 85.0, 'Profissional deve receber 85%');
 
@@ -82,6 +86,12 @@ expect(!str_contains($api, "auth/email-step/complete"), 'API não deve concluir 
 $avatarMigration = file_get_contents($root . '/supabase/migrations/20261101120000_profile_avatar_storage.sql');
 expect(str_contains($avatarMigration, 'file_size_limit'), 'Bucket de avatar deve impor limite de tamanho no Storage');
 expect(str_contains($avatarMigration, 'allowed_mime_types'), 'Bucket de avatar deve impor os tipos permitidos no Storage');
+$portfolioMigrationFiles = glob($root . '/supabase/migrations/*_harden_portfolio_storage.sql') ?: [];
+expect(count($portfolioMigrationFiles) === 1, 'Portfólio deve possuir uma migração versionada de Storage e metadados');
+$portfolioMigration = file_get_contents($portfolioMigrationFiles[0]);
+foreach (['add column if not exists storage_path text', 'portfolio_owner_insert', 'portfolio_owner_update', 'portfolio_owner_delete', 'portfolio_items_owner_created_idx', 'storage.foldername(name)'] as $portfolioMigrationRequirement) {
+    expect(str_contains($portfolioMigration, $portfolioMigrationRequirement), 'Migração do portfólio deve incluir ' . $portfolioMigrationRequirement);
+}
 
 $chatHtml = file_get_contents($root . '/src/pages/painelmensagens.html');
 expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença online');

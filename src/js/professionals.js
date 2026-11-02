@@ -6,7 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const neighborhoodSelect = document.getElementById('sel-bairro');
   const categoryButtons = [...document.querySelectorAll('.cat[data-cat]')];
   let cards = [];
+  let loadingProfiles = false;
   window.nexlarReady?.catch(() => {});
+
+  const financePanelLink = document.getElementById('financePanelLink');
+  if (financePanelLink && window.nexlarReady) {
+    window.nexlarReady.then(api => api.request('me')).then(profile => {
+      financePanelLink.hidden = !['autonomo', 'empresa'].includes(profile.role);
+    }).catch(() => { financePanelLink.hidden = true; });
+  }
 
   const clearButton = document.getElementById('clear-filters');
   const count = document.getElementById('results-count');
@@ -68,26 +76,52 @@ document.addEventListener('DOMContentLoaded', () => {
     return card;
   }
 
+  function showLoadError(message, error) {
+    console.error('[Nexlar] Lista pública de profissionais:', error);
+    const failure = document.createElement('p');
+    failure.className = 'empty-state';
+    failure.textContent = message;
+    const retry = document.createElement('button');
+    retry.id = 'retry-professionals';
+    retry.className = 'retry-professionals';
+    retry.type = 'button';
+    retry.textContent = 'Tentar novamente';
+    retry.addEventListener('click', loadProfiles);
+    container.replaceChildren(failure, retry);
+  }
+
   async function loadProfiles() {
+    if (loadingProfiles) return;
+    loadingProfiles = true;
+    const retry = document.getElementById('retry-professionals');
+    if (retry) { retry.disabled = true; retry.textContent = 'Carregando...'; }
     try {
       // Public list request runs at once while the page configuration/session initializes.
-      const publicFetch = fetch('/api/index.php?route=public%2Fprofiles').then(async response => {
-        if (!response.ok) throw new Error('Falha ao carregar profissionais.');
-        return response.json();
-      });
-      const professionals = await publicFetch;
-      cards = professionals.map(createCard);
+      const response = await fetch('/api/index.php?route=public%2Fprofiles');
+      if (!response.ok) throw new Error(`Falha ao carregar profissionais (HTTP ${response.status}).`);
+      let professionals;
+      try { professionals = await response.json(); }
+      catch { throw new Error('A resposta recebida não está no formato esperado.'); }
+      if (!Array.isArray(professionals)) throw new Error('A resposta recebida não está no formato esperado.');
+      let nextCards;
+      try { nextCards = professionals.map(createCard); }
+      catch (error) {
+        showLoadError('Não foi possível exibir os profissionais. Tente novamente.', error);
+        return;
+      }
+      cards = nextCards;
       container.replaceChildren(...cards);
       if (!cards.length) {
         const message = document.createElement('p'); message.className = 'empty-state';
         message.textContent = 'Ainda não há profissionais cadastrados.'; container.appendChild(message);
       }
       applyFilters();
-    } catch (_) {
-      const failure = document.createElement('p'); failure.className = 'empty-state';
-      failure.textContent = 'Não foi possível carregar os profissionais agora.';
-      container.replaceChildren(failure);
-    }
+    } catch (error) {
+      const message = error.message.includes('formato esperado')
+        ? error.message
+        : 'Não foi possível carregar os profissionais agora.';
+      showLoadError(message, error);
+    } finally { loadingProfiles = false; }
   }
 
   function syncCategory() {

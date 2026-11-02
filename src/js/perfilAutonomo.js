@@ -21,8 +21,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const portfolio = document.querySelector('.portfolio-grid'); portfolio.innerHTML = '';
     (profile.portfolio_items || []).forEach(item => {
-      const image = document.createElement('img'); image.src = item.image_url; image.alt = item.description || 'Trabalho do profissional'; image.className = 'portfolio-item'; image.style.objectFit = 'cover';
-      portfolio.appendChild(image);
+      const work = document.createElement('figure'); work.className = 'portfolio-entry';
+      const image = document.createElement('img'); image.src = item.image_url; image.alt = item.description || 'Trabalho do profissional'; image.className = 'portfolio-item'; image.loading = 'lazy';
+      work.appendChild(image);
+      if (item.description) {
+        const caption = document.createElement('figcaption'); caption.textContent = item.description;
+        work.appendChild(caption);
+      }
+      portfolio.appendChild(work);
     });
     if (!portfolio.children.length) portfolio.textContent = 'O profissional ainda não adicionou trabalhos.';
 

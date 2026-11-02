@@ -190,8 +190,10 @@ try {
         if (!Domain::canOfferServices($me['role'])) throw new HttpError(403, 'Seu perfil não possui portfólio.');
         $data = input(); $imageUrl = trim((string) ($data['image_url'] ?? ''));
         $storagePath = trim((string) ($data['storage_path'] ?? ''));
-        if (!filter_var($imageUrl, FILTER_VALIDATE_URL) || !str_starts_with($storagePath, $userId . '/portfolio/')) throw new HttpError(422, 'Imagem de portfólio inválida.');
-        $row = ['owner_id' => $userId, 'image_url' => $imageUrl, 'storage_path' => $storagePath, 'description' => trim((string) ($data['description'] ?? '')) ?: null];
+        $description = trim((string) ($data['description'] ?? ''));
+        if (!Domain::validPortfolioImage($imageUrl, $storagePath, $userId, Config::get('SUPABASE_URL'))) throw new HttpError(422, 'Imagem de portfólio inválida.');
+        if (mb_strlen($description) > 160) throw new HttpError(422, 'A descrição deve ter no máximo 160 caracteres.');
+        $row = ['owner_id' => $userId, 'image_url' => $imageUrl, 'storage_path' => $storagePath, 'description' => $description ?: null];
         respond($db->rest('POST', 'portfolio_items', [$row], $token)[0] ?? $row, 201);
     }
 

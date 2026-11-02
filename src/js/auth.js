@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     message.classList.toggle('success', success);
     message.classList.add('show');
   };
+  document.querySelector('.btn-help')?.addEventListener('click', () => {
+    show('Preencha todos os campos para criar sua conta Nexlar.');
+  });
   const value = id => document.getElementById(id)?.value.trim() || '';
 
   const signupForm = document.querySelector('form[data-role]');
