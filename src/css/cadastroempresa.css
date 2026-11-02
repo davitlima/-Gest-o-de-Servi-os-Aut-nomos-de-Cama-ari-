@@ -173,6 +173,25 @@ body {
     transform: translateY(-1px);
 }
 
+.signup-login-prompt {
+    margin-top: 18px;
+    color: var(--text-mid);
+    font-size: 14px;
+    text-align: center;
+}
+
+.signup-login-link {
+    color: var(--primary);
+    font-weight: 700;
+    text-underline-offset: 3px;
+}
+
+.signup-login-link:focus-visible {
+    outline: 3px solid #7774ff;
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
 @media (max-width: 600px) {
     .logo-container {
         position: relative;
