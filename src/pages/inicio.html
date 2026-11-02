@@ -16,13 +16,6 @@
         <img src="/src/images/image-removebg-preview.png" alt="Logo do site"/>
     </div>
 
-    <div class="search-bar">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      <input type="text" id="search-input" placeholder="Buscar serviços" aria-label="Buscar serviços"/>
-    </div>
-
     <div class="nav-actions">
       <a class="btn-outline" id="financePanelLink" href="Painelfinanceiro.html" hidden>Painel</a>
       
@@ -44,6 +37,12 @@
       <h1>Encontre quem faz direito.</h1>
       <p>Profissionais cadastrados e avaliações de serviços concluídos</p>
       <div class="filters">
+        <label class="search-bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" id="search-input" placeholder="Buscar profissional, serviço ou bairro" aria-label="Buscar profissional, serviço ou bairro"/>
+        </label>
         <select id="sel-servico" aria-label="Serviço">
           <option value="">Serviço</option>
           <option value="construcao">Construção</option>
@@ -135,6 +134,7 @@
   </script>
 </body>
 </html>
+
 
 
 
