@@ -6,6 +6,7 @@
   <title>Nexlar - Início</title>
   <link rel="stylesheet" href="/src/css/inicio.css"/>
   <link rel="stylesheet" href="/src/css/responsive.css"/>
+  <link rel="stylesheet" href="/src/css/page-transition.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -31,7 +32,7 @@
         <button class="btn-solid">Meu Perfil</button>
       </a>
       
-      <button class="btn-icon" aria-label="Sair">
+      <button class="btn-icon" id="logoutButton" type="button" aria-label="Sair">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16 17 21 12 16 7"/>
@@ -116,6 +117,22 @@
   <script src="/src/js/api.js"></script>
   <script src="/src/js/chat-core.js"></script>
   <script src="/src/js/professionals.js"></script>
+  <script src="/src/js/page-transition.js"></script>
+  <script>
+    document.getElementById('logoutButton').addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      try {
+        const api = await window.nexlarReady;
+        const { error } = await api.supabase.auth.signOut();
+        if (error) throw error;
+        window.location.assign('/');
+      } catch (error) {
+        button.disabled = false;
+        alert(error.message || 'Não foi possível sair da conta. Tente novamente.');
+      }
+    });
+  </script>
 </body>
 </html>
 

@@ -53,6 +53,10 @@ function renderConversationList(filter = '') {
     const person = otherPerson(item);
     const li = document.createElement('li'); li.className = 'conversation-item'; li.dataset.id = item.id; li.tabIndex = 0;
     const avatar = document.createElement('div'); avatar.className = 'avatar avatar-purple'; avatar.textContent = initials(person.full_name);
+    if (person.avatar_url) {
+      avatar.style.backgroundImage = `url("${person.avatar_url}")`;
+      avatar.classList.add('has-photo');
+    }
     const info = document.createElement('div'); info.className = 'conv-info';
     const top = document.createElement('div'); top.className = 'conv-top';
     const name = document.createElement('span'); name.className = 'conv-name'; name.textContent = person.full_name;
@@ -133,6 +137,8 @@ async function openConversation(conversation) {
   chatHeaderName.textContent = person.full_name;
   chatHeaderName.href = window.NexlarChat.profileUrl(person.id);
   chatHeaderAvatar.textContent = initials(person.full_name);
+  chatHeaderAvatar.style.backgroundImage = person.avatar_url ? `url("${person.avatar_url}")` : '';
+  chatHeaderAvatar.classList.toggle('has-photo', Boolean(person.avatar_url));
   emptyState.style.display = 'none'; chatView.style.display = 'flex'; chatView.style.flexDirection = 'column';
   if (innerWidth <= 600) { messagesPanel.classList.add('hidden'); chatArea.classList.add('visible'); }
   await subscribeRealtime(conversation.id);
@@ -192,5 +198,26 @@ window.addEventListener('beforeunload', () => { if (realtimeChannel) api.supabas
 })().catch(error => {
   emptyState.querySelector('.empty-title').textContent = 'Não foi possível carregar';
   emptyState.querySelector('.empty-sub').textContent = error.message;
+});
+
+window.addEventListener('storage', event => {
+  if (event.key !== 'nexlar:avatar-updated') return;
+  let update;
+  try { update = JSON.parse(event.newValue); } catch (_) { return; }
+  if (!update?.userId) return;
+  conversations.forEach(conversation => {
+    const person = otherPerson(conversation);
+    if (person?.id !== update.userId) return;
+    person.avatar_url = update.avatarUrl;
+    const itemAvatar = conversationList.querySelector(`[data-id="${conversation.id}"] .avatar`);
+    if (itemAvatar) {
+      itemAvatar.style.backgroundImage = `url("${update.avatarUrl}")`;
+      itemAvatar.classList.add('has-photo');
+    }
+    if (activeConversation?.id === conversation.id) {
+      chatHeaderAvatar.style.backgroundImage = `url("${update.avatarUrl}")`;
+      chatHeaderAvatar.classList.add('has-photo');
+    }
+  });
 });
 

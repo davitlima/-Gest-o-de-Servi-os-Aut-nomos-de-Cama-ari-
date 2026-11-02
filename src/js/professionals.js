@@ -28,12 +28,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const average = reviews.length ? reviews.reduce((sum, item) => sum + Number(item.rating), 0) / reviews.length : 0;
     const card = document.createElement('article');
     card.className = 'card';
+    card.dataset.profileId = professional.id;
     card.dataset.cat = normalize(professional.service_category);
     card.dataset.bairro = normalize(professional.neighborhood);
     card.tabIndex = 0;
 
     const top = document.createElement('div'); top.className = 'card-top';
     const avatar = document.createElement('div'); avatar.className = 'av'; avatar.textContent = name.slice(0, 1).toUpperCase();
+    if (professional.avatar_url) {
+      avatar.style.backgroundImage = `url("${professional.avatar_url}")`;
+      avatar.classList.add('has-photo');
+      avatar.textContent = '';
+    }
     const info = document.createElement('div'); info.className = 'card-info';
     const title = document.createElement('strong'); title.textContent = name;
     const category = document.createElement('span'); category.className = 'tag'; category.textContent = professional.service_category || 'Serviços';
@@ -73,6 +79,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       container.appendChild(failure);
     }
   }
+
+  window.addEventListener('storage', event => {
+    if (event.key !== 'nexlar:avatar-updated') return;
+    let update;
+    try { update = JSON.parse(event.newValue); } catch (_) { return; }
+    if (!update?.userId) return;
+    const card = cards.find(item => item.dataset.profileId === update.userId);
+    if (card) {
+      const avatar = card.querySelector('.av');
+      avatar.textContent = '';
+      avatar.style.backgroundImage = `url("${update.avatarUrl}")`;
+      avatar.classList.add('has-photo');
+    }
+  });
 
   searchInput?.addEventListener('input', filterCards);
   serviceSelect?.addEventListener('change', filterCards);

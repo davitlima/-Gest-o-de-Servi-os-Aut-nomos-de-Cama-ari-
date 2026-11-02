@@ -51,7 +51,7 @@ expect(substr_count($lgpdCss, '{') === substr_count($lgpdCss, '}'), 'CSS da LGPD
 $lgpdHtml = file_get_contents($root . '/src/pages/lgpd.html');
 expect(str_contains($lgpdHtml, 'id="btn-home"'), 'LGPD deve manter o botão de retorno ao início');
 $lgpdJs = file_get_contents($root . '/src/js/lgpd.js');
-expect(str_contains($lgpdJs, "location.href = '/src/pages/inicio.html'"), 'Botão de retorno deve navegar para o início');
+expect(str_contains($lgpdHtml, 'id="btn-home" href="/"'), 'Botão de retorno deve navegar para a homepage pública');
 
 $publicProfileJs = file_get_contents($root . '/src/js/perfilAutonomo.js');
 expect(str_contains($publicProfileJs, 'let profile = null;'), 'Perfil público deve manter o perfil carregado disponível para a avaliação');

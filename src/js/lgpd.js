@@ -20,11 +20,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const btnHome = document.getElementById("btn-home");
-  if (btnHome) {
-    btnHome.addEventListener("click", () => {
-      window.location.href = '/src/pages/inicio.html';
-    });
-  }
 });
 

@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       avatar.textContent = '';
       avatar.style.background = `url("${publicUrl}") center/cover`;
+      localStorage.setItem('nexlar:avatar-updated', JSON.stringify({ userId: session.user.id, avatarUrl: publicUrl, updatedAt: Date.now() }));
       avatarMessage.textContent = 'Foto atualizada com sucesso.';
       avatarMessage.className = 'avatar-upload-message is-success';
       setTimeout(closeAvatarModal, 500);
@@ -197,7 +198,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     setTimeout(() => { button.disabled = false; button.textContent = 'Salvar alterações'; }, 1500);
   });
 
-  document.querySelector('.btn-outline').addEventListener('click', async () => { await api.supabase.auth.signOut(); location.href = '/'; });
+  document.querySelector('.btn-outline').addEventListener('click', async event => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      const { error } = await api.supabase.auth.signOut();
+      if (error) throw error;
+      location.href = '/';
+    } catch (error) {
+      button.disabled = false;
+      alert(error.message || 'Não foi possível sair da conta. Tente novamente.');
+    }
+  });
   document.querySelector('.btn-danger').addEventListener('click', () => alert('Para excluir sua conta com segurança, solicite ao suporte Nexlar.'));
 });
 

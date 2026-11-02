@@ -149,6 +149,12 @@ body {
 .avatar-blue   { background: linear-gradient(135deg, #6c85f5, #4c63e3); }
 .avatar-indigo { background: linear-gradient(135deg, #7c6ef5, #5a4be3); }
 
+.avatar.has-photo, .chat-header-avatar.has-photo {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 /* METADADOS DAS CONVERSAS */
 .conv-info {
   flex: 1;
