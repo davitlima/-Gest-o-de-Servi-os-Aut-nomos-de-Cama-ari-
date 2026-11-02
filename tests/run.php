@@ -118,6 +118,11 @@ $portfolioGalleryMigration = file_get_contents($portfolioGalleryMigrations[0]);
 foreach (['create table public.portfolio_item_images', 'references public.portfolio_items(id) on delete cascade', 'alter table public.portfolio_item_images enable row level security', 'portfolio_images_public_read', 'portfolio_images_owner_insert', 'portfolio_images_owner_update', 'portfolio_images_owner_delete', 'insert into public.portfolio_item_images', 'portfolio_item_images_position_unique'] as $galleryRequirement) {
     expect(str_contains($portfolioGalleryMigration, $galleryRequirement), 'Migração de galeria deve incluir ' . $galleryRequirement);
 }
+$portfolioArrayMigrations = glob($root . '/supabase/migrations/*_portfolio_json_array_ordering.sql') ?: [];
+expect(count($portfolioArrayMigrations) === 1, 'Persistência da galeria deve possuir uma migração de ordenação JSON versionada');
+$portfolioArrayMigration = file_get_contents($portfolioArrayMigrations[0]);
+expect(substr_count($portfolioArrayMigration, 'jsonb_array_elements(p_images) with ordinality as image(item, ordinality)') === 2, 'Criação e edição de ofertas devem iterar imagens JSON com ordinality válida');
+expect(!str_contains($portfolioArrayMigration, 'jsonb_to_recordset'), 'Persistência da galeria não deve combinar recordset com WITH ORDINALITY');
 $portfolioApi = file_get_contents($root . '/api/index.php');
 expect(str_contains($portfolioApi, 'portfolio_item_images'), 'API deve ler e persistir imagens relacionadas à oferta');
 expect(str_contains($portfolioApi, 'validPortfolioImages'), 'API deve validar a galeria por usuário antes de persistir');
