@@ -18,14 +18,15 @@ function getProfileApi() {
   return profileApiPromise;
 }
 
+const providerId = new URLSearchParams(location.search).get('id');
+const profileRequest = providerId
+  ? fetch(`/api/index.php?route=public%2Fprofile&id=${encodeURIComponent(providerId)}`).then(response => {
+    if (!response.ok) throw new Error('Não foi possível carregar o perfil profissional.');
+    return response.json();
+  })
+  : Promise.resolve(null);
+
 document.addEventListener('DOMContentLoaded', async () => {
-  const providerId = new URLSearchParams(location.search).get('id');
-  const profileRequest = providerId
-    ? fetch(`/api/index.php?route=public%2Fprofile&id=${encodeURIComponent(providerId)}`).then(response => {
-      if (!response.ok) throw new Error('Não foi possível carregar o perfil profissional.');
-      return response.json();
-    })
-    : Promise.resolve(null);
   const hint = document.getElementById('starHint');
   let profile = null;
   if (!providerId) { hint.textContent = 'Abra um profissional pela lista para ver o perfil real.'; return; }
