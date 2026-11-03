@@ -257,6 +257,10 @@ body {
   animation: fadeSlideUp 0.5s ease both;
 }
 
+#portfolio.card {
+  animation: none;
+}
+
 .section-title {
   font-family: var(--font-head);
   font-size: 1.08rem;
