@@ -73,7 +73,7 @@ textarea,
   }
 
   .portfolio-grid:empty,
-  .portfolio-grid:not(:has(.portfolio-item)) {
+  .portfolio-grid:not(:has(.portfolio-item, .portfolio-skeleton)) {
     display: block;
     width: 100%;
     line-height: 1.65;

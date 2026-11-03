@@ -19,20 +19,17 @@ function getProfileApi() {
 }
 
 const providerId = new URLSearchParams(location.search).get('id');
-const profileRequest = providerId
-  ? fetch(`/api/index.php?route=public%2Fprofile&id=${encodeURIComponent(providerId)}`).then(response => {
-    if (!response.ok) throw new Error('Não foi possível carregar o perfil profissional.');
-    return response.json();
-  })
-  : Promise.resolve(null);
+const profileRequest = window.nexlarProfileRequest || Promise.resolve(null);
 
 document.addEventListener('DOMContentLoaded', async () => {
   const hint = document.getElementById('starHint');
   let profile = null;
   if (!providerId) { hint.textContent = 'Abra um profissional pela lista para ver o perfil real.'; return; }
+  const portfolio = document.querySelector('.portfolio-grid');
 
   try {
     profile = await profileRequest;
+    if (profile?.loadError) throw profile.loadError;
     const reviews = profile.reviews || [];
     const average = reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0;
     document.querySelector('.hero-card__name').textContent = profile.company_name || profile.full_name;
@@ -45,7 +42,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.NexlarAvatar.render(profileAvatar, profile.company_name || profile.full_name, profile.avatar_url, { loading: 'eager' });
     const messageLink = document.querySelector('.hero-card .btn--primary'); messageLink.href = window.NexlarChat.professionalChatUrl(providerId);
 
-    const portfolio = document.querySelector('.portfolio-grid'); portfolio.innerHTML = '';
+    portfolio.innerHTML = '';
+    portfolio.setAttribute('aria-busy', 'false');
     (profile.portfolio_items || []).forEach(item => {
       const work = document.createElement('figure'); work.className = 'portfolio-entry';
       const images = item.portfolio_item_images?.length ? item.portfolio_item_images : item.images?.length ? item.images : item.image_url ? [{ image_url: item.image_url }] : [];
@@ -89,7 +87,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       header.append(avatar, meta); row.append(header, stars, comment); reviewCard.insertBefore(row, document.getElementById('verTodasBtn'));
     });
     document.getElementById('verTodasBtn').hidden = true;
-  } catch (error) { hint.textContent = error.message; return; }
+  } catch (error) {
+    hint.textContent = error.message;
+    portfolio.setAttribute('aria-busy', 'false');
+    portfolio.textContent = 'Não foi possível carregar as ofertas. Tente novamente.';
+    return;
+  }
 
   let rating = 0;
   const stars = document.querySelectorAll('.star-btn');

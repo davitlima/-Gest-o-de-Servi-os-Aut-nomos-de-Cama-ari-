@@ -6,6 +6,17 @@
   <link rel="preconnect" href="https://zmrmzwdaibhkikirabgt.supabase.co" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>
+    const professionalId = new URLSearchParams(location.search).get('id');
+    window.nexlarProfileRequest = professionalId
+      ? fetch(`/api/index.php?route=public%2Fprofile&id=${encodeURIComponent(professionalId)}`)
+          .then(async response => {
+            if (!response.ok) throw new Error('Não foi possível carregar o perfil profissional.');
+            return response.json();
+          })
+          .catch(error => ({ loadError: error }))
+      : Promise.resolve(null);
+  </script>
   <title>Nexlar — Perfil profissional</title>
   <link rel="stylesheet" href="/src/css/perfilAutonomo.css">
   <link rel="stylesheet" href="/src/css/responsive.css">
@@ -42,7 +53,14 @@
         <section class="card" id="portfolio">
           <h2 class="section-title">Serviços e trabalhos</h2>
           <p class="portfolio-intro">Conheça as ofertas, os prazos e exemplos de trabalhos deste profissional.</p>
-          <div class="portfolio-grid">Nenhum trabalho cadastrado.</div>
+          <div class="portfolio-grid" aria-live="polite" aria-busy="true">
+            <div class="portfolio-skeleton" aria-hidden="true">
+              <div class="portfolio-skeleton__image"></div>
+              <div class="portfolio-skeleton__body">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section class="card" id="sobre">
