@@ -132,7 +132,7 @@ async function openConversation(conversation) {
   const person = otherPerson(conversation);
   chatHeaderName.textContent = person.full_name;
   chatHeaderName.href = window.NexlarChat.profileUrl(person.id);
-  window.NexlarAvatar.render(chatHeaderAvatar, person.full_name, person.avatar_url);
+  window.NexlarAvatar.render(chatHeaderAvatar, person.full_name, person.avatar_url, { loading: 'eager' });
   emptyState.style.display = 'none'; chatView.style.display = 'flex'; chatView.style.flexDirection = 'column';
   if (innerWidth <= 600) { messagesPanel.classList.add('hidden'); chatArea.classList.add('visible'); }
   await subscribeRealtime(conversation.id);

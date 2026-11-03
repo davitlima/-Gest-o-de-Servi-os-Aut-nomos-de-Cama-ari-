@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   document.getElementById('profileBio').value = me.bio || '';
   const avatar = document.querySelector('.profile-photo .avatar');
-  window.NexlarAvatar.render(avatar, me.full_name, me.avatar_url);
+  window.NexlarAvatar.render(avatar, me.full_name, me.avatar_url, { loading: 'eager' });
 
   const avatarTrigger = document.querySelector('.btn-photo');
   const avatarModal = document.getElementById('avatarUploadModal');

@@ -152,7 +152,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (card) window.NexlarAvatar.render(card.querySelector('.av'), card.dataset.name, update.avatarUrl);
     } catch (_) { /* Ignore malformed cross-tab notifications. */ }
   });
-  loadProfiles();
+  if (container.dataset.deferLoad === 'true' && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      observer.disconnect();
+      loadProfiles();
+    }, { rootMargin: '500px 0px' });
+    observer.observe(container);
+  } else {
+    loadProfiles();
+  }
 
   const amountInput = document.getElementById('input-valor');
   amountInput?.addEventListener('input', () => {

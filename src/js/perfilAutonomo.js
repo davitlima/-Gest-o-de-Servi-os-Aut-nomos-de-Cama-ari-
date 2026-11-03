@@ -1,12 +1,37 @@
+let profileApiPromise;
+
+function loadProfileScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('Não foi possível preparar a avaliação. Tente novamente.'));
+    document.head.appendChild(script);
+  });
+}
+
+function getProfileApi() {
+  if (window.nexlarReady) return window.nexlarReady;
+  profileApiPromise ||= loadProfileScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2')
+    .then(() => loadProfileScript('/src/js/api.js'))
+    .then(() => window.nexlarReady);
+  return profileApiPromise;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
-  const api = await window.nexlarReady;
   const providerId = new URLSearchParams(location.search).get('id');
+  const profileRequest = providerId
+    ? fetch(`/api/index.php?route=public%2Fprofile&id=${encodeURIComponent(providerId)}`).then(response => {
+      if (!response.ok) throw new Error('Não foi possível carregar o perfil profissional.');
+      return response.json();
+    })
+    : Promise.resolve(null);
   const hint = document.getElementById('starHint');
   let profile = null;
   if (!providerId) { hint.textContent = 'Abra um profissional pela lista para ver o perfil real.'; return; }
 
   try {
-    profile = await api.request(`public/profile&id=${encodeURIComponent(providerId)}`);
+    profile = await profileRequest;
     const reviews = profile.reviews || [];
     const average = reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0;
     document.querySelector('.hero-card__name').textContent = profile.company_name || profile.full_name;
@@ -16,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelector('.hero-card__location').lastChild.textContent = ` ${profile.neighborhood || 'Camaçari - BA'}`;
     document.querySelector('.about-text').textContent = profile.bio || 'Profissional cadastrado na Nexlar.';
     const profileAvatar = document.querySelector('.hero-card .avatar');
-    window.NexlarAvatar.render(profileAvatar, profile.company_name || profile.full_name, profile.avatar_url);
+    window.NexlarAvatar.render(profileAvatar, profile.company_name || profile.full_name, profile.avatar_url, { loading: 'eager' });
     const messageLink = document.querySelector('.hero-card .btn--primary'); messageLink.href = window.NexlarChat.professionalChatUrl(providerId);
 
     const portfolio = document.querySelector('.portfolio-grid'); portfolio.innerHTML = '';
@@ -25,7 +50,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const images = item.portfolio_item_images?.length ? item.portfolio_item_images : item.images?.length ? item.images : item.image_url ? [{ image_url: item.image_url }] : [];
       const gallery = document.createElement('div'); gallery.className = 'portfolio-entry__gallery';
       images.forEach((entry, index) => {
-        const image = document.createElement('img'); image.src = entry.image_url; image.alt = `${item.title || 'Oferta'} — exemplo ${index + 1} de ${images.length}`; image.className = 'portfolio-item'; image.loading = index ? 'lazy' : 'eager';
+        const image = document.createElement('img'); image.src = entry.image_url; image.alt = `${item.title || 'Oferta'} — exemplo ${index + 1} de ${images.length}`; image.className = 'portfolio-item'; image.loading = index ? 'lazy' : 'eager'; image.decoding = 'async';
+        if (index === 0) image.fetchPriority = 'high';
         gallery.appendChild(image);
       });
       work.appendChild(gallery);
@@ -73,6 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     star.addEventListener('click', async () => {
       rating = value; paint(rating);
       try {
+        const api = await getProfileApi();
         await api.requireSession();
         const contracts = await api.request(`contracts&provider_id=${encodeURIComponent(providerId)}`);
         const reviewedContracts = new Set((profile.reviews || []).map(review => Number(review.contract_id)));

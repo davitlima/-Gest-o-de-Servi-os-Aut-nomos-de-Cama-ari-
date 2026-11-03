@@ -184,6 +184,10 @@ main section.main {
   margin-bottom: 28px;
 }
 
+.objetivos article > .home-feature-icon {
+  color: #0d6efd;
+}
+
 .objetivos article h3 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 30px;
@@ -781,6 +785,11 @@ footer {
         padding: 40px 20px;
     }
 
+    main > section {
+        width: 100%;
+        min-width: 0;
+    }
+
     main h1 {
         font-size: 42px;
     }
@@ -843,6 +852,8 @@ footer {
     .nav-container {
         flex-direction: column;
         gap: 20px;
+        width: 100%;
+        padding: 0;
     }
 
     .menu-links {
@@ -891,7 +902,8 @@ footer {
     .passos h2,
     .calculadora h2,
     .título-sobre h2 {
-        font-size: 30px;
+        font-size: clamp(25px, 7vw, 30px);
+        overflow-wrap: break-word;
     }
 
     .objetivos article,

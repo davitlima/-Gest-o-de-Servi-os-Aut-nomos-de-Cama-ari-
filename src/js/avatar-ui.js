@@ -3,7 +3,7 @@
     .map(part => part[0] || '').join('').toUpperCase() || '?';
 
   window.NexlarAvatar = {
-    render(element, name, url) {
+    render(element, name, url, options = {}) {
       if (!element) return;
       element.replaceChildren();
       element.classList.remove('has-photo');
@@ -17,6 +17,7 @@
       image.className = 'avatar-image';
       image.alt = '';
       image.decoding = 'async';
+      image.loading = options.loading || 'lazy';
       image.onload = () => { element.classList.add('has-photo'); fallback.hidden = true; };
       image.onerror = () => { image.remove(); element.classList.remove('has-photo'); fallback.hidden = false; };
       image.src = url;
