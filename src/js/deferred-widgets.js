@@ -29,7 +29,7 @@
   };
   interactionEvents.forEach(event => window.addEventListener(event, activateWhenIdle, { once: true, passive: true }));
 
-  const schedule = () => window.setTimeout(activateWhenIdle, 3500);
+  const schedule = () => window.setTimeout(activateWhenIdle, 8000);
   if (document.readyState === 'complete') schedule();
   else window.addEventListener('load', schedule, { once: true });
 })();
