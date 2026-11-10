@@ -61,32 +61,6 @@ function profile(Supabase $db, string $token, string $userId): array
     return array_merge($rows[0], $private[0] ?? ['phone' => null, 'document' => null]);
 }
 
-function portfolioInputImages(array $data): array
-{
-    if (isset($data['images']) && is_array($data['images'])) {
-        return array_values(array_map(static fn (array $image): array => [
-            'image_url' => trim((string) ($image['image_url'] ?? '')),
-            'storage_path' => isset($image['storage_path']) ? trim((string) $image['storage_path']) : null,
-        ], array_filter($data['images'], 'is_array')));
-    }
-    if (isset($data['image_url'], $data['storage_path'])) {
-        return [[
-            'image_url' => trim((string) $data['image_url']),
-            'storage_path' => trim((string) $data['storage_path']),
-        ]];
-    }
-    return [];
-}
-
-function portfolioRpcResult(array $response, string $function): array
-{
-    $result = $response[0][$function] ?? $response[$function] ?? $response[0] ?? $response;
-    if (!is_array($result)) {
-        throw new HttpError(502, 'Não foi possível salvar a oferta.');
-    }
-    return $result;
-}
-
 function mercadoPago(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null): array
 {
     $headers = ['Authorization: Bearer ' . Config::get('MERCADO_PAGO_ACCESS_TOKEN'), 'Content-Type: application/json'];
@@ -110,6 +84,20 @@ function mercadoPago(string $method, string $path, ?array $body = null, ?string 
     return $decoded;
 }
 
+function abacatePay(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null): array
+{
+    $headers = ['Authorization: Bearer ' . Config::get('ABACATEPAY_API_KEY'), 'Content-Type: application/json'];
+    if ($idempotencyKey !== null) $headers[] = 'Idempotency-Key: ' . $idempotencyKey;
+    $handle = curl_init('https://api.abacatepay.com/v2' . $path);
+    curl_setopt_array($handle, [CURLOPT_CUSTOMREQUEST => $method, CURLOPT_HTTPHEADER => $headers, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 20]);
+    if ($body !== null) curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($body, JSON_THROW_ON_ERROR));
+    $response = curl_exec($handle);
+    $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
+    $decoded = is_string($response) ? json_decode($response, true) : null;
+    if ($status < 200 || $status >= 300 || !is_array($decoded) || ($decoded['success'] ?? true) === false) throw new HttpError(502, 'Não foi possível comunicar com a AbacatePay.');
+    return is_array($decoded['data'] ?? null) ? $decoded['data'] : $decoded;
+}
+
 try {
     $db = Supabase::fromEnvironment();
     $route = trim(query('route'), '/');
@@ -125,7 +113,7 @@ try {
     if ($route === 'public/profile' && $method === 'GET') {
         $profileId = query('id');
         if ($profileId === '') throw new HttpError(422, 'Perfil não informado.');
-        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*,portfolio_item_images(id,image_url,storage_path,position,created_at)),reviews!reviews_provider_id_fkey(contract_id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))&portfolio_items.portfolio_item_images.order=position.asc', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
+        $profiles = $db->rest('GET', 'profiles?id=eq.' . rawurlencode($profileId) . '&select=id,role,full_name,neighborhood,bio,service_category,avatar_url,company_name,portfolio_items(*),reviews!reviews_provider_id_fkey(contract_id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(full_name,avatar_url))', null, Config::get('SUPABASE_PUBLISHABLE_KEY'));
         if (!isset($profiles[0])) throw new HttpError(404, 'Perfil não encontrado.');
         respond($profiles[0]);
     }
@@ -184,6 +172,25 @@ try {
         respond(['received' => true]);
     }
 
+    if ($route === 'payments/abacatepay/webhook' && $method === 'POST') {
+        $secret = query('webhookSecret');
+        if ($secret === '' || !hash_equals(Config::get('ABACATEPAY_WEBHOOK_SECRET'), $secret)) throw new HttpError(401, 'Webhook não autorizado.');
+        $payload = input();
+        if (($payload['event'] ?? $payload['type'] ?? '') !== 'checkout.completed') respond(['received' => true]);
+        $data = is_array($payload['data'] ?? null) ? $payload['data'] : $payload;
+        $externalId = (string) ($data['externalId'] ?? $data['metadata']['contract_id'] ?? '');
+        $contractId = (int) preg_replace('/[^0-9]/', '', $externalId);
+        if ($contractId > 0) {
+            $contracts = $db->rest('GET', 'contracts?id=eq.' . $contractId . '&select=*', null, '', true);
+            $contract = $contracts[0] ?? null;
+            if ($contract && $contract['status'] === 'aguardando_pagamento') {
+                $db->rest('PATCH', 'contracts?id=eq.' . $contractId, ['status' => 'pago', 'abacatepay_payment_id' => (string) ($data['id'] ?? $data['checkoutId'] ?? ''), 'updated_at' => gmdate('c')], '', true);
+                $db->rest('POST', 'financial_entries', [[ 'owner_id' => $contract['provider_id'], 'contract_id' => $contractId, 'name' => $contract['description'], 'amount' => Domain::providerNet((float) $contract['amount']), 'service_date' => gmdate('Y-m-d'), 'status' => 'Pendente', 'source' => 'pagamento' ]], '', true);
+            }
+        }
+        respond(['received' => true]);
+    }
+
     $token = bearer();
     $user = $db->user($token);
     $userId = (string) ($user['id'] ?? '');
@@ -208,75 +215,16 @@ try {
         respond(array_merge($updated, $private));
     }
 
-    if ($route === 'account' && $method === 'DELETE') {
-        $confirmation = (string) (input()['confirmation'] ?? '');
-        $db->rest('POST', 'rpc/delete_own_account', ['p_confirmation' => $confirmation], $token);
-        respond(['deleted' => true]);
-    }
-
     if ($route === 'portfolio' && $method === 'GET') {
-        respond($db->rest('GET', 'portfolio_items?owner_id=eq.' . $userId . '&select=*,portfolio_item_images(id,image_url,storage_path,position,created_at)&portfolio_item_images.order=position.asc&order=created_at.desc', null, $token));
+        respond($db->rest('GET', 'portfolio_items?owner_id=eq.' . $userId . '&select=*&order=created_at.desc', null, $token));
     }
 
     if ($route === 'portfolio' && $method === 'POST') {
         if (!Domain::canOfferServices($me['role'])) throw new HttpError(403, 'Seu perfil não possui portfólio.');
-        $data = input();
-        $images = portfolioInputImages($data);
-        $description = trim((string) ($data['description'] ?? ''));
-        if (!Domain::validPortfolioImages($images, $userId, Config::get('SUPABASE_URL'))) throw new HttpError(422, 'Adicione de uma a cinco imagens válidas do seu portfólio.');
-        $title = trim((string) ($data['title'] ?? ''));
-        $priceMode = (string) ($data['price_mode'] ?? '');
-        $price = $data['price'] ?? null;
-        $duration = trim((string) ($data['estimated_duration'] ?? ''));
-        if (!Domain::validPortfolioOffer($title, $priceMode, $price, $description, $duration)) throw new HttpError(422, 'Revise o nome, descrição, preço e prazo da oferta.');
-        if ($priceMode === 'sob_consulta') $price = null;
-        $result = $db->rest('POST', 'rpc/create_portfolio_offer', [
-            'p_title' => $title,
-            'p_description' => $description,
-            'p_price_mode' => $priceMode,
-            'p_price' => $price === null ? null : (float) $price,
-            'p_estimated_duration' => $duration,
-            'p_images' => $images,
-        ], $token);
-        respond(portfolioRpcResult($result, 'create_portfolio_offer'), 201);
-    }
-
-    if (preg_match('#^portfolio/(\d+)$#', $route, $match) && $method === 'PATCH') {
-        if (!Domain::canOfferServices($me['role'])) throw new HttpError(403, 'Seu perfil não possui portfólio.');
-        $data = input();
-        $existingRows = $db->rest('GET', 'portfolio_items?id=eq.' . $match[1] . '&owner_id=eq.' . $userId . '&select=*,portfolio_item_images(id,image_url,storage_path,position,created_at)&portfolio_item_images.order=position.asc', null, $token);
-        $existing = $existingRows[0] ?? null;
-        if (!$existing) throw new HttpError(404, 'Oferta não encontrada.');
-        $title = trim((string) ($data['title'] ?? $existing['title'] ?? ''));
-        $description = trim((string) ($data['description'] ?? $existing['description'] ?? ''));
-        $priceMode = (string) ($data['price_mode'] ?? $existing['price_mode'] ?? '');
-        $price = array_key_exists('price', $data) ? $data['price'] : ($existing['price'] ?? null);
-        $duration = trim((string) ($data['estimated_duration'] ?? $existing['estimated_duration'] ?? ''));
-        if (!Domain::validPortfolioOffer($title, $priceMode, $price, $description, $duration)) throw new HttpError(422, 'Revise o nome, descrição, preço e prazo da oferta.');
-        if ($priceMode === 'sob_consulta') $price = null;
-        $hasImages = array_key_exists('images', $data) || array_key_exists('image_url', $data) || array_key_exists('storage_path', $data);
-        if ($hasImages) {
-            $images = portfolioInputImages($data);
-            $legacyImages = $existing['portfolio_item_images'] ?? [];
-            if (!$legacyImages && !empty($existing['image_url'])) {
-                $legacyImages[] = ['image_url' => $existing['image_url'], 'storage_path' => $existing['storage_path'] ?? null];
-            }
-            if (!Domain::validPortfolioImages($images, $userId, Config::get('SUPABASE_URL'), $legacyImages)) throw new HttpError(422, 'Revise as imagens da oferta.');
-            $result = $db->rest('POST', 'rpc/replace_portfolio_offer', [
-                'p_id' => (int) $match[1],
-                'p_title' => $title,
-                'p_description' => $description,
-                'p_price_mode' => $priceMode,
-                'p_price' => $price === null ? null : (float) $price,
-                'p_estimated_duration' => $duration,
-                'p_images' => $images,
-            ], $token);
-            respond(portfolioRpcResult($result, 'replace_portfolio_offer'));
-        }
-        $row = ['title' => $title, 'description' => $description ?: null, 'price_mode' => $priceMode, 'price' => $price === null ? null : (float) $price, 'estimated_duration' => $duration ?: null];
-        $updated = $db->rest('PATCH', 'portfolio_items?id=eq.' . $match[1] . '&owner_id=eq.' . $userId, $row, $token);
-        if (!isset($updated[0])) throw new HttpError(404, 'Oferta não encontrada.');
-        respond($updated[0]);
+        $data = input(); $imageUrl = trim((string) ($data['image_url'] ?? ''));
+        if (!filter_var($imageUrl, FILTER_VALIDATE_URL)) throw new HttpError(422, 'Informe uma URL de imagem válida.');
+        $row = ['owner_id' => $userId, 'image_url' => $imageUrl, 'description' => trim((string) ($data['description'] ?? '')) ?: null];
+        respond($db->rest('POST', 'portfolio_items', [$row], $token)[0] ?? $row, 201);
     }
 
     if (preg_match('#^portfolio/(\d+)$#', $route, $match) && $method === 'DELETE') {
@@ -395,6 +343,25 @@ try {
         $contract = $db->rest('POST', 'rpc/begin_checkout', ['p_contract_id' => $contractId], $token);
         if (isset($contract[0]) && is_array($contract[0])) $contract = $contract[0];
         $baseUrl = rtrim(Config::get('APP_URL'), '/');
+        if (Config::get('ABACATEPAY_API_KEY', false) !== '') {
+            $product = abacatePay('POST', '/products/create', [
+                'externalId' => 'nexlar-contract-' . $contractId,
+                'name' => $contract['description'],
+                'description' => 'Serviço contratado pela Nexlar',
+                'price' => (int) round(((float) $contract['amount']) * 100),
+                'currency' => 'BRL',
+            ], 'nexlar-product-' . $contractId);
+            $checkout = abacatePay('POST', '/checkouts/create', [
+                'items' => [[ 'id' => $product['id'], 'quantity' => 1 ]],
+                'methods' => ['PIX', 'CARD'],
+                'externalId' => 'nexlar-contract-' . $contractId,
+                'returnUrl' => "$baseUrl/src/pages/painelmensagens.html?payment=pending",
+                'completionUrl' => "$baseUrl/src/pages/painelmensagens.html?payment=success",
+                'metadata' => ['contract_id' => (string) $contractId],
+            ], 'nexlar-checkout-' . $contractId);
+            $db->rest('POST', 'rpc/attach_abacate_checkout', ['p_contract_id' => $contractId, 'p_checkout_id' => (string) ($checkout['id'] ?? '')], $token);
+            respond(['checkout_url' => $checkout['url'] ?? null]);
+        }
         try {
             $preferenceId = (string) ($contract['mercado_pago_preference_id'] ?? '');
             if ($preferenceId !== '') {
@@ -441,6 +408,7 @@ try {
     error_log($error->getMessage());
     respond(['error' => 'Erro interno do servidor.'], 500);
 }
+
 
 
 

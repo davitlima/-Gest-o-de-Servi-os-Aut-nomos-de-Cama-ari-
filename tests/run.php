@@ -83,6 +83,10 @@ expect(!str_contains($authCss, '.email-step'), 'CSS não deve manter a segunda e
 
 $migration = file_get_contents($root . '/supabase/migrations/20261030213215_nexlar_backend.sql');
 $api = file_get_contents($root . '/api/index.php');
+expect(str_contains($api, 'api.abacatepay.com/v2'), 'API deve integrar o endpoint oficial da AbacatePay');
+expect(str_contains($api, 'payments/abacatepay/webhook'), 'API deve expor webhook da AbacatePay');
+expect(str_contains($api, 'ABACATEPAY_API_KEY'), 'Chave AbacatePay deve vir do ambiente');
+expect(is_file($root . '/supabase/migrations/20261110170000_abacatepay.sql'), 'Migração AbacatePay deve existir');
 expect(str_contains($migration, 'month date not null'), 'Meta mensal usa uma data de referência');
 expect(!str_contains($api, 'monthly_goals?owner_id=eq.$userId&year='), 'API não pode consultar colunas inexistentes de meta');
 expect(!str_contains($api, "auth/email-step/start"), 'API não deve exigir segunda etapa por e-mail');

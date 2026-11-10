@@ -8,10 +8,10 @@ Plataforma que conecta clientes, profissionais autônomos e empresas para contra
 - busca e perfis carregados do Supabase;
 - portfólio, chat, contratos e avaliações persistentes;
 - painel financeiro com lançamentos e meta mensal;
-- checkout Mercado Pago após a proposta no chat;
+- checkout AbacatePay após a proposta no chat (Mercado Pago permanece como fallback);
 - taxa da plataforma de 15% e registro líquido de 85% no financeiro.
 
-O checkout atual recebe o pagamento na conta configurada em `MERCADO_PAGO_ACCESS_TOKEN`. O repasse bancário automático ao prestador exige contas Mercado Pago conectadas via OAuth e não deve ser anunciado como ativo enquanto essa integração não estiver configurada.
+O checkout usa a conta configurada em `ABACATEPAY_API_KEY` quando essa variável está presente; caso contrário, usa Mercado Pago. O repasse bancário automático ao prestador exige uma integração de transferência habilitada e não deve ser anunciado como ativo enquanto não estiver configurada.
 
 ## Requisitos e configuração
 
@@ -22,7 +22,7 @@ O checkout atual recebe o pagamento na conta configurada em `MERCADO_PAGO_ACCESS
 5. No Supabase Auth, mantenha confirmação de e-mail habilitada e cadastre a URL publicada como redirect permitida.
 6. Configure as mesmas variáveis na Vercel para Preview e Production.
 
-O backend PHP é servido por `/api/index.php?route=...`. Nunca exponha `SUPABASE_SERVICE_ROLE_KEY`, token do Mercado Pago ou segredo de webhook no frontend.
+O backend PHP é servido por `/api/index.php?route=...`. Nunca exponha `SUPABASE_SERVICE_ROLE_KEY`, chaves de pagamento ou segredos de webhook no frontend. Se uma chave for compartilhada acidentalmente, revogue-a e gere outra antes da publicação.
 
 ## Execução local
 
@@ -42,3 +42,4 @@ npm test
 Antes de publicar, valide também os cadastros dos três papéis, MFA, chat, contratação, checkout, avaliação e persistência do financeiro em um ambiente de teste.
 
 Projeto acadêmico desenvolvido pela equipe Nexlar.
+
