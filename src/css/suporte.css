@@ -46,7 +46,7 @@ body {
 .contact-card { border-color: var(--support-deep); background: var(--support-deep); color: #fff; }
 .contact-card .support-kind { color: var(--support-tint); }
 .contact-card h2 { color: #fff; }
-.contact-card > p:not(.support-kind) { color: #d6d5e6; }
+.contact-card > p { color: #d6d5e6; }
 .contact-card .support-button { background: #fff; color: var(--support-deep); }
 .contact-card .support-button:hover { background: #e9e7ff; }
 .contact-card .support-button:focus-visible { outline-color: var(--support-tint); }
