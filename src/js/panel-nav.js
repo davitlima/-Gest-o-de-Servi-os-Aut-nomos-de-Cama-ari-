@@ -3,7 +3,8 @@
     { key: 'inicio', href: 'inicio.html', label: 'Início', icon: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>' },
     { key: 'perfil', href: 'Meuperfil.html', label: 'Meu Perfil', icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
     { key: 'financeiro', href: 'Painelfinanceiro.html', label: 'Financeiro', icon: '<path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>' },
-    { key: 'mensagens', href: 'painelmensagens.html', label: 'Mensagens', icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' }
+    { key: 'mensagens', href: 'painelmensagens.html', label: 'Mensagens', icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
+    { key: 'suporte', href: 'suporte.html', label: 'Suporte', icon: '<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>' }
   ];
 
   function renderNavigation(active, canUseFinance = false) {

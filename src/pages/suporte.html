@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f1f4f9" />
+  <title>Suporte — Nexlar</title>
+  <link rel="stylesheet" href="/src/css/responsive.css" />
+  <link rel="stylesheet" href="/src/css/panel-nav.css" />
+  <link rel="stylesheet" href="/src/css/suporte.css" />
+  <script src="/src/js/panel-nav.js" defer></script>
+  <script src="/src/js/suporte.js" defer></script>
+</head>
+<body>
+  <nexlar-panel-nav active="suporte"></nexlar-panel-nav>
+  <main class="support-main">
+    <header class="support-heading">
+      <div>
+        <p class="support-eyebrow">Estamos aqui para ajudar</p>
+        <h1>Suporte</h1>
+        <p>Fale com a equipe Nexlar ou envie uma denúncia sobre uma situação na plataforma.</p>
+      </div>
+    </header>
+
+    <div class="support-grid">
+      <section class="support-card" aria-labelledby="contact-title">
+        <p class="support-kind">Contato</p>
+        <h2 id="contact-title">Falar com o suporte</h2>
+        <p>Precisa de ajuda com sua conta ou com a plataforma? Envie um e-mail para nossa equipe.</p>
+        <a class="support-button" href="mailto:suportenexlar@gmail.com">Enviar e-mail ao suporte</a>
+        <a class="support-email" href="mailto:suportenexlar@gmail.com">suportenexlar@gmail.com</a>
+      </section>
+
+      <section class="support-card report-card" aria-labelledby="report-title">
+        <p class="support-kind support-kind--report">Denúncia</p>
+        <h2 id="report-title">Fazer uma denúncia</h2>
+        <p>Conte o que aconteceu para que a equipe possa analisar. O envio abre um rascunho no seu aplicativo de e-mail.</p>
+        <form id="reportForm">
+          <div class="support-field">
+            <label for="reportType">Tipo de situação</label>
+            <select id="reportType" name="type" required>
+              <option value="" selected disabled>Selecione uma opção</option>
+              <option>Comportamento inadequado</option>
+              <option>Fraude ou tentativa de golpe</option>
+              <option>Conteúdo impróprio</option>
+              <option>Problema de segurança</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div class="support-field">
+            <label for="reportDetails">O que aconteceu?</label>
+            <textarea id="reportDetails" name="details" rows="5" minlength="20" maxlength="3000" required aria-describedby="reportHelp"></textarea>
+            <small id="reportHelp">Inclua detalhes que ajudem a entender a situação. Evite enviar senhas ou dados bancários.</small>
+          </div>
+          <button class="support-button report-submit" type="submit">Preparar denúncia por e-mail</button>
+          <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

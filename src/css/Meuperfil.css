@@ -12,7 +12,7 @@
   --bg: #f1f3f5;
   --card-bg: #ffffff;
   --text: #1a1a2e;
-  --muted: #6b7280;
+  --muted: #5f6672;
   --border: #e5e7eb;
   --radius: 12px;
 }
@@ -90,6 +90,16 @@ body.avatar-modal-open {
 
 .btn-outline:hover {
   background: #f3f4f6;
+}
+
+.btn-danger {
+  border: 1px solid #b42318;
+  color: #b42318;
+}
+
+.btn-danger:hover {
+  background: #fef2f2;
+  color: #dc2626;
 }
 
 .tabs {
@@ -592,7 +602,7 @@ body.avatar-modal-open {
   outline-offset: 3px;
 }
 
-.profile-card h3 {
+.profile-card h2 {
   margin-bottom: 22px;
   font-size: 22px;
   color: #111827;
