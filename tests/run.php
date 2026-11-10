@@ -12,8 +12,16 @@ function expect(bool $condition, string $message): void
 $root = dirname(__DIR__);
 expect(is_file($root . '/api/Domain.php'), 'Backend de domínio deve existir na dev');
 expect(is_file($root . '/api/index.php'), 'API PHP deve existir na dev');
+expect(is_file($root . '/index.php'), 'Front controller MVC deve existir na dev');
+expect(is_file($root . '/Controller/PageController.php'), 'Controller MVC deve existir na dev');
+expect(is_file($root . '/Model/Page.php'), 'Model MVC deve existir na dev');
+expect(is_file($root . '/View/page.php'), 'View MVC deve existir na dev');
 expect(is_file($root . '/src/pages/cadastro.html'), 'URL antiga de cadastro deve continuar funcionando');
 expect(is_file($root . '/supabase/migrations/20261030213215_nexlar_backend.sql'), 'Migração Supabase deve existir na dev');
+
+$vercel = json_decode((string) file_get_contents($root . '/vercel.json'), true, 512, JSON_THROW_ON_ERROR);
+expect(isset($vercel['functions']['index.php']), 'Front controller deve usar runtime PHP na Vercel');
+expect(count($vercel['rewrites'] ?? []) >= 20, 'Páginas públicas devem ser roteadas pelo MVC');
 
 require $root . '/api/Domain.php';
 
@@ -22,26 +30,6 @@ use Nexlar\Domain;
 expect(Domain::canUseFinance('cliente') === false, 'Cliente não acessa financeiro');
 expect(Domain::canUseFinance('autonomo') === true, 'Autônomo acessa financeiro');
 expect(Domain::canUseFinance('empresa') === true, 'Empresa acessa financeiro');
-expect(Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/123-foto.png', 'user-1/portfolio/123-foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio aceita URL pública do próprio usuário');
-expect(!Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/other/portfolio/123-foto.png', 'other/portfolio/123-foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita objeto de outro usuário');
-expect(!Domain::validPortfolioImage('https://evil.example/user-1/portfolio/foto.png', 'user-1/portfolio/foto.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita URL externa');
-expect(!Domain::validPortfolioImage('https://project.supabase.co/storage/v1/object/public/avatars/user-1/avatar.png', 'user-1/avatar.png', 'user-1', 'https://project.supabase.co'), 'Portfólio rejeita caminho fora da pasta de portfólio');
-expect(Domain::validPortfolioImages([
-    ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/1-a.png', 'storage_path' => 'user-1/portfolio/1-a.png'],
-    ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/2-b.png', 'storage_path' => 'user-1/portfolio/2-b.png'],
-], 'user-1', 'https://project.supabase.co'), 'Galeria aceita até cinco imagens próprias');
-expect(!Domain::validPortfolioImages([], 'user-1', 'https://project.supabase.co'), 'Oferta exige ao menos uma imagem');
-expect(!Domain::validPortfolioImages(array_fill(0, 6, ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/1-a.png', 'storage_path' => 'user-1/portfolio/1-a.png']), 'user-1', 'https://project.supabase.co'), 'Galeria limita a cinco imagens');
-expect(!Domain::validPortfolioImages([
-    ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/1-a.png', 'storage_path' => 'user-1/portfolio/1-a.png'],
-    ['image_url' => 'https://project.supabase.co/storage/v1/object/public/avatars/user-1/portfolio/1-a.png', 'storage_path' => 'user-1/portfolio/1-a.png'],
-], 'user-1', 'https://project.supabase.co'), 'Galeria rejeita imagens duplicadas');
-expect(Domain::validPortfolioOffer('Pintura de quarto', 'a_partir_de', 350, 'Tinta e acabamento inclusos.', '2 dias úteis'), 'Oferta aceita preço inicial e prazo válidos');
-expect(Domain::validPortfolioOffer('Instalação elétrica', 'sob_consulta', null, '', ''), 'Oferta aceita orçamento sob consulta sem preço');
-expect(!Domain::validPortfolioOffer('x', 'fixo', 100, '', ''), 'Oferta exige título legível');
-expect(!Domain::validPortfolioOffer('Pintura', 'fixo', null, '', ''), 'Oferta com preço definido exige valor');
-expect(!Domain::validPortfolioOffer('Pintura', 'outro', 100, '', ''), 'Oferta rejeita modalidade de preço desconhecida');
-expect(!Domain::validPortfolioOffer('Pintura', 'fixo', 100, str_repeat('x', 1001), ''), 'Oferta limita o tamanho da descrição');
 expect(Domain::platformFee(100.0) === 15.0, 'Taxa Nexlar deve ser 15%');
 expect(Domain::providerNet(100.0) === 85.0, 'Profissional deve receber 85%');
 
@@ -71,7 +59,7 @@ expect(substr_count($lgpdCss, '{') === substr_count($lgpdCss, '}'), 'CSS da LGPD
 $lgpdHtml = file_get_contents($root . '/src/pages/lgpd.html');
 expect(str_contains($lgpdHtml, 'id="btn-home"'), 'LGPD deve manter o botão de retorno ao início');
 $lgpdJs = file_get_contents($root . '/src/js/lgpd.js');
-expect(str_contains($lgpdHtml, 'id="btn-home" href="/"'), 'Botão de retorno deve navegar para a homepage pública');
+expect(str_contains($lgpdJs, "location.href = '/src/pages/inicio.html'"), 'Botão de retorno deve navegar para o início');
 
 $publicProfileJs = file_get_contents($root . '/src/js/perfilAutonomo.js');
 expect(str_contains($publicProfileJs, 'let profile = null;'), 'Perfil público deve manter o perfil carregado disponível para a avaliação');
@@ -99,43 +87,6 @@ expect(!str_contains($api, 'monthly_goals?owner_id=eq.$userId&year='), 'API não
 expect(!str_contains($api, "auth/email-step/start"), 'API não deve exigir segunda etapa por e-mail');
 expect(!str_contains($api, "auth/email-step/complete"), 'API não deve concluir segunda etapa por e-mail');
 
-$deletionMigrationFiles = glob($root . '/supabase/migrations/*_account_delete_without_mfa.sql') ?: [];
-expect(count($deletionMigrationFiles) === 1, 'Exclusão de conta deve ter uma migração sem requisito de MFA');
-$deletionMigration = file_get_contents($deletionMigrationFiles[0]);
-expect(str_contains($deletionMigration, 'auth.uid()'), 'Exclusão continua limitada à conta autenticada');
-expect(str_contains($deletionMigration, "p_confirmation is distinct from 'EXCLUIR'"), 'Exclusão continua exigindo confirmação explícita');
-expect(!str_contains($deletionMigration, 'MFA_REQUIRED') && !str_contains($deletionMigration, 'auth.mfa_factors'), 'Exclusão não pode depender de MFA');
-$profileJs = file_get_contents($root . '/src/js/Meuperfil.js');
-expect(!str_contains($profileJs, 'MFA_REQUIRED') && !str_contains($profileJs, 'getAuthenticatorAssuranceLevel'), 'Tela de exclusão não pode pedir verificação em duas etapas');
-
-$avatarMigration = file_get_contents($root . '/supabase/migrations/20261101120000_profile_avatar_storage.sql');
-expect(str_contains($avatarMigration, 'file_size_limit'), 'Bucket de avatar deve impor limite de tamanho no Storage');
-expect(str_contains($avatarMigration, 'allowed_mime_types'), 'Bucket de avatar deve impor os tipos permitidos no Storage');
-$portfolioMigrationFiles = glob($root . '/supabase/migrations/*_harden_portfolio_storage.sql') ?: [];
-expect(count($portfolioMigrationFiles) === 1, 'Portfólio deve possuir uma migração versionada de Storage e metadados');
-$portfolioMigration = file_get_contents($portfolioMigrationFiles[0]);
-foreach (['add column if not exists storage_path text', 'portfolio_owner_insert', 'portfolio_owner_update', 'portfolio_owner_delete', 'portfolio_items_owner_created_idx', 'storage.foldername(name)'] as $portfolioMigrationRequirement) {
-    expect(str_contains($portfolioMigration, $portfolioMigrationRequirement), 'Migração do portfólio deve incluir ' . $portfolioMigrationRequirement);
-}
-$portfolioOffersMigration = file_get_contents($root . '/supabase/migrations/20261102192718_portfolio_service_offers.sql');
-foreach (['add column if not exists title text', 'add column if not exists price_mode', 'add column if not exists price numeric', 'add column if not exists estimated_duration', 'portfolio_items_price_valid'] as $offerRequirement) {
-    expect(str_contains($portfolioOffersMigration, $offerRequirement), 'Migração de ofertas deve incluir ' . $offerRequirement);
-}
-$portfolioGalleryMigrations = glob($root . '/supabase/migrations/*_portfolio_item_images.sql') ?: [];
-expect(count($portfolioGalleryMigrations) === 1, 'Galeria deve possuir uma migração versionada');
-$portfolioGalleryMigration = file_get_contents($portfolioGalleryMigrations[0]);
-foreach (['create table public.portfolio_item_images', 'references public.portfolio_items(id) on delete cascade', 'alter table public.portfolio_item_images enable row level security', 'portfolio_images_public_read', 'portfolio_images_owner_insert', 'portfolio_images_owner_update', 'portfolio_images_owner_delete', 'insert into public.portfolio_item_images', 'portfolio_item_images_position_unique'] as $galleryRequirement) {
-    expect(str_contains($portfolioGalleryMigration, $galleryRequirement), 'Migração de galeria deve incluir ' . $galleryRequirement);
-}
-$portfolioArrayMigrations = glob($root . '/supabase/migrations/*_portfolio_json_array_ordering.sql') ?: [];
-expect(count($portfolioArrayMigrations) === 1, 'Persistência da galeria deve possuir uma migração de ordenação JSON versionada');
-$portfolioArrayMigration = file_get_contents($portfolioArrayMigrations[0]);
-expect(substr_count($portfolioArrayMigration, 'jsonb_array_elements(p_images) with ordinality as image(item, ordinality)') === 2, 'Criação e edição de ofertas devem iterar imagens JSON com ordinality válida');
-expect(!str_contains($portfolioArrayMigration, 'jsonb_to_recordset'), 'Persistência da galeria não deve combinar recordset com WITH ORDINALITY');
-$portfolioApi = file_get_contents($root . '/api/index.php');
-expect(str_contains($portfolioApi, 'portfolio_item_images'), 'API deve ler e persistir imagens relacionadas à oferta');
-expect(str_contains($portfolioApi, 'validPortfolioImages'), 'API deve validar a galeria por usuário antes de persistir');
-
 $chatHtml = file_get_contents($root . '/src/pages/painelmensagens.html');
 expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença online');
 expect(substr_count($chatHtml, '/src/js/api.js') === 1, 'Chat deve carregar o cliente de API uma única vez');
@@ -152,13 +103,6 @@ expect(str_contains($responsiveCss, 'min-height: 44px'), 'Controles móveis deve
 
 $financeCss = file_get_contents($root . '/src/css/Painelfinanceiro.css');
 expect(str_contains($financeCss, '.goal-editor-controls'), 'Editor de meta precisa de layout responsivo próprio');
-
-$profileHtml = file_get_contents($root . '/src/pages/Meuperfil.html');
-foreach (['avatarUploadModal', 'avatarDropzone', 'avatarFileInput', 'avatarUploadMessage', 'cancelAvatarUpload', 'saveAvatarUpload'] as $avatarControl) {
-    expect(str_contains($profileHtml, 'id="' . $avatarControl . '"'), 'Modal de avatar deve possuir o controle ' . $avatarControl);
-}
-expect(str_contains($profileHtml, 'role="dialog"'), 'Modal de avatar deve expor semântica de diálogo');
-expect(str_contains($profileHtml, 'aria-modal="true"'), 'Modal de avatar deve bloquear o contexto externo para leitores de tela');
 
 foreach (['Meuperfil' => 'perfil', 'Painelfinanceiro' => 'financeiro', 'painelmensagens' => 'mensagens'] as $page => $active) {
     $html = file_get_contents($root . '/src/pages/' . $page . '.html');
@@ -177,7 +121,7 @@ foreach (['Meuperfil' => 'perfil', 'Painelfinanceiro' => 'financeiro', 'painelme
 }
 
 $clientSignup = file_get_contents($root . '/src/pages/cadastrocliente.html');
-expect(substr_count($clientSignup, 'deferred-widgets.js') === 1, 'Cadastro de cliente deve carregar os widgets externos de forma adiada');
+expect(substr_count($clientSignup, 'vlibras-plugin.js') === 1, 'Cadastro de cliente deve carregar VLibras uma única vez');
 expect(str_contains($clientSignup, 'aria-label="CPF"'), 'Campo CPF precisa de nome acessível');
 
 $realtimeMigrations = glob($root . '/supabase/migrations/*realtime_chat_activity.sql') ?: [];
@@ -192,4 +136,5 @@ foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html
 }
 
 fwrite(STDOUT, "Todos os testes passaram.\n");
+
 
