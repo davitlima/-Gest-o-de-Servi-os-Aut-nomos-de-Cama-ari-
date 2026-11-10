@@ -139,4 +139,3 @@ assert.equal(alreadyInert.inert, true);
 
 console.log('Navegação compartilhada passou.');
 
-
