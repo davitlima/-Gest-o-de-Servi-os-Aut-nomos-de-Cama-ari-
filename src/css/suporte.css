@@ -44,7 +44,6 @@ body {
 .support-button:focus-visible, .support-email:focus-visible, .support-field :focus-visible { outline: 3px solid #7c83ff; outline-offset: 3px; }
 .support-email { display: block; width: fit-content; margin-top: 14px; color: #3730a3; font-weight: 600; overflow-wrap: anywhere; }
 .contact-card { border-color: var(--support-deep); background: var(--support-deep); color: #fff; }
-.contact-card .support-kind { color: var(--support-tint); }
 .contact-card h2 { color: #fff; }
 .contact-card > p { color: #d6d5e6; }
 .contact-card .support-button { background: #fff; color: var(--support-deep); }
