@@ -13,6 +13,7 @@ $root = dirname(__DIR__);
 expect(is_file($root . '/api/Domain.php'), 'Backend de domínio deve existir na dev');
 expect(is_file($root . '/api/index.php'), 'API PHP deve existir na dev');
 expect(is_file($root . '/index.php'), 'Front controller MVC deve existir na dev');
+expect(is_file($root . '/api/page.php'), 'Front controller PHP deve estar disponível em api/');
 expect(is_file($root . '/Controller/PageController.php'), 'Controller MVC deve existir na dev');
 expect(is_file($root . '/Model/Page.php'), 'Model MVC deve existir na dev');
 expect(is_file($root . '/View/page.php'), 'View MVC deve existir na dev');
@@ -20,7 +21,7 @@ expect(is_file($root . '/src/pages/cadastro.html'), 'URL antiga de cadastro deve
 expect(is_file($root . '/supabase/migrations/20261030213215_nexlar_backend.sql'), 'Migração Supabase deve existir na dev');
 
 $vercel = json_decode((string) file_get_contents($root . '/vercel.json'), true, 512, JSON_THROW_ON_ERROR);
-expect(isset($vercel['functions']['index.php']), 'Front controller deve usar runtime PHP na Vercel');
+expect(isset($vercel['functions']['api/page.php']), 'Front controller deve usar runtime PHP na Vercel');
 expect(count($vercel['rewrites'] ?? []) >= 20, 'Páginas públicas devem ser roteadas pelo MVC');
 
 require $root . '/api/Domain.php';
