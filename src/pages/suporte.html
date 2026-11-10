@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="/src/css/responsive.css" />
   <link rel="stylesheet" href="/src/css/panel-nav.css" />
   <link rel="stylesheet" href="/src/css/suporte.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="/src/js/api.js" defer></script>
   <script src="/src/js/panel-nav.js" defer></script>
   <script src="/src/js/suporte.js" defer></script>
 </head>
@@ -16,9 +18,8 @@
   <main class="support-main">
     <header class="support-heading">
       <div>
-        <p class="support-eyebrow">Estamos aqui para ajudar</p>
         <h1>Suporte</h1>
-        <p>Fale com a equipe Nexlar ou envie uma denúncia sobre uma situação na plataforma.</p>
+        <p>Entre em contato com a equipe Nexlar ou envie uma denúncia sobre algo que aconteceu na plataforma.</p>
       </div>
     </header>
 
@@ -26,7 +27,7 @@
       <section class="support-card" aria-labelledby="contact-title">
         <p class="support-kind">Contato</p>
         <h2 id="contact-title">Falar com o suporte</h2>
-        <p>Precisa de ajuda com sua conta ou com a plataforma? Envie um e-mail para nossa equipe.</p>
+        <p>Precisa de ajuda com sua conta ou com a plataforma? Escreva para nossa equipe.</p>
         <a class="support-button" href="mailto:suportenexlar@gmail.com">Enviar e-mail ao suporte</a>
         <a class="support-email" href="mailto:suportenexlar@gmail.com">suportenexlar@gmail.com</a>
       </section>
@@ -34,7 +35,7 @@
       <section class="support-card report-card" aria-labelledby="report-title">
         <p class="support-kind support-kind--report">Denúncia</p>
         <h2 id="report-title">Fazer uma denúncia</h2>
-        <p>Conte o que aconteceu para que a equipe possa analisar. O envio abre um rascunho no seu aplicativo de e-mail.</p>
+        <p>Descreva a situação para a equipe analisar. Vamos abrir um rascunho no seu aplicativo de e-mail. Revise a mensagem e envie por lá para concluir a denúncia.</p>
         <form id="reportForm">
           <div class="support-field">
             <label for="reportType">Tipo de situação</label>
@@ -60,3 +61,4 @@
   </main>
 </body>
 </html>
+

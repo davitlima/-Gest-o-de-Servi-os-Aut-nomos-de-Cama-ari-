@@ -4,7 +4,7 @@
     { key: 'perfil', href: 'Meuperfil.html', label: 'Meu Perfil', icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
     { key: 'financeiro', href: 'Painelfinanceiro.html', label: 'Financeiro', icon: '<path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>' },
     { key: 'mensagens', href: 'painelmensagens.html', label: 'Mensagens', icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
-    { key: 'suporte', href: 'suporte.html', label: 'Suporte', icon: '<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>' }
+    { key: 'suporte', href: 'suporte.html', label: 'Suporte', icon: '<path d="M3 14v-3a9 9 0 0 1 18 0v3"/><rect x="3" y="13" width="5" height="8" rx="2"/><rect x="16" y="13" width="5" height="8" rx="2"/>' }
   ];
 
   function renderNavigation(active, canUseFinance = false) {
@@ -116,4 +116,5 @@
   }
   if (typeof module !== 'undefined') module.exports = { renderNavigation, createDrawerController };
 })(typeof window !== 'undefined' ? window : null);
+
 

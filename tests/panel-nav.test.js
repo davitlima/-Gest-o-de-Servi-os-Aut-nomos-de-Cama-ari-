@@ -1,7 +1,24 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const { renderNavigation, createDrawerController } = require('../src/js/panel-nav.js');
 
 const links = ['inicio.html', 'Meuperfil.html', 'Painelfinanceiro.html', 'painelmensagens.html'];
+const customerNavigation = renderNavigation('suporte');
+const professionalNavigation = renderNavigation('suporte', true);
+assert.ok(customerNavigation.includes('href="suporte.html"'), 'clientes podem abrir Suporte');
+assert.doesNotMatch(customerNavigation, /Painelfinanceiro\.html/, 'clientes não recebem Financeiro');
+assert.ok(professionalNavigation.includes('href="suporte.html"'), 'profissionais podem abrir Suporte');
+assert.ok(professionalNavigation.includes('href="Painelfinanceiro.html"'), 'profissionais mantêm Financeiro em Suporte');
+assert.ok(professionalNavigation.includes('M3 14v-3a9 9 0 0 1 18 0v3'), 'Suporte usa o contorno de headset');
+
+const supportPage = fs.readFileSync(require.resolve('../src/pages/suporte.html'), 'utf8');
+const roleDependencies = [
+  'cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+  '/src/js/api.js',
+  '/src/js/panel-nav.js'
+].map(script => supportPage.indexOf(script));
+assert.ok(roleDependencies.every((position, index) => position >= 0 && (index === 0 || position > roleDependencies[index - 1])), 'Suporte carrega Supabase e API antes da navbar compartilhada');
+
 for (const href of ['inicio.html', 'Meuperfil.html', 'painelmensagens.html']) assert.ok(renderNavigation('perfil').includes(`href="${href}"`));
 assert.doesNotMatch(renderNavigation('perfil'), /Painelfinanceiro\.html/, 'menu não mostra Financeiro enquanto o papel ainda não foi validado');
 assert.ok(renderNavigation('perfil', true).includes('href="Painelfinanceiro.html"'), 'prestadores podem abrir Financeiro');
@@ -121,4 +138,5 @@ assert.equal(background.inert, false);
 assert.equal(alreadyInert.inert, true);
 
 console.log('Navegação compartilhada passou.');
+
 
