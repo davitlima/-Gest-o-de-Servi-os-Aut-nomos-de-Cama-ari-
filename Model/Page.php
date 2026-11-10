@@ -8,11 +8,11 @@ final class Page
 {
     private const PAGES = [
         'inicio' => 'src/pages/inicio.html',
-        'login' => 'src/pages/login.html',
-        'cadastro' => 'src/pages/cadastro.html',
-        'cadastrocliente' => 'src/pages/cadastrocliente.html',
-        'cadastroautonomo' => 'src/pages/cadastroautonomo.html',
-        'cadastroempresa' => 'src/pages/cadastroempresa.html',
+        'login' => 'View/auth/login.php',
+        'cadastro' => 'View/auth/register-choice.php',
+        'cadastrocliente' => 'View/auth/register-cliente.php',
+        'cadastroautonomo' => 'View/auth/register-autonomo.php',
+        'cadastroempresa' => 'View/auth/register-empresa.php',
         'perfilAutonomo' => 'src/pages/perfilAutonomo.html',
         'Meuperfil' => 'src/pages/Meuperfil.html',
         'Painelfinanceiro' => 'src/pages/Painelfinanceiro.html',

@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Entrar — Nexlar</title><link rel="stylesheet" href="/src/css/auth.css"><link rel="stylesheet" href="/src/css/responsive.css"></head>
+<body><main class="auth-card"><a href="/"><img class="logo" src="/src/images/Logo.png" alt="Nexlar"></a><h1>Entre na Nexlar</h1><p class="subtitle">Use seu e-mail e sua senha.</p><form id="loginForm"><div class="field"><label for="email">E-mail</label><input id="email" type="email" required autocomplete="email"></div><div class="field"><label for="password">Senha</label><input id="password" type="password" required autocomplete="current-password"></div><button type="submit">Entrar</button><p class="message" id="message" role="status"></p></form><p class="switch">Ainda não tem conta? <a href="/src/pages/cadastro.html">Cadastre-se</a></p></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/src/js/api.js"></script><script src="/src/js/auth.js"></script></body></html>
+

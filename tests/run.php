@@ -15,8 +15,12 @@ expect(is_file($root . '/api/index.php'), 'API PHP deve existir na dev');
 expect(is_file($root . '/index.php'), 'Front controller MVC deve existir na dev');
 expect(is_file($root . '/api/page.php'), 'Front controller PHP deve estar disponível em api/');
 expect(is_file($root . '/Controller/PageController.php'), 'Controller MVC deve existir na dev');
+expect(is_file($root . '/Controller/AuthController.php'), 'Controller de autenticação deve existir na dev');
 expect(is_file($root . '/Model/Page.php'), 'Model MVC deve existir na dev');
 expect(is_file($root . '/View/page.php'), 'View MVC deve existir na dev');
+expect(is_file($root . '/View/auth/register-cliente.php'), 'Cadastro de cliente deve ser uma View PHP');
+expect(is_file($root . '/View/auth/register-autonomo.php'), 'Cadastro de autônomo deve ser uma View PHP');
+expect(is_file($root . '/View/auth/register-empresa.php'), 'Cadastro de empresa deve ser uma View PHP');
 expect(is_file($root . '/src/pages/cadastro.html'), 'URL antiga de cadastro deve continuar funcionando');
 expect(is_file($root . '/supabase/migrations/20261030213215_nexlar_backend.sql'), 'Migração Supabase deve existir na dev');
 

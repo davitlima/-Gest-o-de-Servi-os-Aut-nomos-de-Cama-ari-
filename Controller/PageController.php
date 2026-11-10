@@ -14,10 +14,13 @@ final class PageController
             return;
         }
 
-        App::view('page', [
-            'page' => $page,
-            'source' => Page::path($page),
-        ]);
+        $path = Page::path($page);
+        if (str_starts_with($path, dirname(__DIR__) . '/View/')) {
+            $view = substr($path, strlen(dirname(__DIR__) . '/View/'), -4);
+            App::view($view, ['page' => $page]);
+            return;
+        }
+        App::view('page', ['page' => $page, 'source' => $path]);
     }
 }
 
