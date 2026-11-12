@@ -9,11 +9,18 @@ const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
 const connectionStatus = document.getElementById('connectionStatus');
 const chatInput = document.getElementById('chatInput');
 const searchInput = document.getElementById('searchInput');
+const proposalDialog = document.getElementById('proposalDialog');
+const proposalForm = document.getElementById('proposalForm');
+const proposalDescription = document.getElementById('proposalDescription');
+const proposalAmount = document.getElementById('proposalAmount');
+const proposalError = document.getElementById('proposalError');
+const proposalSubmit = document.getElementById('proposalSubmit');
 const contratarBtn = document.getElementById('contratarBtn');
 
 let api, me, activeConversation, realtimeChannel, realtimeGeneration = 0, openGeneration = 0;
 let conversations = [], activeContracts = [], messageCache = [], fallbackTimer = null, fallbackActive = false;
 
+const initials = name => name.split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
 const otherPerson = conversation => conversation.client_id === me.id ? conversation.provider : conversation.client;
 const formatTime = value => new Date(value).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
@@ -30,7 +37,7 @@ function renderTimeline() {
   messageCache.forEach(message => addBubble(message.body, message.sender_id === me.id, formatTime(message.created_at)));
   activeContracts.slice().reverse().forEach(contract => {
     const value = Number(contract.amount).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    addBubble(`Proposta: ${contract.description} — ${value} (${contract.status.replaceAll('_', ' ')})`, contract.provider_id === me.id, formatTime(contract.created_at), 'proposal-bubble');
+    addProposalCard(contract, value);
   });
   const latest = activeContracts[0];
   contratarBtn.textContent = activeConversation.provider_id !== me.id ? 'Contratar serviço'
@@ -38,6 +45,26 @@ function renderTimeline() {
     : latest?.status === 'em_andamento' ? 'Concluir serviço'
     : 'Enviar proposta';
   chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+function addProposalCard(contract, value) {
+  const sent = contract.provider_id === me.id;
+  const card = document.createElement('article');
+  card.className = `proposal-card ${sent ? 'proposal-card-sent' : 'proposal-card-received'}`;
+  const heading = document.createElement('strong'); heading.textContent = sent ? 'Proposta enviada' : 'Proposta recebida';
+  const description = document.createElement('p'); description.textContent = contract.description;
+  const amount = document.createElement('div'); amount.className = 'proposal-card-amount'; amount.textContent = value;
+  const status = document.createElement('span'); status.className = 'proposal-card-status';
+  const labels = { proposta: 'Aguardando resposta', aguardando_pagamento: 'Aguardando pagamento', pago: 'Pagamento confirmado', em_andamento: 'Serviço em andamento', concluido: 'Serviço concluído' };
+  status.textContent = labels[contract.status] || contract.status.replaceAll('_', ' ');
+  const time = document.createElement('time'); time.className = 'msg-time'; time.textContent = formatTime(contract.created_at);
+  card.append(heading, description, amount, status);
+  if (!sent && contract.status === 'proposta') {
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'proposal-accept';
+    button.textContent = 'Contratar este serviço'; button.setAttribute('aria-label', `Contratar serviço por ${value}`);
+    button.addEventListener('click', () => startCheckout(contract));
+    card.appendChild(button);
+  }
+  card.appendChild(time); chatMessages.appendChild(card);
 }
 
 function renderConversationList(filter = '') {
@@ -51,8 +78,7 @@ function renderConversationList(filter = '') {
   visible.forEach(item => {
     const person = otherPerson(item);
     const li = document.createElement('li'); li.className = 'conversation-item'; li.dataset.id = item.id; li.tabIndex = 0;
-    const avatar = document.createElement('div'); avatar.className = 'avatar avatar-purple';
-    window.NexlarAvatar.render(avatar, person.full_name, person.avatar_url);
+    const avatar = document.createElement('div'); avatar.className = 'avatar avatar-purple'; avatar.textContent = initials(person.full_name);
     const info = document.createElement('div'); info.className = 'conv-info';
     const top = document.createElement('div'); top.className = 'conv-top';
     const name = document.createElement('span'); name.className = 'conv-name'; name.textContent = person.full_name;
@@ -130,9 +156,7 @@ async function openConversation(conversation) {
   const generation = ++openGeneration;
   activeConversation = conversation; messageCache = []; activeContracts = [];
   const person = otherPerson(conversation);
-  chatHeaderName.textContent = person.full_name;
-  chatHeaderName.href = window.NexlarChat.profileUrl(person.id);
-  window.NexlarAvatar.render(chatHeaderAvatar, person.full_name, person.avatar_url, { loading: 'eager' });
+  chatHeaderName.textContent = person.full_name; chatHeaderAvatar.textContent = initials(person.full_name);
   emptyState.style.display = 'none'; chatView.style.display = 'flex'; chatView.style.flexDirection = 'column';
   if (innerWidth <= 600) { messagesPanel.classList.add('hidden'); chatArea.classList.add('visible'); }
   await subscribeRealtime(conversation.id);
@@ -159,15 +183,43 @@ async function handleContract() {
       const status = latest.status === 'pago' ? 'em_andamento' : 'concluido';
       await api.request(`contracts/${latest.id}/status`, { method: 'POST', body: JSON.stringify({ status }) }); return loadMessages();
     }
-    const description = prompt('Descreva o serviço da proposta:'); if (!description) return;
-    const amount = Number(prompt('Informe o valor do serviço em reais:')?.replace(',', '.')); if (!(amount > 0)) return alert('Informe um valor válido.');
-    await api.request('contracts', { method: 'POST', body: JSON.stringify({ conversation_id: activeConversation.id, description, amount }) }); return loadMessages();
+    proposalError.textContent = '';
+    proposalForm.reset(); updateProposalBreakdown(); proposalDialog.showModal(); proposalDescription.focus(); return;
   }
   const proposal = activeContracts.find(contract => contract.status === 'proposta');
   if (!proposal) return alert('O prestador ainda não enviou uma proposta disponível.');
-  const result = await api.request('payments/checkout', { method: 'POST', body: JSON.stringify({ contract_id: proposal.id }) });
-  if (result.checkout_url) location.href = result.checkout_url;
+  return startCheckout(proposal);
 }
+function updateProposalBreakdown() {
+  const amount = Math.max(0, Number(proposalAmount.value) || 0);
+  const brl = value => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  document.getElementById('proposalGross').textContent = brl(amount);
+  document.getElementById('proposalFee').textContent = brl(amount * .15);
+  document.getElementById('proposalNet').textContent = brl(amount * .85);
+}
+async function startCheckout(proposal) {
+  const button = document.querySelector('.proposal-accept');
+  if (button) { button.disabled = true; button.textContent = 'Preparando pagamento…'; }
+  try {
+    const result = await api.request('payments/checkout', { method: 'POST', body: JSON.stringify({ contract_id: proposal.id }) });
+    if (!result.checkout_url) throw new Error('O checkout não retornou um link de pagamento.');
+    location.href = result.checkout_url;
+  } catch (error) {
+    if (button) { button.disabled = false; button.textContent = 'Tentar contratar novamente'; }
+    alert(error.message);
+  }
+}
+proposalAmount.addEventListener('input', updateProposalBreakdown);
+proposalForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  if (!activeConversation || !(Number(proposalAmount.value) > 0)) return;
+  proposalSubmit.disabled = true; proposalSubmit.textContent = 'Enviando…'; proposalError.textContent = '';
+  try {
+    await api.request('contracts', { method: 'POST', body: JSON.stringify({ conversation_id: activeConversation.id, description: proposalDescription.value.trim(), amount: Number(proposalAmount.value) }) });
+    proposalDialog.close(); await loadMessages();
+  } catch (error) { proposalError.textContent = error.message; }
+  finally { proposalSubmit.disabled = false; proposalSubmit.textContent = 'Enviar proposta'; }
+});
 
 document.getElementById('backBtn').addEventListener('click', () => { openGeneration += 1; messagesPanel.classList.remove('hidden'); chatArea.classList.remove('visible'); unsubscribeRealtime(); });
 document.getElementById('sendBtn').addEventListener('click', sendMessage);
@@ -192,24 +244,5 @@ window.addEventListener('beforeunload', () => { if (realtimeChannel) api.supabas
 })().catch(error => {
   emptyState.querySelector('.empty-title').textContent = 'Não foi possível carregar';
   emptyState.querySelector('.empty-sub').textContent = error.message;
-});
-
-window.addEventListener('storage', event => {
-  if (event.key !== 'nexlar:avatar-updated') return;
-  let update;
-  try { update = JSON.parse(event.newValue); } catch (_) { return; }
-  if (!update?.userId) return;
-  conversations.forEach(conversation => {
-    const person = otherPerson(conversation);
-    if (person?.id !== update.userId) return;
-    person.avatar_url = update.avatarUrl;
-    const itemAvatar = conversationList.querySelector(`[data-id="${conversation.id}"] .avatar`);
-    if (itemAvatar) {
-      window.NexlarAvatar.render(itemAvatar, person.full_name, update.avatarUrl);
-    }
-    if (activeConversation?.id === conversation.id) {
-      window.NexlarAvatar.render(chatHeaderAvatar, person.full_name, update.avatarUrl);
-    }
-  });
 });
 

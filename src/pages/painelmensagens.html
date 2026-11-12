@@ -7,14 +7,11 @@
   <link rel="stylesheet" href="/src/css/painelmensagens.css" />
   <link rel="stylesheet" href="/src/css/responsive.css" />
   <link rel="stylesheet" href="/src/css/panel-nav.css" />
-  <link rel="stylesheet" href="/src/css/page-transition.css" />
   <script src="/src/js/panel-nav.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="/src/js/api.js" defer></script>
-  <script src="/src/js/avatar-ui.js" defer></script>
   <script src="/src/js/chat-core.js" defer></script>
   <script src="/src/js/painelmensagens.js" defer></script>
-  <script src="/src/js/page-transition.js" defer></script>
 </head>
 <body>
 
@@ -34,11 +31,6 @@
       </div>
 
       <ul class="conversation-list" id="conversationList" aria-live="polite"></ul>
-      <section class="messages-support" aria-labelledby="messagesSupportTitle">
-        <h2 id="messagesSupportTitle">Denúncias e suporte</h2>
-        <p>Precisa de ajuda ou quer relatar uma situação?</p>
-        <a href="suporte.html">Acessar suporte</a>
-      </section>
     </section>
 
     <section class="chat-area" id="chatArea">
@@ -61,7 +53,7 @@
           </button>
           <div class="chat-header-avatar" id="chatHeaderAvatar"></div>
           <div>
-            <a class="chat-header-name" id="chatHeaderName" href="#"></a>
+            <div class="chat-header-name" id="chatHeaderName"></div>
             <div class="chat-header-status" id="connectionStatus" role="status" aria-live="polite">Conectando…</div>
           </div>
         </div>
@@ -85,9 +77,24 @@
 
   </div>
 
-  <a class="help-btn" href="suporte.html" aria-label="Abrir suporte">?</a>
+  <dialog class="proposal-dialog" id="proposalDialog" aria-labelledby="proposalTitle">
+    <form method="dialog" class="proposal-panel" id="proposalForm">
+      <button class="proposal-close" value="cancel" aria-label="Fechar">×</button>
+      <h2 id="proposalTitle">Enviar proposta</h2>
+      <p class="proposal-intro">Descreva o serviço e combine o valor antes de enviar ao cliente.</p>
+      <label for="proposalDescription">Serviço combinado</label>
+      <textarea id="proposalDescription" required maxlength="240" placeholder="Ex.: Instalação de tomadas e revisão elétrica"></textarea>
+      <label for="proposalAmount">Valor total do serviço</label>
+      <div class="proposal-amount"><span>R$</span><input id="proposalAmount" type="number" min="0.01" step="0.01" inputmode="decimal" required placeholder="0,00"></div>
+      <div class="proposal-breakdown"><div><span>Valor do serviço</span><strong id="proposalGross">R$ 0,00</strong></div><div><span>Taxa Nexlar (15%)</span><strong id="proposalFee">R$ 0,00</strong></div><div class="proposal-net"><span>Você recebe (85%)</span><strong id="proposalNet">R$ 0,00</strong></div></div>
+      <p class="proposal-terms">O cliente paga pelo checkout seguro. Após a confirmação, o serviço pode ser iniciado. O valor líquido é registrado no seu painel financeiro.</p>
+      <p class="proposal-error" id="proposalError" role="alert"></p>
+      <button class="proposal-submit" id="proposalSubmit" value="default">Enviar proposta</button>
+    </form>
+  </dialog>
 
-  <script src="/src/js/deferred-widgets.js" defer></script>
+  <button class="help-btn" aria-label="Ajuda">?</button>
+
 </body>
 </html>
 
