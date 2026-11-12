@@ -31,6 +31,10 @@ final class Supabase
     {
         return $this->request($method, '/rest/v1/' . ltrim($path, '/'), $body, $token, $service);
     }
+    public function storage(string $method, string $path, ?array $body, string $token): array
+    {
+        return $this->request($method, '/storage/v1/' . ltrim($path, '/'), $body, $token, false);
+    }
 
     private function request(string $method, string $path, ?array $body, string $token, bool $service): array
     {
@@ -81,6 +85,7 @@ final class HttpError extends \RuntimeException
         parent::__construct($message);
     }
 }
+
 
 
 

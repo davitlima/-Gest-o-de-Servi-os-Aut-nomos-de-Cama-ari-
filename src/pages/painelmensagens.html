@@ -56,11 +56,21 @@
             <div class="chat-header-name" id="chatHeaderName"></div>
             <div class="chat-header-status" id="connectionStatus" role="status" aria-live="polite">Conectando…</div>
           </div>
+          <button class="chat-propose-btn" id="proposeBtn" type="button">Propor serviço</button>
         </div>
 
-        <div class="chat-messages" id="chatMessages" aria-live="polite" aria-relevant="additions"></div>
+        <div class="chat-messages" id="chatMessages" aria-label="Histórico da conversa" aria-live="polite" aria-relevant="additions"></div>
 
+        <div id="chatFeedback" class="chat-feedback" role="status" aria-live="polite" hidden></div>
         <div class="chat-input-bar">
+          <input type="file" id="attachmentInput" hidden accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,text/plain,.doc,.docx,.xls,.xlsx,.zip,audio/*" />
+          <button class="chat-tool-btn" id="attachBtn" type="button" aria-label="Anexar arquivo ou áudio" title="Anexar arquivo ou áudio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.4 11.1-8.9 8.9a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg>
+          </button>
+          <button class="chat-tool-btn" id="recordBtn" type="button" aria-label="Gravar áudio" title="Gravar áudio" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5m-4 0h8"/></svg>
+          </button>
+          <span id="recordingStatus" class="recording-status" role="status" aria-live="polite" hidden>Gravando áudio…</span>
           <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem..." aria-label="Mensagem" maxlength="4000" autocomplete="off" />
           <button class="send-btn" id="sendBtn" aria-label="Enviar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -68,9 +78,6 @@
               <polygon points="22 2 15 22 11 13 2 9 22 2"/>
             </svg>
           </button>
-        </div>
-        <div class="contratar-bar">
-          <button class="contratar-btn" id="contratarBtn">Contratar Serviço</button>
         </div>
       </div>
     </section>

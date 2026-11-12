@@ -73,7 +73,7 @@ textarea,
   }
 
   .portfolio-grid:empty,
-  .portfolio-grid:not(:has(.portfolio-item, .portfolio-skeleton)) {
+  .portfolio-grid:not(:has(.portfolio-item)) {
     display: block;
     width: 100%;
     line-height: 1.65;
@@ -123,8 +123,7 @@ textarea,
     padding-right: max(0px, env(safe-area-inset-right));
   }
 
-  .chat-input-bar,
-  .contratar-bar {
+.chat-input-bar {
     padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
 
@@ -136,3 +135,4 @@ textarea,
     }
   }
 }
+

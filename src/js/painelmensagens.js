@@ -8,6 +8,10 @@ const chatHeaderName = document.getElementById('chatHeaderName');
 const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
 const connectionStatus = document.getElementById('connectionStatus');
 const chatInput = document.getElementById('chatInput');
+const attachmentInput = document.getElementById('attachmentInput');
+const attachBtn = document.getElementById('attachBtn');
+const recordBtn = document.getElementById('recordBtn');
+const recordingStatus = document.getElementById('recordingStatus');
 const searchInput = document.getElementById('searchInput');
 const proposalDialog = document.getElementById('proposalDialog');
 const proposalForm = document.getElementById('proposalForm');
@@ -15,35 +19,91 @@ const proposalDescription = document.getElementById('proposalDescription');
 const proposalAmount = document.getElementById('proposalAmount');
 const proposalError = document.getElementById('proposalError');
 const proposalSubmit = document.getElementById('proposalSubmit');
-const contratarBtn = document.getElementById('contratarBtn');
+const proposeBtn = document.getElementById('proposeBtn');
 
 let api, me, activeConversation, realtimeChannel, realtimeGeneration = 0, openGeneration = 0;
 let conversations = [], activeContracts = [], messageCache = [], fallbackTimer = null, fallbackActive = false;
+let mediaRecorder = null, mediaStream = null, audioChunks = [], uploadInProgress = false;
+
+const MAX_ATTACHMENT_SIZE = 15 * 1024 * 1024;
+const ALLOWED_ATTACHMENT_TYPES = new Set([
+  'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf', 'text/plain',
+  'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/zip', 'audio/webm', 'audio/ogg', 'audio/mpeg', 'audio/mp4', 'audio/wav',
+]);
+const EXTENSION_BY_TYPE = {
+  'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif',
+  'application/pdf': 'pdf', 'text/plain': 'txt', 'application/msword': 'doc',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+  'application/vnd.ms-excel': 'xls',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+  'application/zip': 'zip', 'audio/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mpeg': 'mp3',
+  'audio/mp4': 'm4a', 'audio/wav': 'wav',
+};
 
 const initials = name => name.split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
 const otherPerson = conversation => conversation.client_id === me.id ? conversation.provider : conversation.client;
 const formatTime = value => new Date(value).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-function addBubble(text, sent, time, className = '') {
-  const bubble = document.createElement('div');
-  bubble.className = `msg-bubble ${sent ? 'sent' : 'received'} ${className}`;
-  const content = document.createElement('span'); content.textContent = text;
-  const date = document.createElement('span'); date.className = 'msg-time'; date.textContent = time;
-  bubble.append(content, date); chatMessages.appendChild(bubble);
+function appendAttachment(bubble, message) {
+  if (!message.attachment_url) {
+    const waiting = document.createElement('span'); waiting.className = 'attachment-waiting'; waiting.textContent = message.attachment_error ? 'Anexo indisponível.' : 'Carregando anexo…';
+    bubble.appendChild(waiting); return;
+  }
+  const url = message.attachment_url;
+  const type = (message.attachment_mime || '').toLowerCase();
+  if (type.startsWith('audio/')) {
+    const audio = document.createElement('audio'); audio.className = 'chat-audio'; audio.controls = true; audio.preload = 'metadata'; audio.src = url;
+    audio.setAttribute('aria-label', `Áudio: ${message.attachment_name || 'arquivo de áudio'}`);
+    bubble.appendChild(audio);
+  } else if (type.startsWith('image/')) {
+    const link = document.createElement('a'); link.className = 'chat-image-link'; link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer';
+    link.setAttribute('aria-label', `Abrir imagem ${message.attachment_name || ''}`);
+    const image = document.createElement('img'); image.className = 'chat-image'; image.src = url; image.alt = message.attachment_name || 'Imagem anexada';
+    link.appendChild(image); bubble.appendChild(link);
+  }
+  const file = document.createElement('a'); file.className = 'chat-file-link'; file.href = url; file.target = '_blank'; file.rel = 'noopener noreferrer';
+  file.download = message.attachment_name || ''; file.textContent = message.attachment_name || 'Baixar arquivo';
+  bubble.appendChild(file);
+}
+
+function showChatFeedback(message = '', isError = false) {
+  const feedback = document.getElementById('chatFeedback');
+  feedback.textContent = message; feedback.hidden = !message; feedback.classList.toggle('is-error', isError);
 }
 
 function renderTimeline() {
   chatMessages.innerHTML = '';
-  messageCache.forEach(message => addBubble(message.body, message.sender_id === me.id, formatTime(message.created_at)));
-  activeContracts.slice().reverse().forEach(contract => {
-    const value = Number(contract.amount).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    addProposalCard(contract, value);
+  let displayedDate = '';
+  const activity = [
+    ...messageCache.map(item => ({ ...item, kind: 'message' })),
+    ...activeContracts.map(item => ({ ...item, kind: 'contract' })),
+  ].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  activity.forEach(item => {
+    const sentDate = new Date(item.created_at);
+    const dateKey = sentDate.toLocaleDateString('pt-BR');
+    if (dateKey !== displayedDate) {
+      const divider = document.createElement('div'); divider.className = 'chat-date-divider';
+      divider.textContent = sentDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+      chatMessages.appendChild(divider); displayedDate = dateKey;
+    }
+    if (item.kind === 'message') {
+      const sent = item.sender_id === me.id;
+      const bubble = document.createElement('div'); bubble.className = `msg-bubble ${sent ? 'sent' : 'received'}`;
+      if (item.body) { const content = document.createElement('span'); content.className = 'msg-content'; content.textContent = item.body; bubble.appendChild(content); }
+      if (item.attachment_path) appendAttachment(bubble, item);
+      const time = document.createElement('span'); time.className = 'msg-time'; time.textContent = formatTime(item.created_at); bubble.appendChild(time);
+      chatMessages.appendChild(bubble);
+    } else {
+      const value = Number(item.amount).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      addProposalCard(item, value);
+    }
   });
   const latest = activeContracts[0];
-  contratarBtn.textContent = activeConversation.provider_id !== me.id ? 'Contratar serviço'
-    : latest?.status === 'pago' ? 'Iniciar serviço'
-    : latest?.status === 'em_andamento' ? 'Concluir serviço'
-    : 'Enviar proposta';
+  proposeBtn.hidden = activeConversation.provider_id !== me.id;
+  proposeBtn.textContent = latest?.status === 'pago' ? 'Iniciar serviço'
+    : latest?.status === 'em_andamento' ? 'Marcar como concluído' : 'Propor serviço';
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 function addProposalCard(contract, value) {
@@ -58,11 +118,17 @@ function addProposalCard(contract, value) {
   status.textContent = labels[contract.status] || contract.status.replaceAll('_', ' ');
   const time = document.createElement('time'); time.className = 'msg-time'; time.textContent = formatTime(contract.created_at);
   card.append(heading, description, amount, status);
-  if (!sent && contract.status === 'proposta') {
-    const button = document.createElement('button'); button.type = 'button'; button.className = 'proposal-accept';
-    button.textContent = 'Contratar este serviço'; button.setAttribute('aria-label', `Contratar serviço por ${value}`);
-    button.addEventListener('click', () => startCheckout(contract));
-    card.appendChild(button);
+if (!sent && ['proposta', 'aguardando_pagamento'].includes(contract.status)) {
+    card.classList.add('proposal-card-actionable'); card.tabIndex = 0; card.setAttribute('role', 'button');
+card.setAttribute('aria-label', `${contract.status === 'proposta' ? 'Contratar' : 'Continuar pagamento de'} ${contract.description} por ${value}`);
+const action = document.createElement('span'); action.className = 'proposal-card-action'; action.textContent = contract.status === 'proposta' ? 'Toque para contratar' : 'Toque para continuar o pagamento';
+const arrow = document.createElement('span'); arrow.className = 'proposal-card-arrow'; arrow.setAttribute('aria-hidden', 'true');
+arrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    card.append(action, arrow);
+    card.addEventListener('click', () => startCheckout(contract, card));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); startCheckout(contract, card); }
+    });
   }
   card.appendChild(time); chatMessages.appendChild(card);
 }
@@ -139,6 +205,7 @@ async function subscribeRealtime(conversationId) {
   realtimeChannel = api.supabase.channel(`conversation:${conversationId}`)
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${conversationId}` }, payload => {
       if (generation !== realtimeGeneration || !window.NexlarChat.belongsToConversation(payload.new, conversationId)) return;
+      if (payload.new.attachment_path) { loadMessages().catch(() => startFallback()); return; }
       messageCache = window.NexlarChat.mergeMessages(messageCache, payload.new); renderTimeline();
     })
     .subscribe(status => {
@@ -175,6 +242,83 @@ async function sendMessage() {
   } catch (error) { alert(error.message); chatInput.value = body; chatInput.focus(); }
 }
 
+function attachmentMime(file) {
+  const declared = (file.type || '').toLowerCase().split(';')[0];
+  if (ALLOWED_ATTACHMENT_TYPES.has(declared)) return declared;
+  const extension = file.name.split('.').pop().toLowerCase();
+  return Object.entries(EXTENSION_BY_TYPE).find(([, ext]) => ext === extension)?.[0] || '';
+}
+
+async function sendAttachment(file) {
+  if (!file || !activeConversation || uploadInProgress) return;
+  const conversationId = activeConversation.id;
+  const mime = attachmentMime(file);
+  if (file.size > MAX_ATTACHMENT_SIZE) return showChatFeedback('O arquivo excede o limite de 15 MB.', true);
+  if (!mime) return showChatFeedback('Este formato não é aceito. Envie imagem, áudio, PDF, documento ou planilha.', true);
+  uploadInProgress = true; attachBtn.disabled = true; recordBtn.disabled = true;
+  showChatFeedback(`Enviando ${file.name}…`);
+  let path = '';
+  try {
+    const extension = EXTENSION_BY_TYPE[mime];
+    const id = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    path = `${conversationId}/${id}.${extension}`;
+    const { error } = await api.supabase.storage.from('chat-attachments').upload(path, file, { contentType: mime, upsert: false });
+    if (error) throw error;
+    const created = await api.request('messages', { method: 'POST', body: JSON.stringify({
+      conversation_id: conversationId, body: '', attachment_path: path, attachment_name: file.name.slice(0, 180), attachment_mime: mime,
+    }) });
+    if (activeConversation?.id === conversationId) {
+      messageCache = window.NexlarChat.mergeMessages(messageCache, created);
+      await loadMessages();
+      showChatFeedback('Arquivo enviado.');
+      setTimeout(() => showChatFeedback(), 2400);
+    }
+  } catch (error) {
+    showChatFeedback(error.message || 'Não foi possível enviar o anexo. Tente novamente.', true);
+  } finally {
+    uploadInProgress = false; attachBtn.disabled = false; recordBtn.disabled = false;
+  }
+}
+
+async function toggleAudioRecording() {
+  if (mediaRecorder?.state === 'recording') { mediaRecorder.stop(); return; }
+  if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+    showChatFeedback('A gravação de áudio não está disponível neste navegador.', true); return;
+  }
+  if (!activeConversation || uploadInProgress) return;
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mimeType = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus'].find(type => MediaRecorder.isTypeSupported(type));
+    mediaRecorder = new MediaRecorder(mediaStream, mimeType ? { mimeType } : undefined);
+    audioChunks = [];
+    mediaRecorder.ondataavailable = event => { if (event.data.size) audioChunks.push(event.data); };
+    mediaRecorder.onstop = async () => {
+      const type = (mediaRecorder.mimeType || 'audio/webm').split(';')[0];
+      const blob = new Blob(audioChunks, { type });
+      mediaStream?.getTracks().forEach(track => track.stop()); mediaStream = null;
+      recordBtn.classList.remove('is-recording'); recordBtn.setAttribute('aria-pressed', 'false');
+      recordBtn.setAttribute('aria-label', 'Gravar áudio'); recordBtn.title = 'Gravar áudio';
+      mediaRecorder = null; audioChunks = [];
+      if (blob.size) await sendAttachment(new File([blob], `audio-${Date.now()}.${EXTENSION_BY_TYPE[type] || 'webm'}`, { type }));
+      else showChatFeedback('A gravação ficou vazia. Tente novamente.', true);
+      recordingStatus.hidden = true;
+    };
+    mediaRecorder.start();
+    recordBtn.classList.add('is-recording'); recordBtn.setAttribute('aria-pressed', 'true');
+    recordBtn.setAttribute('aria-label', 'Finalizar gravação de áudio'); recordBtn.title = 'Finalizar gravação';
+    recordingStatus.hidden = false; showChatFeedback();
+  } catch (error) {
+    mediaStream?.getTracks().forEach(track => track.stop()); mediaStream = null;
+    showChatFeedback(error.name === 'NotAllowedError' ? 'Permita o uso do microfone para gravar áudio.' : 'Não foi possível iniciar a gravação de áudio.', true);
+  }
+}
+
+function attachDroppedFiles(event) {
+  event.preventDefault(); chatMessages.classList.remove('is-drop-target');
+  const file = event.dataTransfer?.files?.[0];
+  if (file) sendAttachment(file);
+}
+
 async function handleContract() {
   if (!activeConversation) return;
   if (activeConversation.provider_id === me.id) {
@@ -197,15 +341,16 @@ function updateProposalBreakdown() {
   document.getElementById('proposalFee').textContent = brl(amount * .15);
   document.getElementById('proposalNet').textContent = brl(amount * .85);
 }
-async function startCheckout(proposal) {
-  const button = document.querySelector('.proposal-accept');
-  if (button) { button.disabled = true; button.textContent = 'Preparando pagamento…'; }
+async function startCheckout(proposal, card = null) {
+  if (card?.getAttribute('aria-disabled') === 'true') return;
+  const target = card;
+  if (target) { target.setAttribute('aria-disabled', 'true'); target.classList.add('is-processing'); const action = target.querySelector('.proposal-card-action'); if (action) action.textContent = 'Preparando pagamento…'; }
   try {
     const result = await api.request('payments/checkout', { method: 'POST', body: JSON.stringify({ contract_id: proposal.id }) });
     if (!result.checkout_url) throw new Error('O checkout não retornou um link de pagamento.');
     location.href = result.checkout_url;
   } catch (error) {
-    if (button) { button.disabled = false; button.textContent = 'Tentar contratar novamente'; }
+    if (target) { target.removeAttribute('aria-disabled'); target.classList.remove('is-processing'); const action = target.querySelector('.proposal-card-action'); if (action) action.textContent = 'Tentar contratar novamente'; }
     alert(error.message);
   }
 }
@@ -223,10 +368,21 @@ proposalForm.addEventListener('submit', async event => {
 
 document.getElementById('backBtn').addEventListener('click', () => { openGeneration += 1; messagesPanel.classList.remove('hidden'); chatArea.classList.remove('visible'); unsubscribeRealtime(); });
 document.getElementById('sendBtn').addEventListener('click', sendMessage);
+attachBtn.addEventListener('click', () => attachmentInput.click());
+attachmentInput.addEventListener('change', () => { sendAttachment(attachmentInput.files?.[0]); attachmentInput.value = ''; });
+recordBtn.addEventListener('click', toggleAudioRecording);
+chatMessages.addEventListener('dragover', event => { event.preventDefault(); chatMessages.classList.add('is-drop-target'); });
+chatMessages.addEventListener('dragenter', event => { if (event.dataTransfer?.types.includes('Files')) { event.preventDefault(); chatMessages.classList.add('is-drop-target'); } });
+chatMessages.addEventListener('dragleave', event => { if (!chatMessages.contains(event.relatedTarget)) chatMessages.classList.remove('is-drop-target'); });
+chatMessages.addEventListener('drop', attachDroppedFiles);
 chatInput.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); } });
-contratarBtn.addEventListener('click', () => handleContract().catch(error => alert(error.message)));
+proposeBtn.addEventListener('click', () => handleContract().catch(error => alert(error.message)));
 searchInput.addEventListener('input', () => renderConversationList(searchInput.value.trim()));
-window.addEventListener('beforeunload', () => { if (realtimeChannel) api.supabase.removeChannel(realtimeChannel); });
+window.addEventListener('beforeunload', () => {
+  if (realtimeChannel) api.supabase.removeChannel(realtimeChannel);
+  if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
+  mediaStream?.getTracks().forEach(track => track.stop());
+});
 
 (async () => {
   api = await window.nexlarReady; await api.requireSession(); me = await api.request('me');

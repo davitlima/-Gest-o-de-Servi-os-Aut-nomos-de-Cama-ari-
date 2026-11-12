@@ -310,14 +310,40 @@ try {
 
     if ($route === 'messages' && $method === 'GET') {
         $conversationId = (int) query('conversation_id');
-        respond($db->rest('GET', 'messages?conversation_id=eq.' . $conversationId . '&select=*&order=created_at.asc', null, $token));
+        $messages = $db->rest('GET', 'messages?conversation_id=eq.' . $conversationId . '&select=*&order=created_at.asc', null, $token);
+        foreach ($messages as &$message) {
+            if (!empty($message['attachment_path'])) {
+                try {
+                    $signed = $db->storage('POST', 'object/sign/chat-attachments/' . $message['attachment_path'], ['expiresIn' => 604800], $token);
+                    $signedPath = (string) ($signed['signedURL'] ?? '');
+                    if ($signedPath === '') throw new HttpError(404, 'Anexo indisponível.');
+                    $message['attachment_url'] = rtrim(Config::get('SUPABASE_URL'), '/') . '/storage/v1' . $signedPath;
+                } catch (Throwable) {
+                    $message['attachment_error'] = true;
+                }
+            }
+        }
+        unset($message);
+        respond($messages);
     }
 
     if ($route === 'messages' && $method === 'POST') {
         $data = input();
         $body = trim((string) ($data['body'] ?? ''));
-        if ($body === '' || mb_strlen($body) > 4000) throw new HttpError(422, 'Mensagem inválida.');
-        $rows = $db->rest('POST', 'messages', [[ 'conversation_id' => (int) ($data['conversation_id'] ?? 0), 'sender_id' => $userId, 'body' => $body ]], $token);
+        $attachmentPath = trim((string) ($data['attachment_path'] ?? ''));
+        $conversationId = (int) ($data['conversation_id'] ?? 0);
+        $attachmentName = trim((string) ($data['attachment_name'] ?? ''));
+        $attachmentMime = strtolower(trim((string) ($data['attachment_mime'] ?? '')));
+        $allowedAttachmentTypes = [
+            'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf', 'text/plain',
+            'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/zip', 'audio/webm', 'audio/ogg', 'audio/mpeg', 'audio/mp4', 'audio/wav',
+        ];
+        if ($conversationId < 1 || ($body === '' && $attachmentPath === '') || mb_strlen($body) > 4000) throw new HttpError(422, 'Mensagem inválida.');
+        if ($attachmentPath !== '' && (!preg_match('#^' . $conversationId . '/[a-zA-Z0-9-]+\.[a-zA-Z0-9]{1,8}$#', $attachmentPath) || $attachmentName === '' || mb_strlen($attachmentName) > 180 || !in_array($attachmentMime, $allowedAttachmentTypes, true))) throw new HttpError(422, 'Anexo inválido.');
+        $row = [ 'conversation_id' => $conversationId, 'sender_id' => $userId, 'body' => $body, 'attachment_path' => $attachmentPath ?: null, 'attachment_name' => $attachmentPath !== '' ? $attachmentName : null, 'attachment_mime' => $attachmentPath !== '' ? $attachmentMime : null ];
+        $rows = $db->rest('POST', 'messages', [$row], $token);
         respond($rows[0] ?? [], 201);
     }
 
