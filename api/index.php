@@ -94,7 +94,10 @@ function abacatePay(string $method, string $path, ?array $body = null, ?string $
     $response = curl_exec($handle);
     $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
     $decoded = is_string($response) ? json_decode($response, true) : null;
-    if ($status < 200 || $status >= 300 || !is_array($decoded) || ($decoded['success'] ?? true) === false) throw new HttpError(502, 'Não foi possível comunicar com a AbacatePay.');
+    if ($status < 200 || $status >= 300 || !is_array($decoded) || ($decoded['success'] ?? true) === false) {
+        error_log('AbacatePay ' . $method . ' ' . $path . ' HTTP ' . $status . ': ' . substr((string) $response, 0, 1200));
+        throw new HttpError(502, 'Não foi possível comunicar com a AbacatePay. Tente novamente em instantes.');
+    }
     return is_array($decoded['data'] ?? null) ? $decoded['data'] : $decoded;
 }
 
@@ -350,7 +353,7 @@ try {
                 'description' => 'Serviço contratado pela Nexlar',
                 'price' => (int) round(((float) $contract['amount']) * 100),
                 'currency' => 'BRL',
-            ], 'nexlar-product-' . $contractId);
+            ], 'nexlar-product-' . $contractId . '-' . (int) round(((float) $contract['amount']) * 100));
             $checkout = abacatePay('POST', '/checkouts/create', [
                 'items' => [[ 'id' => $product['id'], 'quantity' => 1 ]],
                 'methods' => ['PIX', 'CARD'],
@@ -359,6 +362,7 @@ try {
                 'completionUrl' => "$baseUrl/src/pages/painelmensagens.html?payment=success",
                 'metadata' => ['contract_id' => (string) $contractId],
             ], 'nexlar-checkout-' . $contractId);
+            if (empty($checkout['url']) || empty($checkout['id'])) throw new HttpError(502, 'A AbacatePay não retornou um link de pagamento válido.');
             $db->rest('POST', 'rpc/attach_abacate_checkout', ['p_contract_id' => $contractId, 'p_checkout_id' => (string) ($checkout['id'] ?? '')], $token);
             respond(['checkout_url' => $checkout['url'] ?? null]);
         }
