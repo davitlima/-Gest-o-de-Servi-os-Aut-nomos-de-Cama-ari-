@@ -367,6 +367,12 @@ overscroll-behavior: contain;
 }
 .proposal-card {
 position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  flex:0 0 auto;
+  box-sizing:border-box;
+  min-width:0;
   width: min(390px, 92%);
   padding: 18px;
   border: 1px solid var(--border);
@@ -381,12 +387,14 @@ position:relative;
 .proposal-card > strong { display:block; font-size:14px; }
 .proposal-card > p { margin:8px 0; line-height:1.5; overflow-wrap:anywhere; }
 .proposal-card-amount { font-size:24px; font-weight:750; font-variant-numeric:tabular-nums; }
-.proposal-card-status { display:inline-block; margin:8px 0 10px; padding:4px 9px; border-radius:999px; background:var(--accent-light); color:#4338a8; font-size:12px; font-weight:650; }
-.proposal-card-actionable { min-height:48px; padding-bottom:45px; cursor:pointer; transition:transform .2s, box-shadow .2s, border-color .2s; }
+.proposal-card-status { display:inline-block; align-self:flex-start; margin:8px 0 8px; padding:4px 9px; border-radius:999px; background:var(--accent-light); color:#4338a8; font-size:12px; font-weight:650; }
+.proposal-card-actionable { cursor:pointer; transition:transform .2s, box-shadow .2s, border-color .2s; }
 .proposal-card-actionable:hover { transform:translateY(-2px); border-color:#a5b4fc; box-shadow:0 12px 28px rgba(30,41,59,.12); }
 .proposal-card-actionable:focus-visible,.proposal-submit:focus-visible { outline:3px solid #a5b4fc; outline-offset:3px; }
-.proposal-card-action { position:absolute; left:18px; right:48px; bottom:15px; color:#4338a8; font-size:13px; font-weight:700; }
-.proposal-card-arrow { position:absolute; right:18px; bottom:11px; display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:var(--accent-light); color:#4338a8; font-size:20px; transition:transform .2s; }
+.proposal-card-cta { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; margin-top:5px; padding-top:9px; border-top:1px solid var(--border); }
+.proposal-card-action { flex:1; color:#4338a8; font-size:13px; font-weight:700; line-height:1.4; overflow-wrap:anywhere; }
+.proposal-card-arrow { display:grid; place-items:center; flex:0 0 32px; width:32px; height:32px; border-radius:50%; background:var(--accent-light); color:#4338a8; font-size:20px; transition:transform .2s; }
+.proposal-card-arrow svg { width:20px; height:20px; }
 .proposal-card-actionable:hover .proposal-card-arrow { transform:translateX(3px); }
 .proposal-card-actionable[aria-disabled="true"] { cursor:wait; opacity:.78; }
 .proposal-card-actionable.is-processing .proposal-card-action { color:#475569; }
@@ -583,7 +591,7 @@ position:relative;
 .chat-tool-btn { width:44px; height:44px; flex-basis:44px; }
 .send-btn { width:44px; height:44px; min-width:44px; }
 .chat-input { padding:10px 12px; font-size:16px; }
-.proposal-card { width:min(390px, 100%); }
+  .proposal-card { width:min(390px, 100%); }
 }
 @media (max-width:360px) {
 .chat-header { gap:8px; padding-inline:10px; }

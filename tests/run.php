@@ -88,6 +88,8 @@ expect(!str_contains($authCss, '.email-step'), 'CSS não deve manter a segunda e
 $migration = file_get_contents($root . '/supabase/migrations/20261030213215_nexlar_backend.sql');
 $api = file_get_contents($root . '/api/index.php');
 expect(str_contains($api, 'api.abacatepay.com/v2'), 'API deve integrar o endpoint oficial da AbacatePay');
+expect(str_contains($api, '/products/get?externalId='), 'Checkout deve reutilizar produto AbacatePay pelo externalId do contrato');
+expect(str_contains($api, "\$checkoutProductExternalId = 'nexlar-contract-' . \$contractId"), 'Produto de checkout deve ter identificador estável por contrato');
 expect(str_contains($api, 'payments/abacatepay/webhook'), 'API deve expor webhook da AbacatePay');
 expect(str_contains($api, 'ABACATEPAY_API_KEY'), 'Chave AbacatePay deve vir do ambiente');
 expect(is_file($root . '/supabase/migrations/20261110170000_abacatepay.sql'), 'Migração AbacatePay deve existir');
@@ -101,6 +103,12 @@ expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença o
 expect(substr_count($chatHtml, '/src/js/api.js') === 1, 'Chat deve carregar o cliente de API uma única vez');
 expect(str_contains($chatHtml, 'id="connectionStatus"'), 'Chat deve comunicar o estado da conexão em tempo real');
 $chatJs = file_get_contents($root . '/src/js/painelmensagens.js');
+expect(str_contains($chatJs, "className = 'proposal-card-cta'"), 'Ação de proposta deve ter uma linha própria dentro do card');
+expect(str_contains($chatJs, 'card.append(heading, description, amount, status, time);') && strpos($chatJs, 'status, time);') < strpos($chatJs, 'card.append(cta);'), 'Horário deve ficar antes da linha de ação no card');
+$chatCss = file_get_contents($root . '/src/css/painelmensagens.css');
+expect(str_contains($chatCss, '.proposal-card-cta { display:flex;') && !str_contains($chatCss, '.proposal-card-action { position:absolute;'), 'Ação e horário não devem disputar o rodapé do card');
+expect(str_contains($chatCss, '.proposal-card { display:flex; flex-direction:column;') && str_contains($chatCss, 'flex:0 0 auto;'), 'Cards de proposta devem manter altura natural e não encolher no celular');
+expect(!str_contains($chatJs, 'alert(error.message)') && str_contains($chatJs, 'showChatFeedback(error.message, true)'), 'Falha do checkout deve aparecer no painel sem alerta que cubra o chat');
 expect(!str_contains($chatJs, 'setInterval('), 'Fallback do chat não pode sobrepor requisições lentas');
 expect(str_contains($chatJs, 'isCurrentOpen'), 'Troca rápida de conversa deve invalidar carregamentos antigos');
 expect(!str_contains($chatJs, "[data-page=\"financeiro\"]')?.remove()"), 'Mensagens não deve remover o Financeiro da navegação');

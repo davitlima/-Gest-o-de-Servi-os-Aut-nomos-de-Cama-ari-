@@ -84,7 +84,7 @@ function mercadoPago(string $method, string $path, ?array $body = null, ?string 
     return $decoded;
 }
 
-function abacatePay(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null): array
+function abacatePay(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null, bool $notFoundIsEmpty = false): array
 {
     $headers = ['Authorization: Bearer ' . Config::get('ABACATEPAY_API_KEY'), 'Content-Type: application/json'];
     if ($idempotencyKey !== null) $headers[] = 'Idempotency-Key: ' . $idempotencyKey;
@@ -94,8 +94,11 @@ function abacatePay(string $method, string $path, ?array $body = null, ?string $
     $response = curl_exec($handle);
     $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
     $decoded = is_string($response) ? json_decode($response, true) : null;
+    if ($notFoundIsEmpty && $status === 404) return [];
     if ($status < 200 || $status >= 300 || !is_array($decoded) || ($decoded['success'] ?? true) === false) {
         error_log('AbacatePay ' . $method . ' ' . $path . ' HTTP ' . $status . ': ' . substr((string) $response, 0, 1200));
+        if ($status === 401) throw new HttpError(502, 'A chave da AbacatePay está inválida. Confira ABACATEPAY_API_KEY.');
+        if ($status === 403) throw new HttpError(502, 'A chave da AbacatePay precisa das permissões PRODUCT:READ, PRODUCT:CREATE e CHECKOUT:CREATE.');
         throw new HttpError(502, 'Não foi possível comunicar com a AbacatePay. Tente novamente em instantes.');
     }
     return is_array($decoded['data'] ?? null) ? $decoded['data'] : $decoded;
@@ -373,13 +376,17 @@ try {
         if (isset($contract[0]) && is_array($contract[0])) $contract = $contract[0];
         $baseUrl = rtrim(Config::get('APP_URL'), '/');
         if (Config::get('ABACATEPAY_API_KEY', false) !== '') {
-            $product = abacatePay('POST', '/products/create', [
-                'externalId' => 'nexlar-contract-' . $contractId,
-                'name' => $contract['description'],
-                'description' => 'Serviço contratado pela Nexlar',
-                'price' => (int) round(((float) $contract['amount']) * 100),
-                'currency' => 'BRL',
-            ], 'nexlar-product-' . $contractId . '-' . (int) round(((float) $contract['amount']) * 100));
+            $checkoutProductExternalId = 'nexlar-contract-' . $contractId;
+            $product = abacatePay('GET', '/products/get?externalId=' . rawurlencode($checkoutProductExternalId), null, null, true);
+            if (empty($product['id'])) {
+                $product = abacatePay('POST', '/products/create', [
+                    'externalId' => $checkoutProductExternalId,
+                    'name' => $contract['description'],
+                    'description' => 'Serviço contratado pela Nexlar',
+                    'price' => (int) round(((float) $contract['amount']) * 100),
+                    'currency' => 'BRL',
+                ], 'nexlar-product-' . $contractId . '-' . (int) round(((float) $contract['amount']) * 100));
+            }
             $checkout = abacatePay('POST', '/checkouts/create', [
                 'items' => [[ 'id' => $product['id'], 'quantity' => 1 ]],
                 'methods' => ['PIX', 'CARD'],

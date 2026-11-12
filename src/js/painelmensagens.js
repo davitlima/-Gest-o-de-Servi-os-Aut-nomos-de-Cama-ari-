@@ -117,20 +117,21 @@ function addProposalCard(contract, value) {
   const labels = { proposta: 'Aguardando resposta', aguardando_pagamento: 'Aguardando pagamento', pago: 'Pagamento confirmado', em_andamento: 'Serviço em andamento', concluido: 'Serviço concluído' };
   status.textContent = labels[contract.status] || contract.status.replaceAll('_', ' ');
   const time = document.createElement('time'); time.className = 'msg-time'; time.textContent = formatTime(contract.created_at);
-  card.append(heading, description, amount, status);
+card.append(heading, description, amount, status, time);
 if (!sent && ['proposta', 'aguardando_pagamento'].includes(contract.status)) {
     card.classList.add('proposal-card-actionable'); card.tabIndex = 0; card.setAttribute('role', 'button');
 card.setAttribute('aria-label', `${contract.status === 'proposta' ? 'Contratar' : 'Continuar pagamento de'} ${contract.description} por ${value}`);
 const action = document.createElement('span'); action.className = 'proposal-card-action'; action.textContent = contract.status === 'proposta' ? 'Toque para contratar' : 'Toque para continuar o pagamento';
 const arrow = document.createElement('span'); arrow.className = 'proposal-card-arrow'; arrow.setAttribute('aria-hidden', 'true');
 arrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-    card.append(action, arrow);
+    const cta = document.createElement('div'); cta.className = 'proposal-card-cta'; cta.append(action, arrow);
+    card.append(cta);
     card.addEventListener('click', () => startCheckout(contract, card));
     card.addEventListener('keydown', event => {
       if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); startCheckout(contract, card); }
     });
   }
-  card.appendChild(time); chatMessages.appendChild(card);
+  chatMessages.appendChild(card);
 }
 
 function renderConversationList(filter = '') {
@@ -343,6 +344,7 @@ function updateProposalBreakdown() {
 }
 async function startCheckout(proposal, card = null) {
   if (card?.getAttribute('aria-disabled') === 'true') return;
+  showChatFeedback('');
   const target = card;
   if (target) { target.setAttribute('aria-disabled', 'true'); target.classList.add('is-processing'); const action = target.querySelector('.proposal-card-action'); if (action) action.textContent = 'Preparando pagamento…'; }
   try {
@@ -351,7 +353,7 @@ async function startCheckout(proposal, card = null) {
     location.href = result.checkout_url;
   } catch (error) {
     if (target) { target.removeAttribute('aria-disabled'); target.classList.remove('is-processing'); const action = target.querySelector('.proposal-card-action'); if (action) action.textContent = 'Tentar contratar novamente'; }
-    alert(error.message);
+    showChatFeedback(error.message, true);
   }
 }
 proposalAmount.addEventListener('input', updateProposalBreakdown);
