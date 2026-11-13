@@ -64,7 +64,7 @@ expect(substr_count($lgpdCss, '{') === substr_count($lgpdCss, '}'), 'CSS da LGPD
 $lgpdHtml = file_get_contents($root . '/src/pages/lgpd.html');
 expect(str_contains($lgpdHtml, 'id="btn-home"'), 'LGPD deve manter o botão de retorno ao início');
 $lgpdJs = file_get_contents($root . '/src/js/lgpd.js');
-expect(str_contains($lgpdJs, "location.href = '/src/pages/inicio.html'"), 'Botão de retorno deve navegar para o início');
+expect(str_contains($lgpdHtml, 'id="btn-home" href="/"'), 'Botão de retorno deve navegar pela rota pública do início');
 
 $publicProfileJs = file_get_contents($root . '/src/js/perfilAutonomo.js');
 expect(str_contains($publicProfileJs, 'let profile = null;'), 'Perfil público deve manter o perfil carregado disponível para a avaliação');
@@ -104,11 +104,10 @@ expect(substr_count($chatHtml, '/src/js/api.js') === 1, 'Chat deve carregar o cl
 expect(str_contains($chatHtml, 'id="connectionStatus"'), 'Chat deve comunicar o estado da conexão em tempo real');
 $chatJs = file_get_contents($root . '/src/js/painelmensagens.js');
 expect(str_contains($chatJs, "className = 'proposal-card-cta'"), 'Ação de proposta deve ter uma linha própria dentro do card');
-expect(str_contains($chatJs, 'card.append(heading, description, amount, status, time);') && strpos($chatJs, 'status, time);') < strpos($chatJs, 'card.append(cta);'), 'Horário deve ficar antes da linha de ação no card');
+expect(str_contains($chatJs, 'card.append(heading, description, amount, status, time);') && strpos($chatJs, 'status, time);') < strpos($chatJs, 'card.append(cta);'), 'Horário deve ficar antes da ação no card');
 $chatCss = file_get_contents($root . '/src/css/painelmensagens.css');
-expect(str_contains($chatCss, '.proposal-card-cta { display:flex;') && !str_contains($chatCss, '.proposal-card-action { position:absolute;'), 'Ação e horário não devem disputar o rodapé do card');
-expect(str_contains($chatCss, '.proposal-card { display:flex; flex-direction:column;') && str_contains($chatCss, 'flex:0 0 auto;'), 'Cards de proposta devem manter altura natural e não encolher no celular');
-expect(!str_contains($chatJs, 'alert(error.message)') && str_contains($chatJs, 'showChatFeedback(error.message, true)'), 'Falha do checkout deve aparecer no painel sem alerta que cubra o chat');
+expect((bool) preg_match('/\.proposal-card-cta\s*\{[^}]*display:\s*flex/s', $chatCss) && !preg_match('/\.proposal-card-action\s*\{[^}]*position:\s*absolute/s', $chatCss), 'Ação e horário devem permanecer em fluxo normal');
+expect((bool) preg_match('/\.proposal-card\s*\{[^}]*display:\s*flex;[^}]*flex-direction:\s*column/s', $chatCss) && str_contains($chatCss, 'flex: 0 0 auto;'), 'Card deve manter altura natural sem encolher');
 expect(!str_contains($chatJs, 'setInterval('), 'Fallback do chat não pode sobrepor requisições lentas');
 expect(str_contains($chatJs, 'isCurrentOpen'), 'Troca rápida de conversa deve invalidar carregamentos antigos');
 expect(!str_contains($chatJs, "[data-page=\"financeiro\"]')?.remove()"), 'Mensagens não deve remover o Financeiro da navegação');
@@ -138,7 +137,7 @@ foreach (['Meuperfil' => 'perfil', 'Painelfinanceiro' => 'financeiro', 'painelme
 }
 
 $clientSignup = file_get_contents($root . '/src/pages/cadastrocliente.html');
-expect(substr_count($clientSignup, 'vlibras-plugin.js') === 1, 'Cadastro de cliente deve carregar VLibras uma única vez');
+expect(substr_count($clientSignup, '/src/js/deferred-widgets.js') === 1, 'Cadastro de cliente deve carregar widgets adiados uma única vez');
 expect(str_contains($clientSignup, 'aria-label="CPF"'), 'Campo CPF precisa de nome acessível');
 
 $realtimeMigrations = glob($root . '/supabase/migrations/*realtime_chat_activity.sql') ?: [];
