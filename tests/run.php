@@ -113,6 +113,11 @@ expect(!str_contains($chatHtml, '>Online<'), 'Chat não pode simular presença o
 expect(substr_count($chatHtml, '/src/js/api.js') === 1, 'Chat deve carregar o cliente de API uma única vez');
 expect(str_contains($chatHtml, 'id="connectionStatus"'), 'Chat deve comunicar o estado da conexão em tempo real');
 $chatJs = file_get_contents($root . '/src/js/painelmensagens.js');
+expect(str_contains($chatJs, 'function renderAvatar(container, person, className)') && str_contains($chatJs, 'person.avatar_url'), 'Chat deve exibir a foto de perfil com fallback para iniciais');
+expect(str_contains($chatJs, 'perfilAutonomo.html?id=') && str_contains($chatJs, 'chatHeaderName.href'), 'Nome do profissional no chat deve abrir seu perfil público');
+expect(str_contains($chatJs, 'chat-audio-card') && str_contains($chatJs, 'Baixar áudio'), 'Áudio deve ter apresentação própria e ação de download clara');
+expect(str_contains($chatJs, "addEventListener('pointerdown', beginRecordingHold)") && str_contains($chatJs, 'finishAudioRecording(cancel || swipeCanceled)'), 'Gravação deve iniciar ao segurar e permitir cancelar arrastando');
+expect(str_contains($chatJs, "addEventListener('keyup'") && str_contains($chatJs, "addEventListener('blur'"), 'Gravação deve continuar acessível pelo teclado e cancelar ao perder foco');
 expect(str_contains($chatJs, "className = 'proposal-card-cta'"), 'Ação de proposta deve ter uma linha própria dentro do card');
 expect(str_contains($chatJs, 'card.append(heading, description, amount, status, time);') && strpos($chatJs, 'status, time);') < strpos($chatJs, 'card.append(cta);'), 'Horário deve ficar antes da ação no card');
 $chatCss = file_get_contents($root . '/src/css/painelmensagens.css');
@@ -162,5 +167,6 @@ foreach (['cadastrocliente.html', 'cadastroautonomo.html', 'cadastroempresa.html
 }
 
 fwrite(STDOUT, "Todos os testes passaram.\n");
+
 
 
