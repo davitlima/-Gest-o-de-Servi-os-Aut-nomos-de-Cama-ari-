@@ -93,6 +93,16 @@ expect(str_contains($api, "\$checkoutProductExternalId = 'nexlar-contract-' . \$
 expect(str_contains($api, 'payments/abacatepay/webhook'), 'API deve expor webhook da AbacatePay');
 expect(str_contains($api, 'ABACATEPAY_API_KEY'), 'Chave AbacatePay deve vir do ambiente');
 expect(is_file($root . '/supabase/migrations/20261110170000_abacatepay.sql'), 'Migração AbacatePay deve existir');
+$checkoutSecurityMigrations = glob($root . '/supabase/migrations/*abacatepay_checkout_rls_fix*.sql') ?: [];
+expect(count($checkoutSecurityMigrations) === 1, 'Correção de RLS do checkout deve possuir uma migração versionada');
+$checkoutSecurityMigration = strtolower(file_get_contents($checkoutSecurityMigrations[0]));
+expect(str_contains($checkoutSecurityMigration, 'security definer'), 'RPC do checkout deve conseguir atualizar sob RLS sem abrir a tabela');
+expect(str_contains($checkoutSecurityMigration, "set search_path = ''"), 'RPC elevado deve fixar o search_path vazio');
+expect(str_contains($checkoutSecurityMigration, "buyer_id = (select auth.uid())"), 'RPC do checkout deve validar o comprador autenticado');
+expect(str_contains($checkoutSecurityMigration, "status = 'aguardando_pagamento'"), 'RPC do checkout deve atualizar somente contratos aguardando pagamento');
+expect(str_contains($checkoutSecurityMigration, 'abacatepay_checkout_id is null or abacatepay_checkout_id = p_checkout_id'), 'RPC do checkout deve permitir repetição idempotente do mesmo checkout');
+expect(str_contains($checkoutSecurityMigration, 'revoke all on function public.attach_abacate_checkout(bigint, text) from public, anon'), 'RPC não deve ficar acessível a usuários anônimos');
+expect(str_contains($checkoutSecurityMigration, 'grant execute on function public.attach_abacate_checkout(bigint, text) to authenticated'), 'RPC deve continuar disponível à sessão autenticada');
 expect(str_contains($migration, 'month date not null'), 'Meta mensal usa uma data de referência');
 expect(!str_contains($api, 'monthly_goals?owner_id=eq.$userId&year='), 'API não pode consultar colunas inexistentes de meta');
 expect(!str_contains($api, "auth/email-step/start"), 'API não deve exigir segunda etapa por e-mail');
