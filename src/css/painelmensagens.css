@@ -540,7 +540,7 @@ overscroll-behavior: contain;
 
 @media (max-width: 760px) {
   .main-wrapper { padding-top: max(68px, calc(env(safe-area-inset-top) + 56px)); }
-  .messages-panel { padding-top: 0; }
+  .messages-panel { padding-top: 12px; }
 }
 
 /* Layout Mobile (Alterna entre Lista ou Janela do Chat ativo) */
