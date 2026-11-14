@@ -94,7 +94,9 @@ function abacatePay(string $method, string $path, ?array $body = null, ?string $
     $response = curl_exec($handle);
     $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
     $decoded = is_string($response) ? json_decode($response, true) : null;
-    if ($notFoundIsEmpty && $status === 404) return [];
+    $missingProduct = $notFoundIsEmpty && $status === 400 && is_array($decoded)
+        && strcasecmp(trim((string) ($decoded['error'] ?? '')), 'Product not found') === 0;
+    if ($notFoundIsEmpty && ($status === 404 || $missingProduct)) return [];
     if ($status < 200 || $status >= 300 || !is_array($decoded) || ($decoded['success'] ?? true) === false) {
         error_log('AbacatePay ' . $method . ' ' . $path . ' HTTP ' . $status . ': ' . substr((string) $response, 0, 1200));
         if ($status === 401) throw new HttpError(502, 'A chave da AbacatePay está inválida. Confira ABACATEPAY_API_KEY.');
