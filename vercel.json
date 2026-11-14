@@ -14,9 +14,6 @@
       "maxDuration": 30
     }
   },
-  "crons": [
-    { "path": "/api/release-due.php", "schedule": "*/5 * * * *" }
-  ],
   "rewrites": [
     { "source": "/", "destination": "/api/page.php?page=inicio" },
     { "source": "/login.html", "destination": "/api/page.php?page=login" },
