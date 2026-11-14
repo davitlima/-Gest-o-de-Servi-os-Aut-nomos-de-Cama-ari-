@@ -57,8 +57,8 @@ function profile(Supabase $db, string $token, string $userId): array
     if (!isset($rows[0])) {
         throw new HttpError(404, 'Perfil não encontrado.');
     }
-    $private = $db->rest('GET', 'profile_private?user_id=eq.' . rawurlencode($userId) . '&select=phone,document', null, $token);
-    return array_merge($rows[0], $private[0] ?? ['phone' => null, 'document' => null]);
+    $private = $db->rest('GET', 'profile_private?user_id=eq.' . rawurlencode($userId) . '&select=phone,document,pix_key_type', null, $token);
+    return array_merge($rows[0], $private[0] ?? ['phone' => null, 'document' => null, 'pix_key_type' => null]);
 }
 
 function mercadoPago(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null): array
@@ -191,12 +191,51 @@ try {
         if ($contractId > 0) {
             $contracts = $db->rest('GET', 'contracts?id=eq.' . $contractId . '&select=*', null, '', true);
             $contract = $contracts[0] ?? null;
-            if ($contract && $contract['status'] === 'aguardando_pagamento') {
-                $db->rest('PATCH', 'contracts?id=eq.' . $contractId, ['status' => 'pago', 'abacatepay_payment_id' => (string) ($data['id'] ?? $data['checkoutId'] ?? ''), 'updated_at' => gmdate('c')], '', true);
-                $db->rest('POST', 'financial_entries', [[ 'owner_id' => $contract['provider_id'], 'contract_id' => $contractId, 'name' => $contract['description'], 'amount' => Domain::providerNet((float) $contract['amount']), 'service_date' => gmdate('Y-m-d'), 'status' => 'Pendente', 'source' => 'pagamento' ]], '', true);
+            if ($contract && in_array($contract['status'], ['aguardando_pagamento', 'pago'], true)) {
+                $db->rest('POST', 'rpc/register_abacatepay_payment', [
+                    'p_contract_id' => $contractId,
+                    'p_payment_id' => (string) ($data['id'] ?? $data['checkoutId'] ?? ('checkout-' . $contractId)),
+                ], '', true);
             }
         }
         respond(['received' => true]);
+    }
+
+    if ($route === 'payments/release-due' && $method === 'GET') {
+        $secret = (string) ($_SERVER['HTTP_AUTHORIZATION'] ?? '');
+        $expected = 'Bearer ' . Config::get('CRON_SECRET');
+        if (!hash_equals($expected, $secret)) throw new HttpError(401, 'Cron não autorizado.');
+        $db->rest('POST', 'rpc/release_due_service_payouts', ['p_limit' => 100], '', true);
+        $payouts = $db->rest('POST', 'rpc/claim_provider_payouts', ['p_limit' => 1], '', true);
+        $processed = 0;
+        foreach ($payouts as $payout) {
+            $submitted = false;
+            try {
+                $private = $db->rest('GET', 'profile_private?user_id=eq.' . rawurlencode((string) $payout['provider_id']) . '&select=pix_key,pix_key_type', null, '', true)[0] ?? [];
+                if (empty($private['pix_key']) || empty($private['pix_key_type'])) throw new RuntimeException('Prestador sem chave Pix cadastrada.');
+                $submitted = true;
+                $transfer = abacatePay('POST', '/pix/send', [
+                    'amount' => (int) round(((float) $payout['transfer_request_amount']) * 100),
+                    'externalId' => (string) $payout['external_id'],
+                    'description' => 'Repasse Nexlar contrato ' . $payout['contract_id'],
+                    'pix' => ['key' => (string) $private['pix_key'], 'type' => (string) $private['pix_key_type']],
+                ], (string) $payout['external_id']);
+                $transferStatus = strtoupper((string) ($transfer['status'] ?? ''));
+                $status = $transferStatus === 'COMPLETE' ? 'pago' : ($transferStatus === 'FAILED' ? 'falhou' : 'processando');
+                $db->rest('POST', 'rpc/record_provider_payout_result', [
+                    'p_payout_id' => (int) $payout['id'], 'p_status' => $status,
+                    'p_transfer_id' => (string) ($transfer['id'] ?? ''), 'p_receipt_url' => (string) ($transfer['receiptUrl'] ?? ''),
+                    'p_transfer_fee' => isset($transfer['platformFee']) ? ((float) $transfer['platformFee'] / 100) : 0,
+                    'p_provider_received' => isset($transfer['amount']) ? ((float) $transfer['amount'] / 100) : (float) $payout['transfer_request_amount'],
+                ], '', true);
+            } catch (Throwable $error) {
+                $db->rest('POST', 'rpc/record_provider_payout_result', [
+                    'p_payout_id' => (int) $payout['id'], 'p_status' => $submitted ? 'processando' : 'falhou', 'p_failure_reason' => mb_substr($error->getMessage(), 0, 900),
+                ], '', true);
+            }
+            $processed++;
+        }
+        respond(['released' => $processed]);
     }
 
     $token = bearer();
@@ -206,6 +245,63 @@ try {
         throw new HttpError(401, 'Sessão inválida.');
     }
     $me = profile($db, $token, $userId);
+
+    if ($route === 'finance/payouts' && $method === 'GET') {
+        if (!Domain::canUseFinance($me['role'])) throw new HttpError(403, 'Seu perfil não possui painel financeiro.');
+        respond($db->rest('GET', 'provider_payouts?provider_id=eq.' . rawurlencode($userId) . '&select=*&order=created_at.desc', null, $token));
+    }
+
+    if ($route === 'finance/pix-key' && $method === 'PUT') {
+        if (!Domain::canUseFinance($me['role'])) throw new HttpError(403, 'Seu perfil não possui painel financeiro.');
+        $data = input();
+        $key = trim((string) ($data['pix_key'] ?? ''));
+        $type = strtoupper(trim((string) ($data['pix_key_type'] ?? '')));
+        if (!in_array($type, ['CPF', 'CNPJ', 'PHONE', 'EMAIL', 'RANDOM'], true) || $key === '' || mb_strlen($key) > 200) throw new HttpError(422, 'Informe uma chave Pix válida e seu tipo.');
+        $digits = preg_replace('/\D+/', '', $key);
+        $validKey = match ($type) {
+            'CPF' => strlen($digits) === 11,
+            'CNPJ' => strlen($digits) === 14,
+            'PHONE' => strlen($digits) >= 10 && strlen($digits) <= 13,
+            'EMAIL' => filter_var($key, FILTER_VALIDATE_EMAIL) !== false,
+            'RANDOM' => preg_match('/^[a-f0-9-]{32,36}$/i', $key) === 1,
+        };
+        if (!$validKey) throw new HttpError(422, 'A chave Pix não corresponde ao tipo selecionado.');
+        $path = 'profile_private?user_id=eq.' . rawurlencode($userId);
+        $existing = $db->rest('GET', $path . '&select=user_id', null, $token);
+        if ($existing) $db->rest('PATCH', $path, ['pix_key' => $key, 'pix_key_type' => $type], $token);
+        else $db->rest('POST', 'profile_private', [['user_id' => $userId, 'pix_key' => $key, 'pix_key_type' => $type]], $token);
+        respond(['pix_key_type' => $type, 'configured' => true]);
+    }
+
+    if ($route === 'finance/pix-key' && $method === 'GET') {
+        if (!Domain::canUseFinance($me['role'])) throw new HttpError(403, 'Seu perfil não possui painel financeiro.');
+        $private = $db->rest('GET', 'profile_private?user_id=eq.' . rawurlencode($userId) . '&select=pix_key_type,pix_key', null, $token)[0] ?? [];
+        $key = (string) ($private['pix_key'] ?? '');
+        respond(['pix_key_type' => $private['pix_key_type'] ?? null, 'configured' => $key !== '', 'pix_key_hint' => $key === '' ? '' : str_repeat('•', max(0, mb_strlen($key) - 4)) . mb_substr($key, -4)]);
+    }
+
+    if (preg_match('#^finance/payouts/(\d+)/retry$#', $route, $match) && $method === 'POST') {
+        if (!Domain::canUseFinance($me['role'])) throw new HttpError(403, 'Seu perfil não possui painel financeiro.');
+        respond($db->rest('POST', 'rpc/retry_provider_payout', ['p_payout_id' => (int) $match[1], 'p_actor_id' => $userId], '', true));
+    }
+
+    if ($route === 'agenda' && $method === 'GET') {
+        if (!Domain::canUseFinance($me['role'])) throw new HttpError(403, 'Seu perfil não possui agenda de prestador.');
+        respond($db->rest('GET', 'provider_agenda_events?provider_id=eq.' . rawurlencode($userId) . '&select=*&order=starts_at.asc.nullsfirst', null, $token));
+    }
+
+    if ($route === 'payments/service/complete' && $method === 'POST') {
+        respond($db->rest('POST', 'rpc/provider_complete_service', ['p_contract_id' => (int) (input()['contract_id'] ?? 0), 'p_actor_id' => $userId], '', true));
+    }
+
+    if ($route === 'payments/service/confirm' && $method === 'POST') {
+        respond($db->rest('POST', 'rpc/client_confirm_service', ['p_contract_id' => (int) (input()['contract_id'] ?? 0), 'p_actor_id' => $userId], '', true));
+    }
+
+    if ($route === 'payments/service/dispute' && $method === 'POST') {
+        $data = input();
+        respond($db->rest('POST', 'rpc/client_dispute_service', ['p_contract_id' => (int) ($data['contract_id'] ?? 0), 'p_actor_id' => $userId, 'p_reason' => trim((string) ($data['reason'] ?? ''))], '', true));
+    }
 
     if ($route === 'me' && $method === 'GET') {
         respond($me);
@@ -357,11 +453,15 @@ try {
         $data = input();
         $amount = (float) ($data['amount'] ?? 0);
         if (!Domain::validMoney($amount)) throw new HttpError(422, 'Valor da proposta inválido.');
-        $row = $db->rest('POST', 'rpc/create_contract', [
+        $row = $db->rest('POST', 'rpc/create_contract_with_schedule', [
             'p_conversation_id' => (int) ($data['conversation_id'] ?? 0),
             'p_description' => trim((string) ($data['description'] ?? '')),
             'p_amount' => $amount,
-        ], $token);
+            'p_actor_id' => $userId,
+            'p_scheduled_at' => !empty($data['service_scheduled_at']) ? (string) $data['service_scheduled_at'] : null,
+            'p_duration_minutes' => isset($data['service_duration_minutes']) && $data['service_duration_minutes'] !== '' ? (int) $data['service_duration_minutes'] : null,
+            'p_location' => trim((string) ($data['service_location'] ?? '')) ?: null,
+        ], '', true);
         respond($row, 201);
     }
 
@@ -424,8 +524,8 @@ try {
 
     if (preg_match('#^contracts/(\d+)/status$#', $route, $match) && $method === 'POST') {
         $status = (string) (input()['status'] ?? '');
-        if (!in_array($status, ['em_andamento', 'concluido'], true)) throw new HttpError(422, 'Status inválido.');
-        respond($db->rest('POST', 'rpc/transition_contract', ['p_contract_id' => (int) $match[1], 'p_status' => $status], $token));
+        if ($status !== 'em_andamento') throw new HttpError(422, 'Concluir o serviço requer a etapa de confirmação do cliente.');
+        respond($db->rest('POST', 'rpc/transition_contract', ['p_contract_id' => (int) $match[1], 'p_status' => $status, 'p_actor_id' => $userId], '', true));
     }
 
     if ($route === 'reviews' && $method === 'POST') {

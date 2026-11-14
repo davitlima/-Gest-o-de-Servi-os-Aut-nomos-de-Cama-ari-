@@ -93,8 +93,14 @@
       <textarea id="proposalDescription" required maxlength="240" placeholder="Ex.: Instalação de tomadas e revisão elétrica"></textarea>
       <label for="proposalAmount">Valor total do serviço</label>
       <div class="proposal-amount"><span>R$</span><input id="proposalAmount" type="number" min="0.01" step="0.01" inputmode="decimal" required placeholder="0,00"></div>
+      <label for="proposalScheduledAt">Data e horário do serviço (opcional)</label>
+      <input id="proposalScheduledAt" type="datetime-local">
+      <label for="proposalDuration">Duração prevista (minutos, opcional)</label>
+      <input id="proposalDuration" type="number" min="15" max="1440" step="15" placeholder="60">
+      <label for="proposalLocation">Local combinado (opcional)</label>
+      <input id="proposalLocation" type="text" maxlength="300" placeholder="Endereço ou bairro">
       <div class="proposal-breakdown"><div><span>Valor do serviço</span><strong id="proposalGross">R$ 0,00</strong></div><div><span>Taxa Nexlar (15%)</span><strong id="proposalFee">R$ 0,00</strong></div><div class="proposal-net"><span>Você recebe (85%)</span><strong id="proposalNet">R$ 0,00</strong></div></div>
-      <p class="proposal-terms">O cliente paga pelo checkout seguro. Após a confirmação, o serviço pode ser iniciado. O valor líquido é registrado no seu painel financeiro.</p>
+      <p class="proposal-terms">O cliente paga pelo checkout seguro. Depois do serviço, ele pode confirmar ou contestar em até 72 horas. Sem contestação, o repasse de 85% é liberado automaticamente para sua chave Pix; a taxa Pix fica com a Nexlar.</p>
       <p class="proposal-error" id="proposalError" role="alert"></p>
       <button class="proposal-submit" id="proposalSubmit" value="default">Enviar proposta</button>
     </form>

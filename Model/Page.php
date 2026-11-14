@@ -16,6 +16,7 @@ final class Page
         'perfilAutonomo' => 'src/pages/perfilAutonomo.html',
         'Meuperfil' => 'src/pages/Meuperfil.html',
         'Painelfinanceiro' => 'src/pages/Painelfinanceiro.html',
+        'Agenda' => 'src/pages/Agenda.html',
         'painelmensagens' => 'src/pages/painelmensagens.html',
         'lgpd' => 'src/pages/lgpd.html',
     ];

@@ -145,8 +145,8 @@ function addProposalCard(contract, value) {
     proposta: 'Aguardando resposta',
     aguardando_pagamento: 'Aguardando pagamento',
     pago: 'Pagamento confirmado',
-    em_andamento: 'Serviço em andamento',
-    concluido: 'Serviço concluído',
+    em_andamento: contract.disputed_at ? 'Contestação em análise' : (contract.provider_completed_at ? 'Aguardando confirmação do cliente' : 'Serviço em andamento'),
+    concluido: contract.auto_confirmed_at ? 'Liberado automaticamente após 72 horas' : 'Serviço confirmado',
   };
   status.textContent = labels[contract.status] || contract.status.replaceAll('_', ' ');
 
@@ -155,6 +155,35 @@ function addProposalCard(contract, value) {
   time.textContent = formatTime(contract.created_at);
 
   card.append(heading, description, amount, status, time);
+
+  if (contract.service_scheduled_at) {
+    const appointment = document.createElement('p');
+    appointment.className = 'proposal-terms';
+    appointment.textContent = `Agendado: ${new Date(contract.service_scheduled_at).toLocaleString('pt-BR')}${contract.service_location ? ` · ${contract.service_location}` : ''}`;
+    card.appendChild(appointment);
+  }
+  if (!sent && contract.provider_completed_at && !contract.customer_confirmed_at && !contract.auto_confirmed_at && !contract.disputed_at && new Date(contract.confirmation_deadline) > new Date()) {
+    const actions = document.createElement('div'); actions.className = 'proposal-card-cta';
+    const confirm = document.createElement('button'); confirm.type = 'button'; confirm.className = 'proposal-card-action'; confirm.textContent = 'Confirmar serviço e liberar pagamento';
+    confirm.addEventListener('click', async () => {
+      confirm.disabled = true;
+      try { await api.request('payments/service/confirm', { method: 'POST', body: JSON.stringify({ contract_id: contract.id }) }); await loadMessages(); }
+      catch (error) { confirm.disabled = false; showChatFeedback(error.message, true); }
+    });
+    const dispute = document.createElement('button'); dispute.type = 'button'; dispute.className = 'proposal-card-action'; dispute.textContent = 'Contestar serviço';
+    dispute.addEventListener('click', async () => {
+      const reason = prompt('Descreva o problema (mínimo de 5 caracteres):');
+      if (!reason) return;
+      try { await api.request('payments/service/dispute', { method: 'POST', body: JSON.stringify({ contract_id: contract.id, reason }) }); await loadMessages(); }
+      catch (error) { showChatFeedback(error.message, true); }
+    });
+    actions.append(confirm, dispute); card.appendChild(actions);
+    if (contract.confirmation_deadline) {
+      const deadline = document.createElement('p'); deadline.className = 'proposal-terms';
+      deadline.textContent = `Confirme ou conteste até ${new Date(contract.confirmation_deadline).toLocaleString('pt-BR')}; depois disso o repasse será liberado automaticamente.`;
+      card.appendChild(deadline);
+    }
+  }
 
   if (!sent && ['proposta', 'aguardando_pagamento'].includes(contract.status)) {
     card.classList.add('proposal-card-actionable');
@@ -430,8 +459,9 @@ async function handleContract() {
   if (activeConversation.provider_id === me.id) {
     const latest = activeContracts[0];
     if (latest?.status === 'pago' || latest?.status === 'em_andamento') {
-      const status = latest.status === 'pago' ? 'em_andamento' : 'concluido';
-      await api.request(`contracts/${latest.id}/status`, { method: 'POST', body: JSON.stringify({ status }) }); return loadMessages();
+      if (latest.status === 'pago') await api.request(`contracts/${latest.id}/status`, { method: 'POST', body: JSON.stringify({ status: 'em_andamento' }) });
+      else await api.request('payments/service/complete', { method: 'POST', body: JSON.stringify({ contract_id: latest.id }) });
+      return loadMessages();
     }
     proposalError.textContent = '';
     proposalForm.reset(); updateProposalBreakdown(); proposalDialog.showModal(); proposalDescription.focus(); return;
@@ -467,7 +497,8 @@ proposalForm.addEventListener('submit', async event => {
   if (!activeConversation || !(Number(proposalAmount.value) > 0)) return;
   proposalSubmit.disabled = true; proposalSubmit.textContent = 'Enviando…'; proposalError.textContent = '';
   try {
-    await api.request('contracts', { method: 'POST', body: JSON.stringify({ conversation_id: activeConversation.id, description: proposalDescription.value.trim(), amount: Number(proposalAmount.value) }) });
+    const scheduledAt = document.getElementById('proposalScheduledAt').value;
+    await api.request('contracts', { method: 'POST', body: JSON.stringify({ conversation_id: activeConversation.id, description: proposalDescription.value.trim(), amount: Number(proposalAmount.value), service_scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null, service_duration_minutes: document.getElementById('proposalDuration').value || null, service_location: document.getElementById('proposalLocation').value.trim() || null }) });
     proposalDialog.close(); await loadMessages();
   } catch (error) { proposalError.textContent = error.message; }
   finally { proposalSubmit.disabled = false; proposalSubmit.textContent = 'Enviar proposta'; }

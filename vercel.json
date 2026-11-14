@@ -8,8 +8,15 @@
     "api/index.php": {
       "runtime": "vercel-php@0.9.0",
       "maxDuration": 30
+    },
+    "api/release-due.php": {
+      "runtime": "vercel-php@0.9.0",
+      "maxDuration": 30
     }
   },
+  "crons": [
+    { "path": "/api/release-due.php", "schedule": "*/5 * * * *" }
+  ],
   "rewrites": [
     { "source": "/", "destination": "/api/page.php?page=inicio" },
     { "source": "/login.html", "destination": "/api/page.php?page=login" },
@@ -20,6 +27,7 @@
     { "source": "/perfilAutonomo.html", "destination": "/api/page.php?page=perfilAutonomo" },
     { "source": "/Meuperfil.html", "destination": "/api/page.php?page=Meuperfil" },
     { "source": "/Painelfinanceiro.html", "destination": "/api/page.php?page=Painelfinanceiro" },
+    { "source": "/Agenda.html", "destination": "/api/page.php?page=Agenda" },
     { "source": "/painelmensagens.html", "destination": "/api/page.php?page=painelmensagens" },
     { "source": "/lgpd.html", "destination": "/api/page.php?page=lgpd" },
     { "source": "/src/pages/inicio.html", "destination": "/api/page.php?page=inicio" },
@@ -31,6 +39,7 @@
     { "source": "/src/pages/perfilAutonomo.html", "destination": "/api/page.php?page=perfilAutonomo" },
     { "source": "/src/pages/Meuperfil.html", "destination": "/api/page.php?page=Meuperfil" },
     { "source": "/src/pages/Painelfinanceiro.html", "destination": "/api/page.php?page=Painelfinanceiro" },
+    { "source": "/src/pages/Agenda.html", "destination": "/api/page.php?page=Agenda" },
     { "source": "/src/pages/painelmensagens.html", "destination": "/api/page.php?page=painelmensagens" },
     { "source": "/src/pages/lgpd.html", "destination": "/api/page.php?page=lgpd" }
   ]

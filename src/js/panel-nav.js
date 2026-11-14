@@ -3,12 +3,13 @@
     { key: 'inicio', href: 'inicio.html', label: 'Início', icon: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>' },
     { key: 'perfil', href: 'Meuperfil.html', label: 'Meu Perfil', icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
     { key: 'financeiro', href: 'Painelfinanceiro.html', label: 'Financeiro', icon: '<path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>' },
+    { key: 'agenda', href: 'Agenda.html', label: 'Minha Agenda', icon: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>' },
     { key: 'mensagens', href: 'painelmensagens.html', label: 'Mensagens', icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
     { key: 'suporte', href: 'suporte.html', label: 'Suporte', icon: '<path d="M3 14v-3a9 9 0 0 1 18 0v3"/><rect x="3" y="13" width="5" height="8" rx="2"/><rect x="16" y="13" width="5" height="8" rx="2"/>' }
   ];
 
   function renderNavigation(active, canUseFinance = false) {
-    const links = destinations.filter(item => canUseFinance || item.key !== 'financeiro').map(item => {
+    const links = destinations.filter(item => canUseFinance || !['financeiro', 'agenda'].includes(item.key)).map(item => {
       const current = item.key === active ? ' aria-current="page"' : '';
       return `<a class="panel-nav__link" href="${item.href}"${current}><svg viewBox="0 0 24 24" aria-hidden="true">${item.icon}</svg><span>${item.label}</span></a>`;
     }).join('');
@@ -103,7 +104,7 @@
           ? Promise.resolve(global.nexlarReady)
           : new Promise(resolve => global.addEventListener('nexlar:ready', () => resolve(global.nexlarReady), { once: true }));
         waitForApi.then(api => api?.request('me')).then(me => {
-          if (me && ['autonomo', 'empresa'].includes(me.role)) {
+      if (me && ['autonomo', 'empresa'].includes(me.role)) {
             const current = this.querySelector('.panel-nav__sidebar nav');
             current.innerHTML = renderNavigation(this.getAttribute('active'), true).match(/<nav>([\s\S]*)<\/nav>/)[1];
           }

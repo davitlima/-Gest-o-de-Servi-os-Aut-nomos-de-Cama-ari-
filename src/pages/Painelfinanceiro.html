@@ -83,6 +83,22 @@
   </section>
 
   <section class="history-section">
+    <h3>Repasse das contratações</h3>
+    <p>Seu valor de 85% é liberado após a confirmação do cliente ou automaticamente depois de 72 horas sem contestação. A tarifa Pix da AbacatePay é absorvida pela comissão da Nexlar.</p>
+    <section class="payout-settings card" aria-labelledby="pixTitle">
+      <h3 id="pixTitle">Chave Pix para receber</h3>
+      <p id="pixCurrent" aria-live="polite">Carregando chave Pix…</p>
+      <div class="payout-pix-form">
+        <label for="pixType">Tipo</label>
+        <select id="pixType"><option value="CPF">CPF</option><option value="CNPJ">CNPJ</option><option value="PHONE">Telefone</option><option value="EMAIL">E-mail</option><option value="RANDOM">Aleatória</option></select>
+        <label for="pixKey">Chave Pix</label><input id="pixKey" type="text" autocomplete="off" maxlength="200" placeholder="Digite sua chave Pix">
+        <button class="btn-primary" id="savePix" type="button">Salvar chave Pix</button>
+      </div>
+    </section>
+    <div id="payoutList" class="payout-list" aria-live="polite"><p class="empty-state">Carregando repasses…</p></div>
+  </section>
+
+  <section class="history-section">
     <h3>Histórico de Serviços</h3>
     <div id="historyList">
       <p class="empty-state">Nenhum registro ainda. Clique em "Adicionar Registro".</p>

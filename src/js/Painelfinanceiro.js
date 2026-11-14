@@ -75,7 +75,7 @@ function atualizacaoCompleta() {
   
   // Agora calcula somando o valor real (s.valor) guardado no objeto do serviço
   const anoAtual = new Date().getFullYear();
-  const servicosAno = estado.servicos.filter(s => new Date(`${s.data}T00:00:00`).getFullYear() === anoAtual);
+  const servicosAno = estado.servicos.filter(s => s.status === 'Concluído' && new Date(`${s.data}T00:00:00`).getFullYear() === anoAtual);
   servicosAno.forEach(s => {
     valoresMensais[s.mes] += s.valor; 
   });
@@ -234,7 +234,7 @@ async function carregarRegistros() {
     window.location.replace('inicio.html');
     return;
   }
-  const [registros, goal] = await Promise.all([request('finance'), request('finance/goal')]);
+  const [registros, goal, payouts, pix] = await Promise.all([request('finance'), request('finance/goal'), request('finance/payouts'), request('finance/pix-key')]);
   metaMensal = Number(goal.amount) || 0;
   $('monthlyGoal').value = metaMensal || '';
   estado.servicos = registros.map(item => ({
@@ -250,7 +250,42 @@ async function carregarRegistros() {
     source: item.source
   }));
   atualizacaoCompleta();
+  $('pixCurrent').textContent = pix.configured ? `Chave cadastrada (${pix.pix_key_type}): ${pix.pix_key_hint}` : 'Nenhuma chave Pix cadastrada.';
+  $('pixType').value = pix.pix_key_type || 'CPF';
+  renderizarRepasses(payouts);
 }
+
+function renderizarRepasses(payouts) {
+  const container = $('payoutList'); container.replaceChildren();
+  const labels = { aguardando_servico: 'Aguardando conclusão do serviço', aguardando_confirmacao: 'Aguardando confirmação do cliente', disponivel: 'Disponível para repasse', processando: 'Repasse processando', pago: 'Pago', falhou: 'Falha no repasse', bloqueado: 'Bloqueado por contestação' };
+  if (!payouts.length) { container.innerHTML = '<p class="empty-state">Ainda não há repasses de contratações.</p>'; return; }
+  payouts.forEach(payout => {
+    const row = document.createElement('article'); row.className = 'payout-item card';
+    const title = document.createElement('strong'); title.textContent = payout.contract_id ? `Contratação #${payout.contract_id}` : 'Repasse';
+    const amount = document.createElement('span'); amount.textContent = formatarMoeda(Number(payout.provider_amount));
+    const status = document.createElement('span'); status.className = 'badge ' + (payout.status === 'pago' ? 'badge-green' : payout.status === 'falhou' ? 'badge-yellow' : 'badge-gray'); status.textContent = labels[payout.status] || payout.status;
+    const detail = document.createElement('small'); detail.textContent = `Comissão Nexlar: ${formatarMoeda(Number(payout.platform_commission))} · Tarifa Pix: ${formatarMoeda(Number(payout.transfer_fee || 0))}`;
+    row.append(title, amount, status, detail);
+    if (payout.receipt_url) { const receipt = document.createElement('a'); receipt.href = payout.receipt_url; receipt.target = '_blank'; receipt.rel = 'noopener noreferrer'; receipt.textContent = 'Ver comprovante'; row.appendChild(receipt); }
+    if (payout.status === 'falhou') {
+      const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'btn-secondary'; retry.textContent = 'Tentar repasse novamente';
+      retry.addEventListener('click', async () => { retry.disabled = true; try { const { request } = await window.nexlarReady; await request(`finance/payouts/${payout.id}/retry`, { method: 'POST' }); await carregarRegistros(); } catch (error) { retry.disabled = false; exibirAviso(error.message, true); } });
+      row.appendChild(retry);
+    }
+    if (payout.failure_reason) { const error = document.createElement('small'); error.textContent = `Detalhe: ${payout.failure_reason}`; row.appendChild(error); }
+    container.appendChild(row);
+  });
+}
+
+$('savePix').addEventListener('click', async () => {
+  const key = $('pixKey').value.trim();
+  if (!key) return exibirAviso('Informe a chave Pix.', true);
+  try {
+    const { request } = await window.nexlarReady;
+    await request('finance/pix-key', { method: 'PUT', body: JSON.stringify({ pix_key: key, pix_key_type: $('pixType').value }) });
+    $('pixKey').value = ''; exibirAviso('Chave Pix salva com segurança.'); await carregarRegistros();
+  } catch (error) { exibirAviso(error.message, true); }
+});
 
 $('saveGoal').addEventListener('click', async () => {
   const amount = Number($('monthlyGoal').value);

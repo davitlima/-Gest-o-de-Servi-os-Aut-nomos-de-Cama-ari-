@@ -413,7 +413,8 @@ overscroll-behavior: contain;
 .proposal-panel h2 { padding-right:35px; font-size:22px; }
 .proposal-intro,.proposal-terms { color:var(--muted); font-size:13px; line-height:1.5; }
 .proposal-panel label { margin-top:5px; font-size:13px; font-weight:700; }
-.proposal-panel textarea,.proposal-amount input { width:100%; min-height:46px; padding:11px 13px; border:1px solid var(--border); border-radius:10px; color:var(--text); background:#fff; font:inherit; }
+.proposal-panel textarea,.proposal-panel input:not([type="submit"]),.proposal-panel select { width:100%; min-width:0; min-height:46px; padding:11px 13px; border:1px solid var(--border); border-radius:10px; color:var(--text); background:#fff; font:inherit; }
+.proposal-amount input { padding:11px 13px; }
 .proposal-panel textarea { min-height:86px; resize:vertical; }
 .proposal-panel textarea:focus,.proposal-amount input:focus { outline:2px solid #a5b4fc; border-color:var(--accent2); }
 .proposal-amount { display:flex; align-items:center; gap:9px; }
@@ -425,6 +426,10 @@ overscroll-behavior: contain;
 .proposal-submit { min-height:48px; border:0; border-radius:11px; background:var(--accent2); color:#fff; font:inherit; font-weight:700; cursor:pointer; }
 .proposal-submit:disabled { opacity:.65; cursor:wait; }
 .proposal-error { color:#b91c1c; font-size:13px; }
+.proposal-card-cta button { min-width:0; min-height:44px; padding:9px 12px; border:0; border-radius:9px; background:#ede9fe; color:#3730a3; font:inherit; font-size:13px; font-weight:700; line-height:1.35; text-align:left; overflow-wrap:anywhere; cursor:pointer; }
+.proposal-card-cta button:hover { background:#ddd6fe; }
+.proposal-card-cta button:focus-visible { outline:3px solid #a5b4fc; outline-offset:2px; }
+.proposal-card-cta button:disabled { opacity:.65; cursor:wait; }
 @media (prefers-reduced-motion: reduce) { .proposal-card,.chat-tool-btn.is-recording { animation:none; } .proposal-card-actionable,.proposal-card-arrow { transition:none; } }
 .chat-feedback { padding:8px 18px 0; background:#fff; color:#166534; font-size:13px; }
 .chat-feedback.is-error { color:#b91c1c; }
@@ -610,6 +615,15 @@ overscroll-behavior: contain;
 .chat-header-avatar { width:36px; height:36px; }
 .chat-header-name { max-width:30vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .chat-propose-btn { padding-inline:9px; font-size:12px; }
+}
+@media (max-width:420px) {
+  .chat-header { flex-wrap:wrap; }
+  .chat-header-status { font-size:11px; }
+  .proposal-card { padding:14px; }
+  .proposal-card-cta { align-items:stretch; flex-direction:column; }
+  .proposal-card-cta button { width:100%; text-align:center; }
+  .proposal-panel { gap:8px; padding:22px 18px; }
+  .proposal-breakdown div { align-items:flex-start; flex-wrap:wrap; }
 }
 
 
