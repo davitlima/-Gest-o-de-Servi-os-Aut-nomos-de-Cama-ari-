@@ -37,8 +37,8 @@
           <h1 class="hero-card__name">Perfil profissional</h1>
           <span class="hero-card__tag">@serviços</span>
           <div class="hero-card__meta">
-            <span class="stars" aria-label="Sem avaliações">☆☆☆☆☆</span>
-            <span class="hero-card__rating">0.0</span>
+            <span class="stars" aria-label="5,0 de 5 estrelas">★★★★★</span>
+            <span class="hero-card__rating">5,0</span>
             <span class="hero-card__dot">•</span>
             <span class="hero-card__reviews">0 avaliações</span>
           </div>
@@ -70,6 +70,7 @@
 
         <section class="card" id="avaliacoes">
           <h2 class="section-title">Avaliações (0)</h2>
+          <p class="reviews-empty">Ainda não há avaliações. As notas reais dos clientes aparecerão aqui.</p>
           <button class="btn btn--full btn--outline-dark" id="verTodasBtn" hidden>Ver todas as avaliações</button>
         </section>
       </div>
@@ -77,19 +78,21 @@
       <aside class="sidebar">
         <div class="card">
           <h3 class="sidebar-title">Avalie este profissional</h3>
-          <div class="star-rating" id="starRating" role="group" aria-label="Avaliação">
-            <span class="star-btn" data-value="1" tabindex="0">☆</span>
-            <span class="star-btn" data-value="2" tabindex="0">☆</span>
-            <span class="star-btn" data-value="3" tabindex="0">☆</span>
-            <span class="star-btn" data-value="4" tabindex="0">☆</span>
-            <span class="star-btn" data-value="5" tabindex="0">☆</span>
+          <div class="star-rating" id="starRating" role="group" aria-label="Escolha sua nota">
+            <button class="star-btn" type="button" data-value="1" aria-label="1 estrela" aria-pressed="false">☆</button>
+            <button class="star-btn" type="button" data-value="2" aria-label="2 estrelas" aria-pressed="false">☆</button>
+            <button class="star-btn" type="button" data-value="3" aria-label="3 estrelas" aria-pressed="false">☆</button>
+            <button class="star-btn" type="button" data-value="4" aria-label="4 estrelas" aria-pressed="false">☆</button>
+            <button class="star-btn" type="button" data-value="5" aria-label="5 estrelas" aria-pressed="false">☆</button>
           </div>
-          <p class="star-hint" id="starHint">Clique nas estrelas para avaliar após concluir um serviço.</p>
+          <p class="star-hint" id="starHint">Depois que o serviço for concluído, escolha uma nota e envie sua avaliação.</p>
+          <button class="btn btn--primary btn--full" id="submitReview" type="button" disabled>Enviar avaliação</button>
         </div>
       </aside>
     </div>
   </main>
 
+  <script src="/src/js/reviews-core.js"></script>
   <script src="/src/js/perfilAutonomo.js"></script>
   <script src="/src/js/avatar-ui.js"></script>
   <script src="/src/js/chat-core.js"></script>

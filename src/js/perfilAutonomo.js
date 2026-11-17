@@ -31,11 +31,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     profile = await profileRequest;
     if (profile?.loadError) throw profile.loadError;
     const reviews = profile.reviews || [];
-    const average = reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0;
+    const ratingSummary = window.NexlarReviews.summarize(reviews);
     document.querySelector('.hero-card__name').textContent = profile.company_name || profile.full_name;
     document.querySelector('.hero-card__tag').textContent = profile.service_category ? `@${profile.service_category}` : '@profissional';
-    document.querySelector('.hero-card__rating').textContent = average.toFixed(1);
-    document.querySelector('.hero-card__reviews').textContent = `${reviews.length} avaliações`;
+    const heroStars = document.querySelector('.hero-card__meta .stars');
+    heroStars.textContent = '★'.repeat(ratingSummary.stars) + '☆'.repeat(5 - ratingSummary.stars);
+    heroStars.setAttribute('aria-label', ratingSummary.average.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' de 5 estrelas');
+    document.querySelector('.hero-card__rating').textContent = ratingSummary.average.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    document.querySelector('.hero-card__reviews').textContent = ratingSummary.count + ' avaliações';
     document.querySelector('.hero-card__location').lastChild.textContent = ` ${profile.neighborhood || 'Camaçari - BA'}`;
     document.querySelector('.about-text').textContent = profile.bio || 'Profissional cadastrado na Nexlar.';
     const profileAvatar = document.querySelector('.hero-card .avatar');
@@ -73,8 +76,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!portfolio.children.length) portfolio.textContent = 'O profissional ainda não adicionou trabalhos.';
 
     const reviewCard = document.getElementById('avaliacoes');
-    reviewCard.querySelector('.section-title').textContent = `Avaliações (${reviews.length})`;
-    reviewCard.querySelectorAll('.review').forEach(node => node.remove());
+    reviewCard.querySelector('.section-title').textContent = 'Avaliações (' + ratingSummary.count + ')';
+    reviewCard.querySelectorAll('.review, .reviews-empty').forEach(node => node.remove());
+    if (ratingSummary.count === 0) {
+      const empty = document.createElement('p'); empty.className = 'reviews-empty';
+      empty.textContent = 'Ainda não há avaliações. As notas reais dos clientes aparecerão aqui.';
+      reviewCard.insertBefore(empty, document.getElementById('verTodasBtn'));
+    }
     reviews.forEach(review => {
       const row = document.createElement('div'); row.className = 'review';
       const header = document.createElement('div'); header.className = 'review__header';
@@ -95,27 +103,39 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   let rating = 0;
-  const stars = document.querySelectorAll('.star-btn');
-  const paint = value => stars.forEach((star, index) => { star.textContent = index < value ? '★' : '☆'; star.classList.toggle('active', index < value); });
+  const stars = [...document.querySelectorAll('.star-btn')];
+  const submitReview = document.getElementById('submitReview');
+  const paint = value => stars.forEach((star, index) => {
+    const active = index < value;
+    star.textContent = active ? '★' : '☆';
+    star.classList.toggle('active', active);
+    star.setAttribute('aria-pressed', active && index === value - 1 ? 'true' : 'false');
+  });
   stars.forEach(star => {
     const value = Number(star.dataset.value);
-    star.addEventListener('mouseenter', () => paint(value)); star.addEventListener('mouseleave', () => paint(rating));
-    star.addEventListener('click', async () => {
-      rating = value; paint(rating);
-      try {
-        const api = await getProfileApi();
-        await api.requireSession();
-        const contracts = await api.request(`contracts&provider_id=${encodeURIComponent(providerId)}`);
-        const reviewedContracts = new Set((profile.reviews || []).map(review => Number(review.contract_id)));
-        const eligible = contracts.find(contract => contract.status === 'concluido' && !reviewedContracts.has(Number(contract.id)));
-        if (!eligible) throw new Error('Você poderá avaliar após concluir uma contratação com este profissional.');
-        const comment = prompt('Conte como foi o serviço (opcional):') || '';
-        await api.request('reviews', { method: 'POST', body: JSON.stringify({ contract_id: eligible.id, rating, comment }) });
-        hint.textContent = 'Avaliação enviada com sucesso!'; hint.style.color = '#087443';
-        setTimeout(() => location.reload(), 900);
-      } catch (error) { hint.textContent = error.message; rating = 0; paint(0); }
+    star.addEventListener('mouseenter', () => paint(value));
+    star.addEventListener('mouseleave', () => paint(rating));
+    star.addEventListener('click', () => {
+      rating = value; paint(rating); submitReview.disabled = false;
+      hint.textContent = 'Sua nota: ' + value + ' de 5. Clique em “Enviar avaliação” para continuar.';
     });
-    star.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); star.click(); } });
+  });
+  submitReview.addEventListener('click', async () => {
+    if (!rating) { hint.textContent = 'Escolha uma nota de 1 a 5 estrelas.'; return; }
+    submitReview.disabled = true;
+    try {
+      const api = await getProfileApi();
+      await api.requireSession();
+      const contracts = await api.request('contracts&provider_id=' + encodeURIComponent(providerId));
+      const eligible = contracts.find(contract => contract.status === 'concluido' && !contract.reviewed_by_me);
+      if (!eligible) throw new Error('Você poderá avaliar após concluir uma contratação com este profissional.');
+      const comment = prompt('Conte como foi o serviço (opcional):') || '';
+      await api.request('reviews', { method: 'POST', body: JSON.stringify({ contract_id: eligible.id, rating, comment }) });
+      hint.textContent = 'Avaliação enviada com sucesso!'; hint.style.color = '#087443';
+      setTimeout(() => location.reload(), 900);
+    } catch (error) {
+      hint.textContent = error.message; rating = 0; paint(0); submitReview.disabled = true;
+    }
   });
 });
 

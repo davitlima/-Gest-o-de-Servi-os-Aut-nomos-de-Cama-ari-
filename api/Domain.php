@@ -103,6 +103,55 @@ final class Domain
         ], true);
     }
 
+    public static function abacatePayWebhookCheckout(array $payload): ?array
+    {
+        if (($payload['event'] ?? $payload['type'] ?? '') !== 'checkout.completed') {
+            return null;
+        }
+
+        $checkout = $payload['data']['checkout'] ?? null;
+        return is_array($checkout) ? $checkout : null;
+    }
+
+    public static function abacatePayContractId(string $externalId): ?int
+    {
+        if (!preg_match('/^nexlar-contract-([1-9][0-9]*)$/D', $externalId, $match)) {
+            return null;
+        }
+
+        $contractId = filter_var($match[1], FILTER_VALIDATE_INT);
+        return $contractId === false ? null : $contractId;
+    }
+
+    public static function validAbacatePayCheckout(array $checkout, array $contract, bool $expectedDevMode): bool
+    {
+        $contractId = (int) ($contract['id'] ?? 0);
+        $expectedAmount = (int) round((float) ($contract['amount'] ?? 0) * 100);
+
+        return $contractId > 0
+            && !empty($contract['abacatepay_checkout_id'])
+            && hash_equals((string) $contract['abacatepay_checkout_id'], (string) ($checkout['id'] ?? ''))
+            && hash_equals('nexlar-contract-' . $contractId, (string) ($checkout['externalId'] ?? ''))
+            && ($checkout['status'] ?? '') === 'PAID'
+            && is_numeric($checkout['amount'] ?? null)
+            && (int) $checkout['amount'] === $expectedAmount
+            && is_numeric($checkout['paidAmount'] ?? null)
+            && (int) $checkout['paidAmount'] === $expectedAmount
+            && self::abacatePayModeMatches($checkout['devMode'] ?? null, $expectedDevMode);
+    }
+
+    public static function abacatePayModeMatches(mixed $devMode, bool $expectedDevMode): bool
+    {
+        return is_bool($devMode) && $devMode === $expectedDevMode;
+    }
+
+    public static function verifyAbacatePaySignature(string $rawBody, string $signature): bool
+    {
+        $key = 't9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9';
+        $expected = base64_encode(hash_hmac('sha256', $rawBody, $key, true));
+        return $signature !== '' && hash_equals($expected, $signature);
+    }
+
     public static function canReview(string $contractStatus, bool $alreadyReviewed): bool
     {
         return $contractStatus === 'concluido' && !$alreadyReviewed;

@@ -124,6 +124,48 @@ function renderTimeline() {
     : latest?.status === 'em_andamento' ? 'Marcar como concluído' : 'Propor serviço';
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+function addReviewPrompt(card, contract) {
+  const promptCard = document.createElement('section');
+  promptCard.className = 'proposal-review';
+  const heading = document.createElement('h3'); heading.textContent = 'Como foi o serviço?';
+  const intro = document.createElement('p'); intro.textContent = 'Avalie o profissional para ajudar outras pessoas.';
+  const stars = document.createElement('div'); stars.className = 'proposal-review__stars';
+  stars.setAttribute('role', 'group'); stars.setAttribute('aria-label', 'Escolha uma nota de 1 a 5 estrelas');
+  let rating = 0;
+  const starButtons = Array.from({ length: 5 }, (_, index) => {
+    const value = index + 1;
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'proposal-review__star';
+    button.textContent = '☆'; button.setAttribute('aria-label', value + (value === 1 ? ' estrela' : ' estrelas'));
+    button.setAttribute('aria-pressed', 'false');
+    button.addEventListener('click', () => { rating = value; paintStars(); submit.disabled = false; });
+    stars.appendChild(button); return button;
+  });
+  const paintStars = () => starButtons.forEach((button, index) => {
+    const active = index < rating;
+    button.textContent = active ? '★' : '☆'; button.classList.toggle('is-selected', active);
+    button.setAttribute('aria-pressed', active && index === rating - 1 ? 'true' : 'false');
+  });
+  const commentLabel = document.createElement('label'); commentLabel.textContent = 'Comentário (opcional)';
+  const comment = document.createElement('textarea'); comment.maxLength = 1000; comment.rows = 3;
+  comment.placeholder = 'Conte como foi sua experiência'; commentLabel.appendChild(comment);
+  const submit = document.createElement('button'); submit.type = 'button'; submit.className = 'proposal-review__submit';
+  submit.textContent = 'Enviar avaliação'; submit.disabled = true;
+  submit.addEventListener('click', async () => {
+    if (!rating) return;
+    submit.disabled = true;
+    try {
+      await api.request('reviews', { method: 'POST', body: JSON.stringify({ contract_id: contract.id, rating, comment: comment.value.trim() }) });
+      contract.reviewed_by_me = true;
+      const thanks = document.createElement('p'); thanks.className = 'proposal-review__thanks';
+      thanks.textContent = 'Obrigado! Sua avaliação foi enviada.';
+      promptCard.replaceChildren(thanks);
+    } catch (error) {
+      submit.disabled = false; showChatFeedback(error.message, true);
+    }
+  });
+  promptCard.append(heading, intro, stars, commentLabel, submit);
+  card.appendChild(promptCard);
+}
 function addProposalCard(contract, value) {
   const sent = contract.provider_id === me.id;
   const card = document.createElement('article');
@@ -219,6 +261,7 @@ function addProposalCard(contract, value) {
     });
   }
 
+  if (!sent && contract.status === 'concluido' && !contract.reviewed_by_me) addReviewPrompt(card, contract);
   chatMessages.appendChild(card);
 }
 function renderConversationList(filter = '') {
@@ -295,6 +338,9 @@ async function subscribeRealtime(conversationId) {
       if (generation !== realtimeGeneration || !window.NexlarChat.belongsToConversation(payload.new, conversationId)) return;
       if (payload.new.attachment_path) { loadMessages().catch(() => startFallback()); return; }
       messageCache = window.NexlarChat.mergeMessages(messageCache, payload.new); renderTimeline();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'contracts', filter: `conversation_id=eq.${conversationId}` }, () => {
+      loadMessages().catch(() => startFallback());
     })
     .subscribe(status => {
       if (generation !== realtimeGeneration) return;

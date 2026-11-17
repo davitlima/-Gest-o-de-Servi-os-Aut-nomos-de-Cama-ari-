@@ -626,4 +626,17 @@ overscroll-behavior: contain;
   .proposal-breakdown div { align-items:flex-start; flex-wrap:wrap; }
 }
 
+.proposal-review { display:grid; gap:9px; margin-top:13px; padding-top:13px; border-top:1px solid var(--border); }
+.proposal-review h3 { margin:0; font-size:15px; }
+.proposal-review > p { margin:0; color:var(--muted); font-size:13px; }
+.proposal-review__stars { display:flex; gap:4px; }
+.proposal-review__star { min-width:40px; min-height:40px; border:0; border-radius:9px; background:#f4f1ff; color:#9ca3af; font-size:25px; cursor:pointer; }
+.proposal-review__star.is-selected { color:#f59e0b; }
+.proposal-review__star:focus-visible,.proposal-review__submit:focus-visible { outline:3px solid #a5b4fc; outline-offset:2px; }
+.proposal-review label { display:grid; gap:5px; color:var(--muted); font-size:12px; font-weight:650; }
+.proposal-review textarea { width:100%; min-height:72px; padding:9px 11px; border:1px solid var(--border); border-radius:9px; color:var(--text); font:inherit; font-size:13px; resize:vertical; }
+.proposal-review__submit { min-height:42px; border:0; border-radius:10px; background:var(--accent2); color:#fff; font:inherit; font-weight:700; cursor:pointer; }
+.proposal-review__submit:disabled { opacity:.5; cursor:not-allowed; }
+.proposal-review__thanks { margin:0; color:#166534; font-weight:700; }
+
 

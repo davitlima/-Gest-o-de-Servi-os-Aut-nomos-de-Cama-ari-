@@ -86,7 +86,9 @@ function mercadoPago(string $method, string $path, ?array $body = null, ?string 
 
 function abacatePay(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null, bool $notFoundIsEmpty = false): array
 {
-    $headers = ['Authorization: Bearer ' . Config::get('ABACATEPAY_API_KEY'), 'Content-Type: application/json'];
+    $apiKey = abacatePayApiKey();
+    if ($apiKey === '') throw new HttpError(503, 'A chave AbacatePay deste ambiente ainda não foi configurada.');
+    $headers = ['Authorization: Bearer ' . $apiKey, 'Content-Type: application/json'];
     if ($idempotencyKey !== null) $headers[] = 'Idempotency-Key: ' . $idempotencyKey;
     $handle = curl_init('https://api.abacatepay.com/v2' . $path);
     curl_setopt_array($handle, [CURLOPT_CUSTOMREQUEST => $method, CURLOPT_HTTPHEADER => $headers, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 20]);
@@ -104,6 +106,21 @@ function abacatePay(string $method, string $path, ?array $body = null, ?string $
         throw new HttpError(502, 'Não foi possível comunicar com a AbacatePay. Tente novamente em instantes.');
     }
     return is_array($decoded['data'] ?? null) ? $decoded['data'] : $decoded;
+}
+
+function abacatePayIsProduction(): bool
+{
+    return strtolower(trim(Config::get('VERCEL_ENV', false))) === 'production';
+}
+
+function abacatePayApiKey(): string
+{
+    return Config::get('ABACATEPAY_API_KEY', false);
+}
+
+function abacatePayWebhookSecret(): string
+{
+    return Config::get('ABACATEPAY_WEBHOOK_SECRET', false);
 }
 
 try {
@@ -181,22 +198,39 @@ try {
     }
 
     if ($route === 'payments/abacatepay/webhook' && $method === 'POST') {
-        $secret = query('webhookSecret');
-        if ($secret === '' || !hash_equals(Config::get('ABACATEPAY_WEBHOOK_SECRET'), $secret)) throw new HttpError(401, 'Webhook não autorizado.');
-        $payload = input();
-        if (($payload['event'] ?? $payload['type'] ?? '') !== 'checkout.completed') respond(['received' => true]);
-        $data = is_array($payload['data'] ?? null) ? $payload['data'] : $payload;
-        $externalId = (string) ($data['externalId'] ?? $data['metadata']['contract_id'] ?? '');
-        $contractId = (int) preg_replace('/[^0-9]/', '', $externalId);
-        if ($contractId > 0) {
-            $contracts = $db->rest('GET', 'contracts?id=eq.' . $contractId . '&select=*', null, '', true);
-            $contract = $contracts[0] ?? null;
-            if ($contract && in_array($contract['status'], ['aguardando_pagamento', 'pago'], true)) {
-                $db->rest('POST', 'rpc/register_abacatepay_payment', [
-                    'p_contract_id' => $contractId,
-                    'p_payment_id' => (string) ($data['id'] ?? $data['checkoutId'] ?? ('checkout-' . $contractId)),
-                ], '', true);
+        $expectedSecret = abacatePayWebhookSecret();
+        if ($expectedSecret === '') throw new HttpError(503, 'O segredo do webhook AbacatePay deste ambiente ainda não foi configurado.');
+        $receivedSecret = (string) ($_SERVER['HTTP_X_WEBHOOK_SECRET'] ?? query('webhookSecret'));
+        if ($receivedSecret === '' || !hash_equals($expectedSecret, $receivedSecret)) throw new HttpError(401, 'Webhook não autorizado.');
+
+        $rawBody = file_get_contents('php://input');
+        if (!is_string($rawBody)) throw new HttpError(400, 'Payload do webhook inválido.');
+        $signature = (string) ($_SERVER['HTTP_X_WEBHOOK_SIGNATURE'] ?? '');
+        if (!Domain::verifyAbacatePaySignature($rawBody, $signature)) throw new HttpError(401, 'Assinatura do webhook inválida.');
+        $payload = json_decode($rawBody, true);
+        if (!is_array($payload)) throw new HttpError(400, 'JSON do webhook inválido.');
+
+        $eventCheckout = Domain::abacatePayWebhookCheckout($payload);
+        if ($eventCheckout === null) respond(['received' => true]);
+        $checkoutId = (string) ($eventCheckout['id'] ?? '');
+        $contractId = Domain::abacatePayContractId((string) ($eventCheckout['externalId'] ?? ''));
+        if ($checkoutId === '' || $contractId === null) {
+            error_log('AbacatePay webhook ignored: checkout reference is invalid.');
+            respond(['received' => true]);
+        }
+
+        $contracts = $db->rest('GET', 'contracts?id=eq.' . $contractId . '&select=*', null, '', true);
+        $contract = $contracts[0] ?? null;
+        if ($contract && in_array($contract['status'], ['aguardando_pagamento', 'pago'], true)) {
+            $verifiedCheckout = abacatePay('GET', '/checkouts/get?id=' . rawurlencode($checkoutId));
+            if (!Domain::validAbacatePayCheckout($verifiedCheckout, $contract, !abacatePayIsProduction())) {
+                error_log('AbacatePay webhook ignored: checkout and contract verification did not match.');
+                respond(['received' => true, 'verified' => false]);
             }
+            $db->rest('POST', 'rpc/register_abacatepay_payment', [
+                'p_contract_id' => $contractId,
+                'p_payment_id' => $checkoutId,
+            ], '', true);
         }
         respond(['received' => true]);
     }
@@ -469,7 +503,18 @@ try {
         $conversationId = (int) query('conversation_id');
         $providerId = query('provider_id');
         $filter = $conversationId > 0 ? 'conversation_id=eq.' . $conversationId : 'provider_id=eq.' . rawurlencode($providerId) . '&buyer_id=eq.' . $userId;
-        respond($db->rest('GET', 'contracts?' . $filter . '&select=*&order=created_at.desc', null, $token));
+        $contracts = $db->rest('GET', 'contracts?' . $filter . '&select=*&order=created_at.desc', null, $token);
+        $contractIds = array_values(array_filter(array_map(static fn (array $contract): int => (int) ($contract['id'] ?? 0), $contracts)));
+        $reviewedIds = [];
+        if ($contractIds !== []) {
+            $reviews = $db->rest('GET', 'reviews?contract_id=in.(' . implode(',', $contractIds) . ')&reviewer_id=eq.' . rawurlencode($userId) . '&select=contract_id', null, $token);
+            $reviewedIds = array_map(static fn (array $review): int => (int) $review['contract_id'], $reviews);
+        }
+        foreach ($contracts as &$contract) {
+            $contract['reviewed_by_me'] = in_array((int) $contract['id'], $reviewedIds, true);
+        }
+        unset($contract);
+        respond($contracts);
     }
 
     if ($route === 'payments/checkout' && $method === 'POST') {
@@ -477,7 +522,9 @@ try {
         $contract = $db->rest('POST', 'rpc/begin_checkout', ['p_contract_id' => $contractId], $token);
         if (isset($contract[0]) && is_array($contract[0])) $contract = $contract[0];
         $baseUrl = rtrim(Config::get('APP_URL'), '/');
-        if (Config::get('ABACATEPAY_API_KEY', false) !== '') {
+        $abacatePayKey = abacatePayApiKey();
+        if (abacatePayIsProduction() && $abacatePayKey === '') throw new HttpError(503, 'Configure a chave AbacatePay de produção para habilitar pagamentos reais.');
+        if ($abacatePayKey !== '') {
             $checkoutProductExternalId = 'nexlar-contract-' . $contractId;
             $product = abacatePay('GET', '/products/get?externalId=' . rawurlencode($checkoutProductExternalId), null, null, true);
             if (empty($product['id'])) {
@@ -498,6 +545,7 @@ try {
                 'metadata' => ['contract_id' => (string) $contractId],
             ], 'nexlar-checkout-' . $contractId);
             if (empty($checkout['url']) || empty($checkout['id'])) throw new HttpError(502, 'A AbacatePay não retornou um link de pagamento válido.');
+            if (!Domain::abacatePayModeMatches($checkout['devMode'] ?? null, !abacatePayIsProduction())) throw new HttpError(502, 'A AbacatePay retornou um checkout de outro ambiente. Confira a chave configurada.');
             $db->rest('POST', 'rpc/attach_abacate_checkout', ['p_contract_id' => $contractId, 'p_checkout_id' => (string) ($checkout['id'] ?? '')], $token);
             respond(['checkout_url' => $checkout['url'] ?? null]);
         }
@@ -536,7 +584,9 @@ try {
         $contracts = $db->rest('GET', 'contracts?id=eq.' . $contractId . '&select=*', null, $token);
         $contract = $contracts[0] ?? null;
         if (!$contract || $contract['buyer_id'] !== $userId || $contract['status'] !== 'concluido') throw new HttpError(403, 'Esta contratação ainda não pode ser avaliada.');
-        $row = [ 'contract_id' => $contractId, 'reviewer_id' => $userId, 'provider_id' => $contract['provider_id'], 'rating' => $rating, 'comment' => trim((string) ($data['comment'] ?? '')) ?: null ];
+        $comment = trim((string) ($data['comment'] ?? ''));
+        if (mb_strlen($comment) > 1000) throw new HttpError(422, 'O comentário deve ter até 1.000 caracteres.');
+        $row = [ 'contract_id' => $contractId, 'reviewer_id' => $userId, 'provider_id' => $contract['provider_id'], 'rating' => $rating, 'comment' => $comment ?: null ];
         respond($db->rest('POST', 'reviews', [$row], $token)[0] ?? $row, 201);
     }
 

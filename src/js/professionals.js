@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const neighborhood = professional.neighborhood || '';
     const bioText = professional.bio || 'Perfil profissional cadastrado na Nexlar.';
     const reviews = professional.reviews || [];
-    const average = reviews.length ? reviews.reduce((sum, item) => sum + Number(item.rating), 0) / reviews.length : 0;
+    const ratingSummary = window.NexlarReviews.summarize(reviews);
     const card = document.createElement('article');
     card.className = 'card';
     card.dataset.profileId = professional.id;
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     info.append(title, categoryLabel, location); top.append(avatar, info);
     const bio = document.createElement('p'); bio.textContent = bioText;
     const rating = document.createElement('div'); rating.className = 'rating';
-    rating.textContent = reviews.length ? `${average.toFixed(1)} ★ (${reviews.length} avaliações)` : 'Ainda sem avaliações';
+    rating.textContent = `${ratingSummary.average.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ★ (${ratingSummary.count} avaliações)`;
     const actions = document.createElement('div'); actions.className = 'card-actions';
     const profile = document.createElement('a'); profile.className = 'btn-perfil'; profile.textContent = 'Ver perfil';
     profile.href = `/src/pages/perfilAutonomo.html?id=${encodeURIComponent(professional.id)}`;
