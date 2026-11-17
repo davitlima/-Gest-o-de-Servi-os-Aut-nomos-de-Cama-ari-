@@ -115,7 +115,11 @@ function abacatePayIsProduction(): bool
 
 function abacatePayApiKey(): string
 {
-    return Config::get('ABACATEPAY_API_KEY', false);
+    $apiKey = Config::get('ABACATEPAY_API_KEY', false);
+    if (abacatePayIsProduction() && str_starts_with($apiKey, 'abc_dev_')) {
+        throw new HttpError(503, 'A chave AbacatePay configurada é de teste. Pagamentos reais exigem uma chave de produção.');
+    }
+    return $apiKey;
 }
 
 function abacatePayWebhookSecret(): string
