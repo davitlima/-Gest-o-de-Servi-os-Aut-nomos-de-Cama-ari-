@@ -18,11 +18,14 @@ check(method_exists(Domain::class, 'verifyAbacatePaySignature'), 'Webhook deve v
 
 
 check(Domain::abacatePayModeMatches(true, true), 'Chave de teste deve operar somente com checkout de teste.');
-check(!Domain::abacatePayModeMatches(true, false), 'Checkout de teste deve ser recusado em produção.');
+check(!Domain::abacatePayModeMatches(false, true), 'Checkout de produção deve ser recusado no sandbox.');
 $api = file_get_contents(__DIR__ . '/../api/index.php');
 check(str_contains($api, "'/checkouts/get?id='"), 'Webhook deve consultar o checkout diretamente na AbacatePay.');
 check(str_contains($api, "Config::get('ABACATEPAY_API_KEY', false)") && str_contains($api, "Config::get('ABACATEPAY_WEBHOOK_SECRET', false)"), 'A integração deve manter os nomes de credencial já usados no projeto.');
-check(str_contains($api, 'abacatePayModeMatches'), 'A aplicação deve rejeitar checkout de ambiente incompatível com Vercel.');
+check(str_contains($api, "Domain::validAbacatePayCheckout($verifiedCheckout, $contract, true)"), 'Webhook deve aceitar somente pagamentos AbacatePay sandbox.');
+check(str_contains($api, "Domain::abacatePayModeMatches(\$checkout['devMode'] ?? null, true)"), 'Checkout AbacatePay deve permanecer em sandbox.');
+check(!str_contains($api, 'abacatePayIsProduction'), 'O modo sandbox deve ser independente do ambiente Vercel.');
+check(str_contains($api, 'sandbox_init_point') && !str_contains($api, "['init_point']"), 'Mercado Pago deve usar somente o link sandbox.');
 check(str_contains($api, 'HTTP_X_WEBHOOK_SIGNATURE') && str_contains($api, 'HTTP_X_WEBHOOK_SECRET'), 'Webhook deve conferir assinatura e segredo.');
 check(str_contains($api, 'reviewed_by_me'), 'Chat deve esconder o convite depois da avaliação.');
 $contract = ['id' => 42, 'amount' => 67.00, 'abacatepay_checkout_id' => 'bill_abc123'];

@@ -9,6 +9,7 @@ assert.ok(customerNavigation.includes('href="suporte.html"'), 'clientes podem ab
 assert.doesNotMatch(customerNavigation, /Painelfinanceiro\.html/, 'clientes não recebem Financeiro');
 assert.ok(professionalNavigation.includes('href="suporte.html"'), 'profissionais podem abrir Suporte');
 assert.ok(professionalNavigation.includes('href="Painelfinanceiro.html"'), 'profissionais mantêm Financeiro em Suporte');
+assert.doesNotMatch(professionalNavigation, /Agenda\.html|Minha Agenda/, 'prestadores não recebem a opção de agenda');
 assert.ok(professionalNavigation.includes('M3 14v-3a9 9 0 0 1 18 0v3'), 'Suporte usa o contorno de headset');
 
 const supportPage = fs.readFileSync(require.resolve('../src/pages/suporte.html'), 'utf8');

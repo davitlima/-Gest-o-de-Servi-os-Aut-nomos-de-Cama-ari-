@@ -84,6 +84,13 @@ function mercadoPago(string $method, string $path, ?array $body = null, ?string 
     return $decoded;
 }
 
+function mercadoPagoSandboxCheckoutUrl(array $preference): string
+{
+    $url = trim((string) ($preference['sandbox_init_point'] ?? ''));
+    if ($url === '') throw new HttpError(503, 'O Mercado Pago não retornou um link de teste. Confira as credenciais sandbox.');
+    return $url;
+}
+
 function abacatePay(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null, bool $notFoundIsEmpty = false): array
 {
     $apiKey = abacatePayApiKey();
@@ -108,18 +115,9 @@ function abacatePay(string $method, string $path, ?array $body = null, ?string $
     return is_array($decoded['data'] ?? null) ? $decoded['data'] : $decoded;
 }
 
-function abacatePayIsProduction(): bool
-{
-    return strtolower(trim(Config::get('VERCEL_ENV', false))) === 'production';
-}
-
 function abacatePayApiKey(): string
 {
-    $apiKey = Config::get('ABACATEPAY_API_KEY', false);
-    if (abacatePayIsProduction() && str_starts_with($apiKey, 'abc_dev_')) {
-        throw new HttpError(503, 'A chave AbacatePay configurada é de teste. Pagamentos reais exigem uma chave de produção.');
-    }
-    return $apiKey;
+    return Config::get('ABACATEPAY_API_KEY', false);
 }
 
 function abacatePayWebhookSecret(): string
@@ -227,7 +225,7 @@ try {
         $contract = $contracts[0] ?? null;
         if ($contract && in_array($contract['status'], ['aguardando_pagamento', 'pago'], true)) {
             $verifiedCheckout = abacatePay('GET', '/checkouts/get?id=' . rawurlencode($checkoutId));
-            if (!Domain::validAbacatePayCheckout($verifiedCheckout, $contract, !abacatePayIsProduction())) {
+            if (!Domain::validAbacatePayCheckout($verifiedCheckout, $contract, true)) {
                 error_log('AbacatePay webhook ignored: checkout and contract verification did not match.');
                 respond(['received' => true, 'verified' => false]);
             }
@@ -321,11 +319,6 @@ try {
     if (preg_match('#^finance/payouts/(\d+)/retry$#', $route, $match) && $method === 'POST') {
         if (!Domain::canUseFinance($me['role'])) throw new HttpError(403, 'Seu perfil não possui painel financeiro.');
         respond($db->rest('POST', 'rpc/retry_provider_payout', ['p_payout_id' => (int) $match[1], 'p_actor_id' => $userId], '', true));
-    }
-
-    if ($route === 'agenda' && $method === 'GET') {
-        if (!Domain::canUseFinance($me['role'])) throw new HttpError(403, 'Seu perfil não possui agenda de prestador.');
-        respond($db->rest('GET', 'provider_agenda_events?provider_id=eq.' . rawurlencode($userId) . '&select=*&order=starts_at.asc.nullsfirst', null, $token));
     }
 
     if ($route === 'payments/service/complete' && $method === 'POST') {
@@ -527,7 +520,6 @@ try {
         if (isset($contract[0]) && is_array($contract[0])) $contract = $contract[0];
         $baseUrl = rtrim(Config::get('APP_URL'), '/');
         $abacatePayKey = abacatePayApiKey();
-        if (abacatePayIsProduction() && $abacatePayKey === '') throw new HttpError(503, 'Configure a chave AbacatePay de produção para habilitar pagamentos reais.');
         if ($abacatePayKey !== '') {
             $checkoutProductExternalId = 'nexlar-contract-' . $contractId;
             $product = abacatePay('GET', '/products/get?externalId=' . rawurlencode($checkoutProductExternalId), null, null, true);
@@ -549,7 +541,7 @@ try {
                 'metadata' => ['contract_id' => (string) $contractId],
             ], 'nexlar-checkout-' . $contractId);
             if (empty($checkout['url']) || empty($checkout['id'])) throw new HttpError(502, 'A AbacatePay não retornou um link de pagamento válido.');
-            if (!Domain::abacatePayModeMatches($checkout['devMode'] ?? null, !abacatePayIsProduction())) throw new HttpError(502, 'A AbacatePay retornou um checkout de outro ambiente. Confira a chave configurada.');
+            if (!Domain::abacatePayModeMatches($checkout['devMode'] ?? null, true)) throw new HttpError(502, 'A AbacatePay retornou um checkout de outro ambiente. Confira a chave configurada.');
             $db->rest('POST', 'rpc/attach_abacate_checkout', ['p_contract_id' => $contractId, 'p_checkout_id' => (string) ($checkout['id'] ?? '')], $token);
             respond(['checkout_url' => $checkout['url'] ?? null]);
         }
@@ -557,7 +549,7 @@ try {
             $preferenceId = (string) ($contract['mercado_pago_preference_id'] ?? '');
             if ($preferenceId !== '') {
                 $preference = mercadoPago('GET', '/checkout/preferences/' . rawurlencode($preferenceId));
-                respond([ 'checkout_url' => $preference['init_point'] ?? $preference['sandbox_init_point'] ?? null ]);
+                respond(['checkout_url' => mercadoPagoSandboxCheckoutUrl($preference)]);
             }
             $preference = mercadoPago('POST', '/checkout/preferences', [
                 'items' => [[ 'title' => $contract['description'], 'quantity' => 1, 'currency_id' => 'BRL', 'unit_price' => (float) $contract['amount'] ]],
@@ -566,12 +558,13 @@ try {
                 'auto_return' => 'approved',
                 'notification_url' => "$baseUrl/api/index.php?route=payments/webhook",
             ], 'nexlar-contract-' . $contractId);
+            $sandboxCheckoutUrl = mercadoPagoSandboxCheckoutUrl($preference);
             $db->rest('POST', 'rpc/attach_checkout', ['p_contract_id' => $contractId, 'p_preference_id' => $preference['id']], $token);
         } catch (Throwable $error) {
             $db->rest('POST', 'rpc/reset_checkout', ['p_contract_id' => $contractId], $token);
             throw $error;
         }
-        respond([ 'checkout_url' => $preference['init_point'] ?? $preference['sandbox_init_point'] ?? null ]);
+        respond(['checkout_url' => $sandboxCheckoutUrl]);
     }
 
     if (preg_match('#^contracts/(\d+)/status$#', $route, $match) && $method === 'POST') {
