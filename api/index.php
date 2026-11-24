@@ -6,8 +6,6 @@ use Nexlar\Config;
 use Nexlar\Domain;
 use Nexlar\HttpError;
 use Nexlar\Supabase;
-use MercadoPago\Exceptions\InvalidWebhookSignatureException;
-use MercadoPago\Webhook\WebhookSignatureValidator;
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/Config.php';
@@ -59,36 +57,6 @@ function profile(Supabase $db, string $token, string $userId): array
     }
     $private = $db->rest('GET', 'profile_private?user_id=eq.' . rawurlencode($userId) . '&select=phone,document,pix_key_type', null, $token);
     return array_merge($rows[0], $private[0] ?? ['phone' => null, 'document' => null, 'pix_key_type' => null]);
-}
-
-function mercadoPago(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null): array
-{
-    $headers = ['Authorization: Bearer ' . Config::get('MERCADO_PAGO_ACCESS_TOKEN'), 'Content-Type: application/json'];
-    if ($idempotencyKey !== null) $headers[] = 'X-Idempotency-Key: ' . $idempotencyKey;
-    $handle = curl_init('https://api.mercadopago.com' . $path);
-    curl_setopt_array($handle, [
-        CURLOPT_CUSTOMREQUEST => $method,
-        CURLOPT_HTTPHEADER => $headers,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 20,
-    ]);
-    if ($body !== null) {
-        curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($body, JSON_THROW_ON_ERROR));
-    }
-    $response = curl_exec($handle);
-    $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
-    $decoded = is_string($response) ? json_decode($response, true) : null;
-    if ($status < 200 || $status >= 300 || !is_array($decoded)) {
-        throw new HttpError(502, 'Não foi possível comunicar com o Mercado Pago.');
-    }
-    return $decoded;
-}
-
-function mercadoPagoSandboxCheckoutUrl(array $preference): string
-{
-    $url = trim((string) ($preference['sandbox_init_point'] ?? ''));
-    if ($url === '') throw new HttpError(503, 'O Mercado Pago não retornou um link de teste. Confira as credenciais sandbox.');
-    return $url;
 }
 
 function abacatePay(string $method, string $path, ?array $body = null, ?string $idempotencyKey = null, bool $notFoundIsEmpty = false): array
@@ -147,56 +115,6 @@ try {
 
     if ($route === 'public/profiles' && $method === 'GET') {
         respond($db->rest('GET', 'profiles?role=in.(autonomo,empresa)&select=id,full_name,company_name,service_category,neighborhood,bio,avatar_url,reviews!reviews_provider_id_fkey(rating)&order=created_at.desc', null, Config::get('SUPABASE_PUBLISHABLE_KEY')));
-    }
-
-    if ($route === 'payments/webhook' && $method === 'POST') {
-        $payload = input();
-        $paymentId = query('data_id') ?: (string) ($payload['data']['id'] ?? '');
-        if ($paymentId === '') {
-            respond(['received' => true]);
-        }
-        try {
-            WebhookSignatureValidator::validate(
-                $_SERVER['HTTP_X_SIGNATURE'] ?? null,
-                $_SERVER['HTTP_X_REQUEST_ID'] ?? null,
-                $paymentId,
-                Config::get('MERCADO_PAGO_WEBHOOK_SECRET'),
-                300,
-            );
-        } catch (InvalidWebhookSignatureException) {
-            throw new HttpError(401, 'Assinatura de webhook inválida.');
-        }
-        $payment = mercadoPago('GET', '/v1/payments/' . rawurlencode($paymentId));
-        $contractId = (int) ($payment['external_reference'] ?? 0);
-        if ($contractId > 0) {
-            $status = ($payment['status'] ?? '') === 'approved' ? 'pago' : (($payment['status'] ?? '') === 'rejected' ? 'recusado' : null);
-            if ($status !== null) {
-                $contracts = $db->rest('GET', 'contracts?id=eq.' . $contractId . '&select=*', null, '', true);
-                $contract = $contracts[0] ?? null;
-                $amountMatches = abs((float) ($payment['transaction_amount'] ?? 0) - (float) ($contract['amount'] ?? -1)) < 0.001;
-                $currencyMatches = ($payment['currency_id'] ?? '') === 'BRL';
-                $preferenceMatches = (string) ($payment['preference_id'] ?? '') === (string) ($contract['mercado_pago_preference_id'] ?? '');
-                if ($contract && $contract['status'] === 'aguardando_pagamento' && $amountMatches && $currencyMatches && $preferenceMatches) {
-                    $db->rest('PATCH', 'contracts?id=eq.' . $contractId, [
-                        'status' => $status,
-                        'mercado_pago_payment_id' => (string) $paymentId,
-                        'updated_at' => gmdate('c'),
-                    ], '', true);
-                    if ($status === 'pago') {
-                        $db->rest('POST', 'financial_entries', [[
-                            'owner_id' => $contract['provider_id'],
-                            'contract_id' => $contractId,
-                            'name' => $contract['description'],
-                            'amount' => Domain::providerNet((float) $contract['amount']),
-                            'service_date' => gmdate('Y-m-d'),
-                            'status' => 'Pendente',
-                            'source' => 'pagamento',
-                        ]], '', true);
-                    }
-                }
-            }
-        }
-        respond(['received' => true]);
     }
 
     if ($route === 'payments/abacatepay/webhook' && $method === 'POST') {
@@ -519,8 +437,7 @@ try {
         $contract = $db->rest('POST', 'rpc/begin_checkout', ['p_contract_id' => $contractId], $token);
         if (isset($contract[0]) && is_array($contract[0])) $contract = $contract[0];
         $baseUrl = rtrim(Config::get('APP_URL'), '/');
-        $abacatePayKey = abacatePayApiKey();
-        if ($abacatePayKey !== '') {
+        if (abacatePayApiKey() === '') throw new HttpError(503, 'A chave AbacatePay deste ambiente ainda não foi configurada.');
             $checkoutProductExternalId = 'nexlar-contract-' . $contractId;
             $product = abacatePay('GET', '/products/get?externalId=' . rawurlencode($checkoutProductExternalId), null, null, true);
             if (empty($product['id'])) {
@@ -544,27 +461,6 @@ try {
             if (!Domain::abacatePayModeMatches($checkout['devMode'] ?? null, true)) throw new HttpError(502, 'A AbacatePay retornou um checkout de outro ambiente. Confira a chave configurada.');
             $db->rest('POST', 'rpc/attach_abacate_checkout', ['p_contract_id' => $contractId, 'p_checkout_id' => (string) ($checkout['id'] ?? '')], $token);
             respond(['checkout_url' => $checkout['url'] ?? null]);
-        }
-        try {
-            $preferenceId = (string) ($contract['mercado_pago_preference_id'] ?? '');
-            if ($preferenceId !== '') {
-                $preference = mercadoPago('GET', '/checkout/preferences/' . rawurlencode($preferenceId));
-                respond(['checkout_url' => mercadoPagoSandboxCheckoutUrl($preference)]);
-            }
-            $preference = mercadoPago('POST', '/checkout/preferences', [
-                'items' => [[ 'title' => $contract['description'], 'quantity' => 1, 'currency_id' => 'BRL', 'unit_price' => (float) $contract['amount'] ]],
-                'external_reference' => (string) $contractId,
-                'back_urls' => [ 'success' => "$baseUrl/src/pages/painelmensagens.html?payment=success", 'pending' => "$baseUrl/src/pages/painelmensagens.html?payment=pending", 'failure' => "$baseUrl/src/pages/painelmensagens.html?payment=failure" ],
-                'auto_return' => 'approved',
-                'notification_url' => "$baseUrl/api/index.php?route=payments/webhook",
-            ], 'nexlar-contract-' . $contractId);
-            $sandboxCheckoutUrl = mercadoPagoSandboxCheckoutUrl($preference);
-            $db->rest('POST', 'rpc/attach_checkout', ['p_contract_id' => $contractId, 'p_preference_id' => $preference['id']], $token);
-        } catch (Throwable $error) {
-            $db->rest('POST', 'rpc/reset_checkout', ['p_contract_id' => $contractId], $token);
-            throw $error;
-        }
-        respond(['checkout_url' => $sandboxCheckoutUrl]);
     }
 
     if (preg_match('#^contracts/(\d+)/status$#', $route, $match) && $method === 'POST') {
