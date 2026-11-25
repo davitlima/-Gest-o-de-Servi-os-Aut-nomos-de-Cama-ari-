@@ -1,5 +1,4 @@
 describe('Página de Pagamento Nexlar', () => {
-
   beforeEach(() => {
     cy.visit('/src/pages/pagamento.html');
   });
@@ -16,19 +15,17 @@ describe('Página de Pagamento Nexlar', () => {
   });
 
   it('deve exibir o método PIX selecionado por padrão', () => {
-    cy.get('[data-pagamento="pix"]')
-      .should('have.class', 'ativo');
+    cy.get('[data-pagamento="pix"]').should('have.class', 'ativo');
   });
 
   it('deve exibir o código PIX', () => {
-    cy.get('#pix')
-      .should('be.visible');
+    cy.get('#pix').should('be.visible');
 
-  cy.get('#pix input[readonly]')
-    .should('be.visible')
-    .invoke('val')
-    .should('contain', 'BR.GOV.BCB.PIX');
-});
+    cy.get('#pix input[readonly]')
+      .should('be.visible')
+      .invoke('val')
+      .should('contain', 'BR.GOV.BCB.PIX');
+  });
 
   it('deve exibir o resumo do pedido', () => {
     cy.contains('Resumo do Pedido').should('be.visible');
@@ -37,25 +34,18 @@ describe('Página de Pagamento Nexlar', () => {
   });
 
   it('deve exibir o botão confirmar pagamento', () => {
-    cy.get('.btn-pagar')
-      .should('be.visible')
-      .and('contain', 'Confirmar Pagamento');
+    cy.get('.btn-pagar').should('be.visible').and('contain', 'Confirmar Pagamento');
   });
 
   it('deve exibir o botão copiar código PIX', () => {
-    cy.get('.copiar')
-      .should('be.visible');
+    cy.get('.copiar').should('be.visible');
   });
 
   it('deve possuir link para cancelar pagamento', () => {
-    cy.get('.cancelar')
-      .should('have.attr', 'href')
-      .and('include', 'painelmensagens');
+    cy.get('.cancelar').should('have.attr', 'href').and('include', 'painelmensagens');
   });
 
   it('deve carregar o VLibras', () => {
-    cy.get('[vw-access-button]')
-      .should('exist');
+    cy.get('[vw-access-button]').should('exist');
   });
-
 });

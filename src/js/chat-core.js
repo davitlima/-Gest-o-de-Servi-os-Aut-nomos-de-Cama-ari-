@@ -4,7 +4,7 @@
   else root.NexlarChat = api;
 })(typeof globalThis !== 'undefined' ? globalThis : window, function () {
   function mergeMessages(messages, incoming) {
-    const byId = new Map(messages.map(message => [String(message.id), message]));
+    const byId = new Map(messages.map((message) => [String(message.id), message]));
     if (incoming?.id !== undefined) byId.set(String(incoming.id), incoming);
     return [...byId.values()].sort((a, b) => {
       const dateOrder = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
@@ -34,5 +34,12 @@
     return Number(expectedId) === Number(activeId) && expectedGeneration === currentGeneration;
   }
 
-  return { mergeMessages, professionalChatUrl, profileUrl, connectionMode, belongsToConversation, isCurrentOpen };
+  return {
+    mergeMessages,
+    professionalChatUrl,
+    profileUrl,
+    connectionMode,
+    belongsToConversation,
+    isCurrentOpen,
+  };
 });

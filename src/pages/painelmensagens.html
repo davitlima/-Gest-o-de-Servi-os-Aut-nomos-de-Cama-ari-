@@ -1,124 +1,249 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Nexlar – Mensagens</title>
-  <link rel="stylesheet" href="/src/css/painelmensagens.css" />
-  <link rel="stylesheet" href="/src/css/responsive.css" />
-  <link rel="stylesheet" href="/src/css/panel-nav.css" />
-  <script src="/src/js/panel-nav.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="/src/js/api.js" defer></script>
-  <script src="/src/js/chat-core.js" defer></script>
-  <script src="/src/js/painelmensagens.js" defer></script>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Nexlar – Mensagens</title>
+    <link rel="stylesheet" href="/src/css/painelmensagens.css" />
+    <link rel="stylesheet" href="/src/css/responsive.css" />
+    <link rel="stylesheet" href="/src/css/panel-nav.css" />
+    <script src="/src/js/panel-nav.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="/src/js/api.js" defer></script>
+    <script src="/src/js/chat-core.js" defer></script>
+    <script src="/src/js/painelmensagens.js" defer></script>
+  </head>
+  <body>
+    <nexlar-panel-nav active="mensagens"></nexlar-panel-nav>
 
-  <nexlar-panel-nav active="mensagens"></nexlar-panel-nav>
+    <div class="main-wrapper">
+      <section class="messages-panel" id="messagesPanel">
+        <h1 class="panel-title">Mensagens</h1>
 
-  <div class="main-wrapper">
-
-    <section class="messages-panel" id="messagesPanel">
-      <h1 class="panel-title">Mensagens</h1>
-
-      <div class="search-wrapper">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input type="search" class="search-input" placeholder="Buscar conversas..." id="searchInput" aria-label="Buscar conversas" />
-      </div>
-
-      <ul class="conversation-list" id="conversationList" aria-live="polite"></ul>
-      <section class="messages-support" aria-labelledby="messagesSupportTitle">
-        <h2 id="messagesSupportTitle">Denúncias e suporte</h2>
-        <p>Precisa de ajuda ou quer relatar uma situação?</p>
-        <a href="suporte.html">Acessar suporte</a>
-      </section>
-    </section>
-
-    <section class="chat-area" id="chatArea">
-      <div class="empty-state" id="emptyState">
-        <div class="empty-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        <div class="search-wrapper">
+          <svg
+            class="search-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
+          <input
+            type="search"
+            class="search-input"
+            placeholder="Buscar conversas..."
+            id="searchInput"
+            aria-label="Buscar conversas"
+          />
         </div>
-        <h2 class="empty-title">Selecione uma conversa</h2>
-        <p class="empty-sub">Escolha um contato para iniciar ou continuar a conversa</p>
-      </div>
 
-      <div class="chat-view" id="chatView" style="display:none;">
-        <div class="chat-header" id="chatHeader">
-          <button class="back-btn" id="backBtn" aria-label="Voltar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"/>
+        <ul class="conversation-list" id="conversationList" aria-live="polite"></ul>
+        <section class="messages-support" aria-labelledby="messagesSupportTitle">
+          <h2 id="messagesSupportTitle">Denúncias e suporte</h2>
+          <p>Precisa de ajuda ou quer relatar uma situação?</p>
+          <a href="suporte.html">Acessar suporte</a>
+        </section>
+      </section>
+
+      <section class="chat-area" id="chatArea">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-          </button>
-          <div class="chat-header-avatar" id="chatHeaderAvatar"></div>
-          <div>
-            <a class="chat-header-name" id="chatHeaderName"></a>
-            <div class="chat-header-status" id="connectionStatus" role="status" aria-live="polite">Conectando…</div>
           </div>
-          <button class="chat-propose-btn" id="proposeBtn" type="button">Propor serviço</button>
+          <h2 class="empty-title">Selecione uma conversa</h2>
+          <p class="empty-sub">Escolha um contato para iniciar ou continuar a conversa</p>
         </div>
 
-        <div class="chat-messages" id="chatMessages" aria-label="Histórico da conversa" aria-live="polite" aria-relevant="additions"></div>
+        <div class="chat-view" id="chatView" style="display: none">
+          <div class="chat-header" id="chatHeader">
+            <button class="back-btn" id="backBtn" aria-label="Voltar">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <div class="chat-header-avatar" id="chatHeaderAvatar"></div>
+            <div>
+              <a class="chat-header-name" id="chatHeaderName"></a>
+              <div
+                class="chat-header-status"
+                id="connectionStatus"
+                role="status"
+                aria-live="polite"
+              >
+                Conectando…
+              </div>
+            </div>
+            <button class="chat-propose-btn" id="proposeBtn" type="button">Propor serviço</button>
+          </div>
 
-        <div id="chatFeedback" class="chat-feedback" role="status" aria-live="polite" hidden></div>
-        <div class="chat-input-bar">
-          <input type="file" id="attachmentInput" hidden accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,text/plain,.doc,.docx,.xls,.xlsx,.zip,audio/*" />
-          <button class="chat-tool-btn" id="attachBtn" type="button" aria-label="Anexar arquivo ou áudio" title="Anexar arquivo ou áudio">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.4 11.1-8.9 8.9a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg>
-          </button>
-          <button class="chat-tool-btn" id="recordBtn" type="button" aria-label="Segure para gravar e solte para enviar" title="Segure para gravar e solte para enviar" aria-pressed="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5m-4 0h8"/></svg>
-          </button>
-          <span id="recordingStatus" class="recording-status" role="status" aria-live="polite" hidden>Gravando áudio…</span>
-          <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem..." aria-label="Mensagem" maxlength="4000" autocomplete="off" />
-          <button class="send-btn" id="sendBtn" aria-label="Enviar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"/>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-            </svg>
-          </button>
+          <div
+            class="chat-messages"
+            id="chatMessages"
+            aria-label="Histórico da conversa"
+            aria-live="polite"
+            aria-relevant="additions"
+          ></div>
+
+          <div
+            id="chatFeedback"
+            class="chat-feedback"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></div>
+          <div class="chat-input-bar">
+            <input
+              type="file"
+              id="attachmentInput"
+              hidden
+              accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,text/plain,.doc,.docx,.xls,.xlsx,.zip,audio/*"
+            />
+            <button
+              class="chat-tool-btn"
+              id="attachBtn"
+              type="button"
+              aria-label="Anexar arquivo ou áudio"
+              title="Anexar arquivo ou áudio"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="m21.4 11.1-8.9 8.9a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"
+                />
+              </svg>
+            </button>
+            <button
+              class="chat-tool-btn"
+              id="recordBtn"
+              type="button"
+              aria-label="Segure para gravar e solte para enviar"
+              title="Segure para gravar e solte para enviar"
+              aria-pressed="false"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="9" y="2" width="6" height="12" rx="3" />
+                <path d="M5 10a7 7 0 0 0 14 0M12 17v5m-4 0h8" />
+              </svg>
+            </button>
+            <span
+              id="recordingStatus"
+              class="recording-status"
+              role="status"
+              aria-live="polite"
+              hidden
+              >Gravando áudio…</span
+            >
+            <input
+              type="text"
+              class="chat-input"
+              id="chatInput"
+              placeholder="Digite sua mensagem..."
+              aria-label="Mensagem"
+              maxlength="4000"
+              autocomplete="off"
+            />
+            <button class="send-btn" id="sendBtn" aria-label="Enviar">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
-  </div>
+    <dialog class="proposal-dialog" id="proposalDialog" aria-labelledby="proposalTitle">
+      <form method="dialog" class="proposal-panel" id="proposalForm">
+        <button class="proposal-close" value="cancel" aria-label="Fechar">×</button>
+        <h2 id="proposalTitle">Enviar proposta</h2>
+        <p class="proposal-intro">
+          Descreva o serviço e combine o valor antes de enviar ao cliente.
+        </p>
+        <label for="proposalDescription">Serviço combinado</label>
+        <textarea
+          id="proposalDescription"
+          required
+          maxlength="240"
+          placeholder="Ex.: Instalação de tomadas e revisão elétrica"
+        ></textarea>
+        <label for="proposalAmount">Valor total do serviço</label>
+        <div class="proposal-amount">
+          <span>R$</span
+          ><input
+            id="proposalAmount"
+            type="number"
+            min="0.01"
+            step="0.01"
+            inputmode="decimal"
+            required
+            placeholder="0,00"
+          />
+        </div>
+        <label for="proposalScheduledAt">Data e horário do serviço (opcional)</label>
+        <input id="proposalScheduledAt" type="datetime-local" />
+        <label for="proposalDuration">Duração prevista (minutos, opcional)</label>
+        <input id="proposalDuration" type="number" min="15" max="1440" step="15" placeholder="60" />
+        <label for="proposalLocation">Local combinado (opcional)</label>
+        <input id="proposalLocation" type="text" maxlength="300" placeholder="Endereço ou bairro" />
+        <div class="proposal-breakdown">
+          <div><span>Valor do serviço</span><strong id="proposalGross">R$ 0,00</strong></div>
+          <div><span>Taxa Nexlar (15%)</span><strong id="proposalFee">R$ 0,00</strong></div>
+          <div class="proposal-net">
+            <span>Você recebe (85%)</span><strong id="proposalNet">R$ 0,00</strong>
+          </div>
+        </div>
+        <p class="proposal-terms">
+          O cliente paga pelo checkout seguro. Depois do serviço, ele pode confirmar ou contestar em
+          até 72 horas. Sem contestação, o repasse de 85% é liberado automaticamente para sua chave
+          Pix; a taxa Pix fica com a Nexlar.
+        </p>
+        <p class="proposal-error" id="proposalError" role="alert"></p>
+        <button class="proposal-submit" id="proposalSubmit" value="default">Enviar proposta</button>
+      </form>
+    </dialog>
 
-  <dialog class="proposal-dialog" id="proposalDialog" aria-labelledby="proposalTitle">
-    <form method="dialog" class="proposal-panel" id="proposalForm">
-      <button class="proposal-close" value="cancel" aria-label="Fechar">×</button>
-      <h2 id="proposalTitle">Enviar proposta</h2>
-      <p class="proposal-intro">Descreva o serviço e combine o valor antes de enviar ao cliente.</p>
-      <label for="proposalDescription">Serviço combinado</label>
-      <textarea id="proposalDescription" required maxlength="240" placeholder="Ex.: Instalação de tomadas e revisão elétrica"></textarea>
-      <label for="proposalAmount">Valor total do serviço</label>
-      <div class="proposal-amount"><span>R$</span><input id="proposalAmount" type="number" min="0.01" step="0.01" inputmode="decimal" required placeholder="0,00"></div>
-      <label for="proposalScheduledAt">Data e horário do serviço (opcional)</label>
-      <input id="proposalScheduledAt" type="datetime-local">
-      <label for="proposalDuration">Duração prevista (minutos, opcional)</label>
-      <input id="proposalDuration" type="number" min="15" max="1440" step="15" placeholder="60">
-      <label for="proposalLocation">Local combinado (opcional)</label>
-      <input id="proposalLocation" type="text" maxlength="300" placeholder="Endereço ou bairro">
-      <div class="proposal-breakdown"><div><span>Valor do serviço</span><strong id="proposalGross">R$ 0,00</strong></div><div><span>Taxa Nexlar (15%)</span><strong id="proposalFee">R$ 0,00</strong></div><div class="proposal-net"><span>Você recebe (85%)</span><strong id="proposalNet">R$ 0,00</strong></div></div>
-      <p class="proposal-terms">O cliente paga pelo checkout seguro. Depois do serviço, ele pode confirmar ou contestar em até 72 horas. Sem contestação, o repasse de 85% é liberado automaticamente para sua chave Pix; a taxa Pix fica com a Nexlar.</p>
-      <p class="proposal-error" id="proposalError" role="alert"></p>
-      <button class="proposal-submit" id="proposalSubmit" value="default">Enviar proposta</button>
-    </form>
-  </dialog>
-
-  <a class="help-btn" href="suporte.html" aria-label="Abrir suporte">?</a>
-
-</body>
+    <a class="help-btn" href="suporte.html" aria-label="Abrir suporte">?</a>
+  </body>
 </html>
-
-
-
-
-
-
-

@@ -1,27 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 :root {
-  --bg:          #0d1120;
-  --card:        #ffffff;
-  --primary:     #0d1120;
+  --bg: #0d1120;
+  --card: #ffffff;
+  --primary: #0d1120;
   --placeholder: #9ca3af;
-  --border:      #e5e7eb;
-  --input-bg:    #f9fafb;
-  --text-dark:   #111827;
-  --text-mid:    #374151;
-  --radius:      18px;
-  --shadow:      0 24px 60px rgba(0,0,0,0.35),
-                 0 4px 16px  rgba(0,0,0,0.2);
+  --border: #e5e7eb;
+  --input-bg: #f9fafb;
+  --text-dark: #111827;
+  --text-mid: #374151;
+  --radius: 18px;
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.35), 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-html, body {
+html,
+body {
   min-height: 100%;
   background-color: var(--bg);
   font-family: Inter, sans-serif;
@@ -118,7 +119,7 @@ body {
 .field input:focus {
   border-color: #334155;
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(13,17,32,0.05);
+  box-shadow: 0 0 0 3px rgba(13, 17, 32, 0.05);
 }
 
 .terms-wrap {
@@ -128,12 +129,32 @@ body {
   margin-bottom: 24px;
 }
 
-.provider-fields { display:grid; gap:8px; margin:0 0 20px; }
-.provider-fields select { width:100%; min-height:48px; padding:12px 14px; border:1px solid var(--border); border-radius:10px; background:#fff; color:var(--text-dark); font:inherit; }
-.provider-fields .field-label { color:var(--text-mid); font-size:13px; font-weight:600; }
-.provider-fields select:focus-visible { outline:3px solid #7774ff; outline-offset:2px; }
+.provider-fields {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 20px;
+}
+.provider-fields select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text-dark);
+  font: inherit;
+}
+.provider-fields .field-label {
+  color: var(--text-mid);
+  font-size: 13px;
+  font-weight: 600;
+}
+.provider-fields select:focus-visible {
+  outline: 3px solid #7774ff;
+  outline-offset: 2px;
+}
 
-.terms-wrap input[type="checkbox"] {
+.terms-wrap input[type='checkbox'] {
   width: 18px;
   height: 18px;
   cursor: pointer;
@@ -235,9 +256,17 @@ body {
   transition: transform 0.3s;
   z-index: 1000;
 }
-.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -1,5 +1,4 @@
 describe('Homepage Nexlar', () => {
-
   beforeEach(() => {
     cy.visit('/');
   });
@@ -28,14 +27,10 @@ describe('Homepage Nexlar', () => {
   });
 
   it('deve exibir botão ver profissionais', () => {
-    cy.get('.btn-profissionais')
-      .should('be.visible');
+    cy.get('.btn-profissionais').should('be.visible');
   });
 
   it('deve exibir botão enviar mensagem nos cards', () => {
-    cy.get('.btn-msg')
-      .first()
-      .should('be.visible');
+    cy.get('.btn-msg').first().should('be.visible');
   });
-
 });

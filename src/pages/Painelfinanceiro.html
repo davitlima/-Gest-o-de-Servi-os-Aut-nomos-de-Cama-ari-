@@ -1,211 +1,241 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <link rel="stylesheet" href="/src/css/page-transition.css" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Nexlar – Painel do Autônomo</title>
-  <link rel="stylesheet" href="/src/css/Painelfinanceiro.css" />
-  <link rel="stylesheet" href="/src/css/responsive.css" />
-  <link rel="stylesheet" href="/src/css/panel-nav.css" />
-  <script src="/src/js/panel-nav.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="/src/js/api.js" defer></script>
-  <script src="/src/js/Painelfinanceiro.js" defer></script>
-</head>
-<body>
+  <head>
+    <link rel="stylesheet" href="/src/css/page-transition.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Nexlar – Painel do Autônomo</title>
+    <link rel="stylesheet" href="/src/css/Painelfinanceiro.css" />
+    <link rel="stylesheet" href="/src/css/responsive.css" />
+    <link rel="stylesheet" href="/src/css/panel-nav.css" />
+    <script src="/src/js/panel-nav.js" defer></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+      defer
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="/src/js/api.js" defer></script>
+    <script src="/src/js/Painelfinanceiro.js" defer></script>
+  </head>
+  <body>
+    <nexlar-panel-nav active="financeiro"></nexlar-panel-nav>
 
-<nexlar-panel-nav active="financeiro"></nexlar-panel-nav>
+    <main class="main">
+      <header class="top-bar">
+        <div class="top-bar-title">
+          <h1>Painel do Autônomo</h1>
+        </div>
+        <button class="btn-primary" id="openModal">+ Adicionar Registro</button>
+      </header>
 
-<main class="main">
-  <header class="top-bar">
-    <div class="top-bar-title">
-      <h1>Painel do Autônomo</h1>
-    </div>
-    <button class="btn-primary" id="openModal">+ Adicionar Registro</button>
-  </header>
+      <section class="kpi-row">
+        <div class="card kpi-card">
+          <div class="card-header">
+            <div class="icon-wrap icon-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="5" width="20" height="14" rx="2" />
+                <line x1="2" y1="10" x2="22" y2="10" />
+              </svg>
+            </div>
+          </div>
+          <p class="kpi-label">Ganho do Mês</p>
+          <p class="kpi-value" id="ganhoMes">R$ 0,00</p>
+        </div>
 
-  <section class="kpi-row">
-    <div class="card kpi-card">
-      <div class="card-header">
-        <div class="icon-wrap icon-blue">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        <div class="card kpi-card">
+          <div class="card-header">
+            <div class="icon-wrap icon-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+          </div>
+          <p class="kpi-label">Média mensal</p>
+          <p class="kpi-value" id="mediaMensal">R$ 0,00</p>
+        </div>
+
+        <div class="card kpi-card">
+          <div class="card-header">
+            <div class="icon-wrap icon-purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+              </svg>
+            </div>
+          </div>
+          <p class="kpi-label">Meta mensal</p>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-info">
+            <span id="progressLabel">R$ 0,00 / R$ 0,00</span>
+            <span id="progressPct">0%</span>
+            <div class="goal-editor">
+              <label for="monthlyGoal">Definir meta mensal</label>
+              <div class="goal-editor-controls">
+                <input
+                  id="monthlyGoal"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  inputmode="decimal"
+                  placeholder="R$ 0,00"
+                />
+                <button id="saveGoal" type="button">Salvar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chart-row">
+        <div class="card chart-card">
+          <h3>Ganhos</h3>
+          <canvas id="barChart"></canvas>
+        </div>
+        <div class="card chart-card">
+          <h3>Vendas</h3>
+          <canvas id="lineChart"></canvas>
+        </div>
+      </section>
+
+      <section class="history-section">
+        <h3>Repasse das contratações</h3>
+        <p>
+          Seu valor de 85% é liberado após a confirmação do cliente ou automaticamente depois de 72
+          horas sem contestação. A tarifa Pix da AbacatePay é absorvida pela comissão da Nexlar.
+        </p>
+        <section class="payout-settings card" aria-labelledby="pixTitle">
+          <h3 id="pixTitle">Chave Pix para receber</h3>
+          <p id="pixCurrent" aria-live="polite">Carregando chave Pix…</p>
+          <div class="payout-pix-form">
+            <label for="pixType">Tipo</label>
+            <select id="pixType">
+              <option value="CPF">CPF</option>
+              <option value="CNPJ">CNPJ</option>
+              <option value="PHONE">Telefone</option>
+              <option value="EMAIL">E-mail</option>
+              <option value="RANDOM">Aleatória</option>
+            </select>
+            <label for="pixKey">Chave Pix</label
+            ><input
+              id="pixKey"
+              type="text"
+              autocomplete="off"
+              maxlength="200"
+              placeholder="Digite sua chave Pix"
+            />
+            <button class="btn-primary" id="savePix" type="button">Salvar chave Pix</button>
+          </div>
+        </section>
+        <div id="payoutList" class="payout-list" aria-live="polite">
+          <p class="empty-state">Carregando repasses…</p>
+        </div>
+      </section>
+
+      <section class="history-section">
+        <h3>Histórico de Serviços</h3>
+        <div id="historyList">
+          <p class="empty-state">Nenhum registro ainda. Clique em "Adicionar Registro".</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="modalTitle">Adicionar Registro</h2>
+          <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="fNome">Nome do Serviço</label>
+            <input type="text" id="fNome" placeholder="Ex: Instalação Elétrica - Centro" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fCategoria">Categoria</label>
+              <select id="fCategoria">
+                <option value="">Selecione</option>
+                <option value="Serviço Residencial">Serviço Residencial</option>
+                <option value="Instalação Elétrica">Instalação Elétrica</option>
+                <option value="Manutenção Preventiva">Manutenção Preventiva</option>
+                <option value="Serviço Comercial">Serviço Comercial</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="fMes">Mês</label>
+              <select id="fMes">
+                <option value="0">Janeiro</option>
+                <option value="1">Fevereiro</option>
+                <option value="2">Março</option>
+                <option value="3">Abril</option>
+                <option value="4">Maio</option>
+                <option value="5">Junho</option>
+                <option value="6">Julho</option>
+                <option value="7">Agosto</option>
+                <option value="8">Setembro</option>
+                <option value="9">Outubro</option>
+                <option value="10">Novembro</option>
+                <option value="11">Dezembro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fValor">Valor (R$)</label>
+              <input type="number" id="fValor" placeholder="0.00" min="0" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label for="fData">Data</label>
+              <input type="date" id="fData" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fCliente">Cliente / Local</label>
+            <input type="text" id="fCliente" placeholder="Ex: Inocoop, Gleba A..." />
+          </div>
+          <div class="form-group">
+            <label for="fStatus">Status</label>
+            <select id="fStatus">
+              <option value="Concluído">Concluído</option>
+              <option value="Em andamento">Em andamento</option>
+              <option value="Pendente">Pendente</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fObs">Observações</label>
+            <textarea id="fObs" rows="2" placeholder="Detalhes adicionais..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="cancelModal">Cancelar</button>
+          <button class="btn-primary" id="saveModal">Salvar Registro</button>
         </div>
       </div>
-      <p class="kpi-label">Ganho do Mês</p>
-      <p class="kpi-value" id="ganhoMes">R$ 0,00</p>
     </div>
 
-    <div class="card kpi-card">
-      <div class="card-header">
-        <div class="icon-wrap icon-green">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    <div class="modal-overlay" id="inspectOverlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Detalhes do Serviço</h2>
+          <button class="modal-close" id="closeInspect">&times;</button>
         </div>
-      </div>
-      <p class="kpi-label">Média mensal</p>
-      <p class="kpi-value" id="mediaMensal">R$ 0,00</p>
-    </div>
-
-    <div class="card kpi-card">
-      <div class="card-header">
-        <div class="icon-wrap icon-purple">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-        </div>
-      </div>
-      <p class="kpi-label">Meta mensal</p>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill" style="width:0%"></div>
-      </div>
-      <div class="progress-info">
-        <span id="progressLabel">R$ 0,00 / R$ 0,00</span>
-        <span id="progressPct">0%</span>
-        <div class="goal-editor">
-          <label for="monthlyGoal">Definir meta mensal</label>
-          <div class="goal-editor-controls">
-            <input id="monthlyGoal" type="number" min="0" step="0.01" inputmode="decimal" placeholder="R$ 0,00">
-            <button id="saveGoal" type="button">Salvar</button>
+        <div class="modal-body" id="inspectBody"></div>
+        <div class="modal-footer" style="justify-content: space-between">
+          <button class="btn-danger" id="deleteRecord">🗑 Excluir</button>
+          <div style="display: flex; gap: 10px">
+            <button class="btn-secondary" id="closeInspect2">Fechar</button>
+            <button class="btn-primary" id="editRecord">✏ Editar</button>
           </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <section class="chart-row">
-    <div class="card chart-card">
-      <h3>Ganhos</h3>
-      <canvas id="barChart"></canvas>
-    </div>
-    <div class="card chart-card">
-      <h3>Vendas</h3>
-      <canvas id="lineChart"></canvas>
-    </div>
-  </section>
+    <div class="toast" id="toast"></div>
 
-  <section class="history-section">
-    <h3>Repasse das contratações</h3>
-    <p>Seu valor de 85% é liberado após a confirmação do cliente ou automaticamente depois de 72 horas sem contestação. A tarifa Pix da AbacatePay é absorvida pela comissão da Nexlar.</p>
-    <section class="payout-settings card" aria-labelledby="pixTitle">
-      <h3 id="pixTitle">Chave Pix para receber</h3>
-      <p id="pixCurrent" aria-live="polite">Carregando chave Pix…</p>
-      <div class="payout-pix-form">
-        <label for="pixType">Tipo</label>
-        <select id="pixType"><option value="CPF">CPF</option><option value="CNPJ">CNPJ</option><option value="PHONE">Telefone</option><option value="EMAIL">E-mail</option><option value="RANDOM">Aleatória</option></select>
-        <label for="pixKey">Chave Pix</label><input id="pixKey" type="text" autocomplete="off" maxlength="200" placeholder="Digite sua chave Pix">
-        <button class="btn-primary" id="savePix" type="button">Salvar chave Pix</button>
-      </div>
-    </section>
-    <div id="payoutList" class="payout-list" aria-live="polite"><p class="empty-state">Carregando repasses…</p></div>
-  </section>
-
-  <section class="history-section">
-    <h3>Histórico de Serviços</h3>
-    <div id="historyList">
-      <p class="empty-state">Nenhum registro ainda. Clique em "Adicionar Registro".</p>
-    </div>
-  </section>
-</main>
-
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="modalTitle">Adicionar Registro</h2>
-      <button class="modal-close" id="closeModal">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label for="fNome">Nome do Serviço</label>
-        <input type="text" id="fNome" placeholder="Ex: Instalação Elétrica - Centro" />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="fCategoria">Categoria</label>
-          <select id="fCategoria">
-            <option value="">Selecione</option>
-            <option value="Serviço Residencial">Serviço Residencial</option>
-            <option value="Instalação Elétrica">Instalação Elétrica</option>
-            <option value="Manutenção Preventiva">Manutenção Preventiva</option>
-            <option value="Serviço Comercial">Serviço Comercial</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="fMes">Mês</label>
-          <select id="fMes">
-            <option value="0">Janeiro</option>
-            <option value="1">Fevereiro</option>
-            <option value="2">Março</option>
-            <option value="3">Abril</option>
-            <option value="4">Maio</option>
-            <option value="5">Junho</option>
-            <option value="6">Julho</option>
-            <option value="7">Agosto</option>
-            <option value="8">Setembro</option>
-            <option value="9">Outubro</option>
-            <option value="10">Novembro</option>
-            <option value="11">Dezembro</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="fValor">Valor (R$)</label>
-          <input type="number" id="fValor" placeholder="0.00" min="0" step="0.01" />
-        </div>
-        <div class="form-group">
-          <label for="fData">Data</label>
-          <input type="date" id="fData" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="fCliente">Cliente / Local</label>
-        <input type="text" id="fCliente" placeholder="Ex: Inocoop, Gleba A..." />
-      </div>
-      <div class="form-group">
-        <label for="fStatus">Status</label>
-        <select id="fStatus">
-          <option value="Concluído">Concluído</option>
-          <option value="Em andamento">Em andamento</option>
-          <option value="Pendente">Pendente</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="fObs">Observações</label>
-        <textarea id="fObs" rows="2" placeholder="Detalhes adicionais..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" id="cancelModal">Cancelar</button>
-      <button class="btn-primary" id="saveModal">Salvar Registro</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="inspectOverlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Detalhes do Serviço</h2>
-      <button class="modal-close" id="closeInspect">&times;</button>
-    </div>
-    <div class="modal-body" id="inspectBody"></div>
-    <div class="modal-footer" style="justify-content:space-between">
-      <button class="btn-danger" id="deleteRecord">🗑 Excluir</button>
-      <div style="display:flex;gap:10px">
-        <button class="btn-secondary" id="closeInspect2">Fechar</button>
-        <button class="btn-primary" id="editRecord">✏ Editar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-  <script src="/src/js/deferred-widgets.js" defer></script>
-</body>
+    <script src="/src/js/deferred-widgets.js" defer></script>
+  </body>
 </html>
-
-
-
-
-
-

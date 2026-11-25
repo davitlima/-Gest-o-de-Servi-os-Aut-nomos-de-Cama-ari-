@@ -1,143 +1,169 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-  <title>Nexlar - Início</title>
-  <link rel="stylesheet" href="/src/css/inicio.css"/>
-  <link rel="stylesheet" href="/src/css/responsive.css"/>
-  <link rel="stylesheet" href="/src/css/page-transition.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-</head>
-<body>
-
-  <header class="navbar">
-    <div class="logo">
-        <img src="/src/images/image-removebg-preview.png" alt="Logo do site"/>
-    </div>
-
-    <div class="nav-actions">
-      <a class="btn-outline" id="financePanelLink" href="Painelfinanceiro.html" hidden>Painel</a>
-      
-      <a class="btn-solid" href="Meuperfil.html">Meu Perfil</a>
-      
-      <button class="btn-icon" id="logoutButton" type="button" aria-label="Sair">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <polyline points="16 17 21 12 16 7"/>
-          <line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-      </button>
-    </div>
-  </header>
-
-  <main>
-
-    <section class="hero">
-      <h1>Encontre quem faz direito.</h1>
-      <p>Profissionais cadastrados e avaliações de serviços concluídos</p>
-      <div class="filters">
-        <label class="search-bar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input type="search" id="search-input" placeholder="Buscar profissional, serviço ou bairro" aria-label="Buscar profissional, serviço ou bairro"/>
-        </label>
-        <select id="sel-servico" aria-label="Serviço">
-          <option value="">Serviço</option>
-          <option value="construcao">Construção</option>
-          <option value="eletrica">Elétrica</option>
-          <option value="hidraulica">Hidráulica</option>
-          <option value="pintura">Pintura</option>
-          <option value="limpeza">Limpeza</option>
-          <option value="jardinagem">Jardinagem</option>
-          <option value="mudancas">Mudanças</option>
-        </select>
-        <select id="sel-bairro" aria-label="Bairro">
-          <option value="">Bairro (Todos)</option>
-          
-          <optgroup label="Sede">
-            <option value="centro">Centro</option>
-            <option value="gleba-a">Gleba A</option>
-            <option value="gleba-b">Gleba B</option>
-            <option value="gleba-c">Gleba C</option>
-            <option value="gleba-e">Gleba E</option>
-            <option value="inocoop">Inocoop</option>
-            <option value="ponto-certo">Ponto Certo</option>
-            <option value="parque-satelite">Parque Satélite</option>
-            <option value="ficam">Ficam</option>
-            <option value="mangueiral">Mangueiral</option>
-            <option value="nova-vitoria">Nova Vitória</option>
-            <option value="lama-preta">Lama Preta</option>
-            <option value="verde-horizonte">Verde Horizonte</option>
-            <option value="parafuso">Parafuso</option>
-            <option value="parque-nascente">Parque Nascente</option>
-            <option value="gravata">Gravatá</option>
-            <option value="phoc-1">Phoc I</option>
-            <option value="phoc-2">Phoc II</option>
-            <option value="phoc-3">Phoc III</option>
-          </optgroup>
-
-          <optgroup label="Orla (Costa de Camaçari)">
-            <option value="busca-vida">Busca Vida</option>
-            <option value="vila-de-abrantes">Vila de Abrantes</option>
-            <option value="jaua">Jauá</option>
-            <option value="arembepe">Arembepe</option>
-            <option value="barra-do-jacuipe">Barra do Jacuípe</option>
-            <option value="guarajuba">Guarajuba</option>
-            <option value="itacimirim">Itacimirim</option>
-            <option value="monte-gordo">Monte Gordo</option>
-          </optgroup>
-        </select>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
+    <title>Nexlar - Início</title>
+    <link rel="stylesheet" href="/src/css/inicio.css" />
+    <link rel="stylesheet" href="/src/css/responsive.css" />
+    <link rel="stylesheet" href="/src/css/page-transition.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">
+        <img src="/src/images/image-removebg-preview.png" alt="Logo do site" />
       </div>
-    </section>
 
-    <section class="categories">
-      <button class="cat" data-cat="construcao">Construção</button>
-      <button class="cat" data-cat="eletrica">Elétrica</button>
-      <button class="cat" data-cat="hidraulica">Hidráulica</button>
-      <button class="cat" data-cat="pintura">Pintura</button>
-      <button class="cat" data-cat="limpeza">Limpeza</button>
-      <button class="cat" data-cat="jardinagem">Jardinagem</button>
-      <button class="cat" data-cat="mudancas">Mudanças</button>
-      <button class="cat" data-cat="">Todos os serviços</button>
-    </section>
+      <div class="nav-actions">
+        <a class="btn-outline" id="financePanelLink" href="Painelfinanceiro.html" hidden>Painel</a>
 
-    <div class="results-toolbar"><p id="results-count" aria-live="polite">Carregando profissionais...</p><button id="clear-filters" type="button" hidden>Limpar filtros</button></div>
-    <p class="empty-state" id="no-results" hidden>Nenhum profissional encontrado com esses filtros.</p>
-    <section class="cards" id="cards" aria-live="polite">
-      <p class="empty-state">Carregando profissionais cadastrados...</p>
-    </section>
-  </main>
+        <a class="btn-solid" href="Meuperfil.html">Meu Perfil</a>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/src/js/api.js"></script>
-  <script src="/src/js/chat-core.js"></script>
-  <script src="/src/js/marketplace-core.js"></script>
-  <script src="/src/js/avatar-ui.js"></script>
-  <script src="/src/js/reviews-core.js"></script>
-  <script src="/src/js/professionals.js"></script>
-  <script src="/src/js/page-transition.js"></script>
-  <script>
-    document.getElementById('logoutButton').addEventListener('click', async event => {
-      const button = event.currentTarget;
-      button.disabled = true;
-      try {
-        const api = await window.nexlarReady;
-        const { error } = await api.supabase.auth.signOut();
-        if (error) throw error;
-        window.location.assign('/');
-      } catch (error) {
-        button.disabled = false;
-        alert(error.message || 'Não foi possível sair da conta. Tente novamente.');
-      }
-    });
-  </script>
-  <script src="/src/js/deferred-widgets.js" defer></script>
-</body>
+        <button class="btn-icon" id="logoutButton" type="button" aria-label="Sair">
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Encontre quem faz direito.</h1>
+        <p>Profissionais cadastrados e avaliações de serviços concluídos</p>
+        <div class="filters">
+          <label class="search-bar">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="search"
+              id="search-input"
+              placeholder="Buscar profissional, serviço ou bairro"
+              aria-label="Buscar profissional, serviço ou bairro"
+            />
+          </label>
+          <select id="sel-servico" aria-label="Serviço">
+            <option value="">Serviço</option>
+            <option value="construcao">Construção</option>
+            <option value="eletrica">Elétrica</option>
+            <option value="hidraulica">Hidráulica</option>
+            <option value="pintura">Pintura</option>
+            <option value="limpeza">Limpeza</option>
+            <option value="jardinagem">Jardinagem</option>
+            <option value="mudancas">Mudanças</option>
+          </select>
+          <select id="sel-bairro" aria-label="Bairro">
+            <option value="">Bairro (Todos)</option>
+
+            <optgroup label="Sede">
+              <option value="centro">Centro</option>
+              <option value="gleba-a">Gleba A</option>
+              <option value="gleba-b">Gleba B</option>
+              <option value="gleba-c">Gleba C</option>
+              <option value="gleba-e">Gleba E</option>
+              <option value="inocoop">Inocoop</option>
+              <option value="ponto-certo">Ponto Certo</option>
+              <option value="parque-satelite">Parque Satélite</option>
+              <option value="ficam">Ficam</option>
+              <option value="mangueiral">Mangueiral</option>
+              <option value="nova-vitoria">Nova Vitória</option>
+              <option value="lama-preta">Lama Preta</option>
+              <option value="verde-horizonte">Verde Horizonte</option>
+              <option value="parafuso">Parafuso</option>
+              <option value="parque-nascente">Parque Nascente</option>
+              <option value="gravata">Gravatá</option>
+              <option value="phoc-1">Phoc I</option>
+              <option value="phoc-2">Phoc II</option>
+              <option value="phoc-3">Phoc III</option>
+            </optgroup>
+
+            <optgroup label="Orla (Costa de Camaçari)">
+              <option value="busca-vida">Busca Vida</option>
+              <option value="vila-de-abrantes">Vila de Abrantes</option>
+              <option value="jaua">Jauá</option>
+              <option value="arembepe">Arembepe</option>
+              <option value="barra-do-jacuipe">Barra do Jacuípe</option>
+              <option value="guarajuba">Guarajuba</option>
+              <option value="itacimirim">Itacimirim</option>
+              <option value="monte-gordo">Monte Gordo</option>
+            </optgroup>
+          </select>
+        </div>
+      </section>
+
+      <section class="categories">
+        <button class="cat" data-cat="construcao">Construção</button>
+        <button class="cat" data-cat="eletrica">Elétrica</button>
+        <button class="cat" data-cat="hidraulica">Hidráulica</button>
+        <button class="cat" data-cat="pintura">Pintura</button>
+        <button class="cat" data-cat="limpeza">Limpeza</button>
+        <button class="cat" data-cat="jardinagem">Jardinagem</button>
+        <button class="cat" data-cat="mudancas">Mudanças</button>
+        <button class="cat" data-cat="">Todos os serviços</button>
+      </section>
+
+      <div class="results-toolbar">
+        <p id="results-count" aria-live="polite">Carregando profissionais...</p>
+        <button id="clear-filters" type="button" hidden>Limpar filtros</button>
+      </div>
+      <p class="empty-state" id="no-results" hidden>
+        Nenhum profissional encontrado com esses filtros.
+      </p>
+      <section class="cards" id="cards" aria-live="polite">
+        <p class="empty-state">Carregando profissionais cadastrados...</p>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/src/js/api.js"></script>
+    <script src="/src/js/chat-core.js"></script>
+    <script src="/src/js/marketplace-core.js"></script>
+    <script src="/src/js/avatar-ui.js"></script>
+    <script src="/src/js/reviews-core.js"></script>
+    <script src="/src/js/professionals.js"></script>
+    <script src="/src/js/page-transition.js"></script>
+    <script>
+      document.getElementById('logoutButton').addEventListener('click', async (event) => {
+        const button = event.currentTarget;
+        button.disabled = true;
+        try {
+          const api = await window.nexlarReady;
+          const { error } = await api.supabase.auth.signOut();
+          if (error) throw error;
+          window.location.assign('/');
+        } catch (error) {
+          button.disabled = false;
+          alert(error.message || 'Não foi possível sair da conta. Tente novamente.');
+        }
+      });
+    </script>
+    <script src="/src/js/deferred-widgets.js" defer></script>
+  </body>
 </html>
-
-
-
-
-

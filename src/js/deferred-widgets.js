@@ -4,13 +4,14 @@
   const start = () => {
     if (started) return;
     started = true;
-    interactionEvents.forEach(event => window.removeEventListener(event, activateWhenIdle));
+    interactionEvents.forEach((event) => window.removeEventListener(event, activateWhenIdle));
 
     const vlibras = document.createElement('script');
     vlibras.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
     vlibras.async = true;
     vlibras.onload = () => {
-      if (window.VLibras?.Widget) new window.VLibras.Widget({ rootPath: 'https://vlibras.gov.br/app', position: 'R' });
+      if (window.VLibras?.Widget)
+        new window.VLibras.Widget({ rootPath: 'https://vlibras.gov.br/app', position: 'R' });
     };
     document.head.appendChild(vlibras);
 
@@ -27,7 +28,9 @@
     if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout: 3000 });
     else window.setTimeout(start, 1200);
   };
-  interactionEvents.forEach(event => window.addEventListener(event, activateWhenIdle, { once: true, passive: true }));
+  interactionEvents.forEach((event) =>
+    window.addEventListener(event, activateWhenIdle, { once: true, passive: true })
+  );
 
   const schedule = () => window.setTimeout(activateWhenIdle, 8000);
   if (document.readyState === 'complete') schedule();

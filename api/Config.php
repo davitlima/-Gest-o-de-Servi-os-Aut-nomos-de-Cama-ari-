@@ -6,15 +6,13 @@ namespace Nexlar;
 
 final class Config
 {
-    public static function get(string $name, bool $required = true): string
-    {
-        $value = getenv($name);
-        if (($value === false || $value === '') && $required) {
-            throw new \RuntimeException("Variável de ambiente ausente: $name");
-        }
-
-        return $value === false ? '' : $value;
+  public static function get(string $name, bool $required = true): string
+  {
+    $value = getenv($name);
+    if (($value === false || $value === '') && $required) {
+      throw new \RuntimeException("Variável de ambiente ausente: $name");
     }
+
+    return $value === false ? '' : $value;
+  }
 }
-
-

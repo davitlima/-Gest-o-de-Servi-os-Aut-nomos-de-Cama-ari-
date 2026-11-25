@@ -1,14 +1,10 @@
 describe('Tela Inicial - Nexlar', () => {
-
   beforeEach(() => {
-    
     cy.visit('/src/pages/inicio.html');
   });
 
   it('Deve validar os componentes principais do cabeçalho e da seção hero', () => {
-  
     cy.get('.hero h1').should('have.text', 'Encontre quem faz direito.');
-
 
     cy.get('#sel-servico').should('have.value', '');
     cy.get('#sel-bairro').should('have.value', '');
@@ -17,10 +13,8 @@ describe('Tela Inicial - Nexlar', () => {
   });
 
   it('Deve filtrar os profissionais ao clicar em uma categoria rápida', () => {
-  
     cy.get('.categories .cat').contains('Elétrica').click();
 
-   
     cy.get('#cards .card:visible').each(($card) => {
       cy.wrap($card).should('have.attr', 'data-cat', 'eletrica');
     });
@@ -36,7 +30,7 @@ describe('Tela Inicial - Nexlar', () => {
     cy.get('#sel-bairro').select('inocoop');
 
     /**
-     * NOTA: Este teste assume que o seu arquivo 'inicio.js' adiciona regras 
+     * NOTA: Este teste assume que o seu arquivo 'inicio.js' adiciona regras
      * de display ou classes de ocultação no evento 'change' dos selects.
      */
     cy.get('#cards .card:visible').should('have.length', 1);
@@ -58,8 +52,6 @@ describe('Tela Inicial - Nexlar', () => {
   });
 
   it('Deve redirecionar para a página do perfil do profissional ao clicar no card', () => {
-   
-   
     cy.get('#cards .card').contains('Roberto Alencar').closest('.card').as('cardAlencar');
 
     cy.get('@cardAlencar')
@@ -68,7 +60,6 @@ describe('Tela Inicial - Nexlar', () => {
   });
 
   it('Deve abrir a tela de mensagens com stopPropagation correto ao clicar em Enviar Mensagem', () => {
-    
     cy.get('#cards .card')
       .contains('Sofia Paiva')
       .closest('.card')
@@ -77,11 +68,8 @@ describe('Tela Inicial - Nexlar', () => {
 
     cy.get('@botaoMensagem').should('have.attr', 'data-name', 'Sofia Paiva');
 
-    
-    cy.get('@botaoMensagem')
-      .closest('a')
-      .should('have.attr', 'href', 'painelmensagens.html');
-   
+    cy.get('@botaoMensagem').closest('a').should('have.attr', 'href', 'painelmensagens.html');
+
     cy.get('@botaoMensagem')
       .closest('a')
       .should('have.attr', 'onclick', 'event.stopPropagation();');

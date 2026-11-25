@@ -1,6 +1,10 @@
 const fakeSupabase = {
   auth: {
-    getSession: async () => ({ data: { session: { user: { id: 'user-1', email: 'teste@nexlar.com' }, access_token: 'token' } } }),
+    getSession: async () => ({
+      data: {
+        session: { user: { id: 'user-1', email: 'teste@nexlar.com' }, access_token: 'token' },
+      },
+    }),
     signOut: async () => ({}),
   },
   storage: {
@@ -13,9 +17,18 @@ const fakeSupabase = {
 };
 
 function visitProfile() {
-  cy.intercept('GET', '/api/index.php?route=config', { supabaseUrl: 'https://example.supabase.co', supabaseKey: 'public-key' });
+  cy.intercept('GET', '/api/index.php?route=config', {
+    supabaseUrl: 'https://example.supabase.co',
+    supabaseKey: 'public-key',
+  });
   cy.intercept('GET', '/api/index.php?route=me', {
-    id: 'user-1', role: 'cliente', full_name: 'Felipe Souza Nascimento', phone: '', neighborhood: '', bio: '', avatar_url: null,
+    id: 'user-1',
+    role: 'cliente',
+    full_name: 'Felipe Souza Nascimento',
+    phone: '',
+    neighborhood: '',
+    bio: '',
+    avatar_url: null,
   });
   cy.visit('/src/pages/Meuperfil.html', {
     onBeforeLoad(win) {
@@ -44,11 +57,14 @@ describe('Modal de upload de avatar', () => {
 
   it('rejeita arquivo fora da lista permitida', () => {
     cy.get('.btn-photo').click();
-    cy.get('#avatarFileInput').selectFile({
-      contents: Cypress.Buffer.from('<svg></svg>'),
-      fileName: 'avatar.svg',
-      mimeType: 'image/svg+xml',
-    }, { force: true });
+    cy.get('#avatarFileInput').selectFile(
+      {
+        contents: Cypress.Buffer.from('<svg></svg>'),
+        fileName: 'avatar.svg',
+        mimeType: 'image/svg+xml',
+      },
+      { force: true }
+    );
     cy.get('#avatarUploadMessage').should('contain', 'JPG, PNG, GIF ou WebP');
     cy.get('#saveAvatarUpload').should('be.disabled');
   });

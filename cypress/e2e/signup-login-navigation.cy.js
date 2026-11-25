@@ -56,7 +56,8 @@ describe('Navegação dos cadastros para o login', () => {
     cy.get('#btnContinuar').click();
 
     cy.get('#toast').should('contain', 'Cadastro criado');
-    cy.get('.signup-login-link').should('be.visible')
+    cy.get('.signup-login-link')
+      .should('be.visible')
       .and('have.attr', 'href', '/src/pages/login.html');
   });
 });

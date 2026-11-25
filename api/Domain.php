@@ -6,158 +6,192 @@ namespace Nexlar;
 
 final class Domain
 {
-    public static function canOfferServices(string $role): bool
-    {
-        return in_array($role, ['autonomo', 'empresa'], true);
+  public static function canOfferServices(string $role): bool
+  {
+    return in_array($role, ['autonomo', 'empresa'], true);
+  }
+
+  public static function canUseFinance(string $role): bool
+  {
+    return self::canOfferServices($role);
+  }
+
+  public static function validPortfolioImage(
+    string $imageUrl,
+    string $storagePath,
+    string $userId,
+    string $supabaseUrl,
+  ): bool {
+    $pathPattern = '#^' . preg_quote($userId, '#') . '/portfolio/[A-Za-z0-9][A-Za-z0-9._-]*$#D';
+    if (
+      !preg_match($pathPattern, $storagePath) ||
+      filter_var($imageUrl, FILTER_VALIDATE_URL) === false
+    ) {
+      return false;
     }
 
-    public static function canUseFinance(string $role): bool
-    {
-        return self::canOfferServices($role);
+    $expectedUrl = rtrim($supabaseUrl, '/') . '/storage/v1/object/public/avatars/' . $storagePath;
+    return hash_equals($expectedUrl, $imageUrl);
+  }
+
+  public static function validPortfolioImages(
+    array $images,
+    string $userId,
+    string $supabaseUrl,
+    array $legacyImages = [],
+  ): bool {
+    if (count($images) < 1 || count($images) > 5) {
+      return false;
     }
 
-    public static function validPortfolioImage(string $imageUrl, string $storagePath, string $userId, string $supabaseUrl): bool
-    {
-        $pathPattern = '#^' . preg_quote($userId, '#') . '/portfolio/[A-Za-z0-9][A-Za-z0-9._-]*$#D';
-        if (!preg_match($pathPattern, $storagePath) || filter_var($imageUrl, FILTER_VALIDATE_URL) === false) {
-            return false;
+    $paths = [];
+    foreach ($images as $image) {
+      if (!is_array($image) || !isset($image['image_url'])) {
+        return false;
+      }
+      if (isset($image['storage_path'])) {
+        if (
+          !self::validPortfolioImage(
+            (string) $image['image_url'],
+            (string) $image['storage_path'],
+            $userId,
+            $supabaseUrl,
+          ) ||
+          in_array($image['storage_path'], $paths, true)
+        ) {
+          return false;
         }
-
-        $expectedUrl = rtrim($supabaseUrl, '/') . '/storage/v1/object/public/avatars/' . $storagePath;
-        return hash_equals($expectedUrl, $imageUrl);
-    }
-
-    public static function validPortfolioImages(array $images, string $userId, string $supabaseUrl, array $legacyImages = []): bool
-    {
-        if (count($images) < 1 || count($images) > 5) {
-            return false;
+        $paths[] = $image['storage_path'];
+        continue;
+      }
+      $retainsLegacyImage = false;
+      foreach ($legacyImages as $legacy) {
+        if (
+          ($legacy['image_url'] ?? null) === $image['image_url'] &&
+          empty($legacy['storage_path'])
+        ) {
+          $retainsLegacyImage = true;
+          break;
         }
-
-        $paths = [];
-        foreach ($images as $image) {
-            if (!is_array($image) || !isset($image['image_url'])) {
-                return false;
-            }
-            if (isset($image['storage_path'])) {
-                if (!self::validPortfolioImage((string) $image['image_url'], (string) $image['storage_path'], $userId, $supabaseUrl)
-                    || in_array($image['storage_path'], $paths, true)) {
-                    return false;
-                }
-                $paths[] = $image['storage_path'];
-                continue;
-            }
-            $retainsLegacyImage = false;
-            foreach ($legacyImages as $legacy) {
-                if (($legacy['image_url'] ?? null) === $image['image_url'] && empty($legacy['storage_path'])) {
-                    $retainsLegacyImage = true;
-                    break;
-                }
-            }
-            if (!$retainsLegacyImage) {
-                return false;
-            }
-        }
-
-        return true;
+      }
+      if (!$retainsLegacyImage) {
+        return false;
+      }
     }
 
-    public static function validPortfolioOffer(string $title, string $priceMode, mixed $price, string $description, string $duration): bool
-    {
-        if (mb_strlen(trim($title)) < 2 || mb_strlen(trim($title)) > 90
-            || mb_strlen($description) > 1000 || mb_strlen($duration) > 80
-            || !in_array($priceMode, ['fixo', 'a_partir_de', 'sob_consulta'], true)) {
-            return false;
-        }
+    return true;
+  }
 
-        if ($priceMode === 'sob_consulta') {
-            return $price === null || $price === '';
-        }
-
-        return is_numeric($price) && self::validMoney((float) $price) && (float) $price <= 1000000;
+  public static function validPortfolioOffer(
+    string $title,
+    string $priceMode,
+    mixed $price,
+    string $description,
+    string $duration,
+  ): bool {
+    if (
+      mb_strlen(trim($title)) < 2 ||
+      mb_strlen(trim($title)) > 90 ||
+      mb_strlen($description) > 1000 ||
+      mb_strlen($duration) > 80 ||
+      !in_array($priceMode, ['fixo', 'a_partir_de', 'sob_consulta'], true)
+    ) {
+      return false;
     }
 
-    public static function validMoney(float|int $value): bool
-    {
-        return is_finite((float) $value) && $value > 0;
+    if ($priceMode === 'sob_consulta') {
+      return $price === null || $price === '';
     }
 
-    public static function platformFee(float|int $amount): float
-    {
-        return round((float) $amount * 0.15, 2);
+    return is_numeric($price) && self::validMoney((float) $price) && (float) $price <= 1000000;
+  }
+
+  public static function validMoney(float|int $value): bool
+  {
+    return is_finite((float) $value) && $value > 0;
+  }
+
+  public static function platformFee(float|int $amount): float
+  {
+    return round((float) $amount * 0.15, 2);
+  }
+
+  public static function providerNet(float|int $amount): float
+  {
+    return round((float) $amount - self::platformFee($amount), 2);
+  }
+
+  public static function canTransitionContract(string $from, string $to): bool
+  {
+    return in_array(
+      "$from:$to",
+      [
+        'proposta:aguardando_pagamento',
+        'aguardando_pagamento:pago',
+        'aguardando_pagamento:recusado',
+        'pago:em_andamento',
+        'em_andamento:concluido',
+        'proposta:cancelado',
+      ],
+      true,
+    );
+  }
+
+  public static function abacatePayWebhookCheckout(array $payload): ?array
+  {
+    if (($payload['event'] ?? ($payload['type'] ?? '')) !== 'checkout.completed') {
+      return null;
     }
 
-    public static function providerNet(float|int $amount): float
-    {
-        return round((float) $amount - self::platformFee($amount), 2);
+    $checkout = $payload['data']['checkout'] ?? null;
+    return is_array($checkout) ? $checkout : null;
+  }
+
+  public static function abacatePayContractId(string $externalId): ?int
+  {
+    if (!preg_match('/^nexlar-contract-([1-9][0-9]*)$/D', $externalId, $match)) {
+      return null;
     }
 
-    public static function canTransitionContract(string $from, string $to): bool
-    {
-        return in_array("$from:$to", [
-            'proposta:aguardando_pagamento',
-            'aguardando_pagamento:pago',
-            'aguardando_pagamento:recusado',
-            'pago:em_andamento',
-            'em_andamento:concluido',
-            'proposta:cancelado',
-        ], true);
-    }
+    $contractId = filter_var($match[1], FILTER_VALIDATE_INT);
+    return $contractId === false ? null : $contractId;
+  }
 
-    public static function abacatePayWebhookCheckout(array $payload): ?array
-    {
-        if (($payload['event'] ?? $payload['type'] ?? '') !== 'checkout.completed') {
-            return null;
-        }
+  public static function validAbacatePayCheckout(
+    array $checkout,
+    array $contract,
+    bool $expectedDevMode,
+  ): bool {
+    $contractId = (int) ($contract['id'] ?? 0);
+    $expectedAmount = (int) round((float) ($contract['amount'] ?? 0) * 100);
 
-        $checkout = $payload['data']['checkout'] ?? null;
-        return is_array($checkout) ? $checkout : null;
-    }
+    return $contractId > 0 &&
+      !empty($contract['abacatepay_checkout_id']) &&
+      hash_equals((string) $contract['abacatepay_checkout_id'], (string) ($checkout['id'] ?? '')) &&
+      hash_equals('nexlar-contract-' . $contractId, (string) ($checkout['externalId'] ?? '')) &&
+      ($checkout['status'] ?? '') === 'PAID' &&
+      is_numeric($checkout['amount'] ?? null) &&
+      (int) $checkout['amount'] === $expectedAmount &&
+      is_numeric($checkout['paidAmount'] ?? null) &&
+      (int) $checkout['paidAmount'] === $expectedAmount &&
+      self::abacatePayModeMatches($checkout['devMode'] ?? null, $expectedDevMode);
+  }
 
-    public static function abacatePayContractId(string $externalId): ?int
-    {
-        if (!preg_match('/^nexlar-contract-([1-9][0-9]*)$/D', $externalId, $match)) {
-            return null;
-        }
+  public static function abacatePayModeMatches(mixed $devMode, bool $expectedDevMode): bool
+  {
+    return is_bool($devMode) && $devMode === $expectedDevMode;
+  }
 
-        $contractId = filter_var($match[1], FILTER_VALIDATE_INT);
-        return $contractId === false ? null : $contractId;
-    }
+  public static function verifyAbacatePaySignature(string $rawBody, string $signature): bool
+  {
+    $key =
+      't9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9';
+    $expected = base64_encode(hash_hmac('sha256', $rawBody, $key, true));
+    return $signature !== '' && hash_equals($expected, $signature);
+  }
 
-    public static function validAbacatePayCheckout(array $checkout, array $contract, bool $expectedDevMode): bool
-    {
-        $contractId = (int) ($contract['id'] ?? 0);
-        $expectedAmount = (int) round((float) ($contract['amount'] ?? 0) * 100);
-
-        return $contractId > 0
-            && !empty($contract['abacatepay_checkout_id'])
-            && hash_equals((string) $contract['abacatepay_checkout_id'], (string) ($checkout['id'] ?? ''))
-            && hash_equals('nexlar-contract-' . $contractId, (string) ($checkout['externalId'] ?? ''))
-            && ($checkout['status'] ?? '') === 'PAID'
-            && is_numeric($checkout['amount'] ?? null)
-            && (int) $checkout['amount'] === $expectedAmount
-            && is_numeric($checkout['paidAmount'] ?? null)
-            && (int) $checkout['paidAmount'] === $expectedAmount
-            && self::abacatePayModeMatches($checkout['devMode'] ?? null, $expectedDevMode);
-    }
-
-    public static function abacatePayModeMatches(mixed $devMode, bool $expectedDevMode): bool
-    {
-        return is_bool($devMode) && $devMode === $expectedDevMode;
-    }
-
-    public static function verifyAbacatePaySignature(string $rawBody, string $signature): bool
-    {
-        $key = 't9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9';
-        $expected = base64_encode(hash_hmac('sha256', $rawBody, $key, true));
-        return $signature !== '' && hash_equals($expected, $signature);
-    }
-
-    public static function canReview(string $contractStatus, bool $alreadyReviewed): bool
-    {
-        return $contractStatus === 'concluido' && !$alreadyReviewed;
-    }
-
+  public static function canReview(string $contractStatus, bool $alreadyReviewed): bool
+  {
+    return $contractStatus === 'concluido' && !$alreadyReviewed;
+  }
 }
-
-
-

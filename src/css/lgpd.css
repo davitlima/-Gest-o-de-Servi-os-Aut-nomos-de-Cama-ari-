@@ -1,10 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-
-*, *::before, *::after { 
-  box-sizing: border-box; 
-  margin: 0; 
-  padding: 0; 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 :root {
@@ -12,15 +13,15 @@
   --surface: #ffffff;
   --border: #e4e8f0;
   --text: #1a1d2e;
-  
-  --muted: #4b5563; 
-  
+
+  --muted: #4b5563;
+
   --accent: #3b6ef8;
   --accent-bg: #eff3ff;
   --dark-card: #1a1d2e;
   --dark-card-text: #ffffff;
   --radius: 14px;
-  --shadow: 0 1px 4px rgba(0,0,0,.07);
+  --shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
 }
 
 body {
@@ -66,9 +67,11 @@ nav {
   background: none;
   border: none;
   font-family: inherit;
-  transition: color .2s;
+  transition: color 0.2s;
 }
-.nav-back:hover { color: var(--accent); }
+.nav-back:hover {
+  color: var(--accent);
+}
 
 /* ── HERO ── */
 .hero {
@@ -87,13 +90,17 @@ nav {
   margin-bottom: 20px;
 }
 
-.hero-icon svg { width: 26px; height: 26px; color: var(--accent); }
+.hero-icon svg {
+  width: 26px;
+  height: 26px;
+  color: var(--accent);
+}
 
 .hero h1 {
   font-family: 'DM Serif Display', serif;
   font-size: 28px;
   font-weight: 400;
-  letter-spacing: -.3px;
+  letter-spacing: -0.3px;
 }
 
 .hero .date {
@@ -109,8 +116,10 @@ nav {
   font-size: 13.5px;
 }
 
-.hero .intro strong { color: var(--text); font-weight: 600; }
-
+.hero .intro strong {
+  color: var(--text);
+  font-weight: 600;
+}
 
 .content {
   max-width: 740px;
@@ -133,9 +142,16 @@ nav {
   color: var(--dark-card-text);
 }
 
-.card.dark .card-title { color: #fff; }
-.card.dark p, .card.dark li { color: rgba(255,255,255,.78); }
-.card.dark a { color: #7aa4ff; }
+.card.dark .card-title {
+  color: #fff;
+}
+.card.dark p,
+.card.dark li {
+  color: rgba(255, 255, 255, 0.78);
+}
+.card.dark a {
+  color: #7aa4ff;
+}
 
 .card-header {
   display: flex;
@@ -155,10 +171,18 @@ nav {
   flex-shrink: 0;
 }
 
-.card-icon svg { width: 17px; height: 17px; color: var(--accent); }
+.card-icon svg {
+  width: 17px;
+  height: 17px;
+  color: var(--accent);
+}
 
-.card.dark .card-icon { background: rgba(255,255,255,.12); }
-.card.dark .card-icon svg { color: #a5bfff; }
+.card.dark .card-icon {
+  background: rgba(255, 255, 255, 0.12);
+}
+.card.dark .card-icon svg {
+  color: #a5bfff;
+}
 
 .card-title {
   font-weight: 600;
@@ -195,22 +219,27 @@ nav {
   line-height: 1.55;
 }
 
-.card.dark ul li::before { color: #7aa4ff; }
+.card.dark ul li::before {
+  color: #7aa4ff;
+}
 
 .card ul li strong {
-
   color: var(--text);
   font-weight: 600;
 }
 
-.card.dark ul li strong { color: #fff; }
+.card.dark ul li strong {
+  color: #fff;
+}
 
 .card a {
   color: var(--accent);
   text-decoration: none;
 }
 
-.card a:hover { text-decoration: underline; }
+.card a:hover {
+  text-decoration: underline;
+}
 
 .section-title {
   text-align: center;
@@ -218,7 +247,7 @@ nav {
   font-size: 26px;
   font-weight: 400;
   margin: 48px 0 20px;
-  letter-spacing: -.2px;
+  letter-spacing: -0.2px;
 }
 
 .btn-home {
@@ -235,21 +264,34 @@ nav {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background .2s, transform .15s, box-shadow .2s;
+  transition:
+    background 0.2s,
+    transform 0.15s,
+    box-shadow 0.2s;
 }
 
-.btn-home:hover { background: #2d59d6; box-shadow: 0 6px 16px rgba(59,110,248,.25); }
-.btn-home:active { transform: translateY(1px); }
-.btn-home:focus-visible { outline: 3px solid rgba(59,110,248,.3); outline-offset: 3px; }
+.btn-home:hover {
+  background: #2d59d6;
+  box-shadow: 0 6px 16px rgba(59, 110, 248, 0.25);
+}
+.btn-home:active {
+  transform: translateY(1px);
+}
+.btn-home:focus-visible {
+  outline: 3px solid rgba(59, 110, 248, 0.3);
+  outline-offset: 3px;
+}
 
 @media (max-width: 600px) {
-  .btn-home { width: calc(100% - 32px); margin-inline: auto; }
+  .btn-home {
+    width: calc(100% - 32px);
+    margin-inline: auto;
+  }
 }
-
 
 footer {
   background: var(--text);
-  color: rgba(255,255,255,.5);
+  color: rgba(255, 255, 255, 0.5);
   text-align: center;
   font-size: 12px;
   padding: 20px;
@@ -258,11 +300,12 @@ footer {
 .reveal {
   opacity: 0;
   transform: translateY(18px);
-  transition: opacity .45s ease, transform .45s ease;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
 }
 
 .reveal.visible {
   opacity: 1;
   transform: none;
 }
-

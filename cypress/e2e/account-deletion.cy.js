@@ -23,7 +23,7 @@ describe('Account deletion controls', () => {
             storage: { from: () => ({ list: async () => ({ data: [], error: null }), remove: async () => ({ error: null }) }) }
           }
         });
-        window.dispatchEvent(new Event('nexlar:ready'));`
+        window.dispatchEvent(new Event('nexlar:ready'));`,
     });
     cy.intercept('GET', 'https://cdn.jsdelivr.net/npm/@supabase/**', { body: '' });
     cy.visit('/src/pages/Meuperfil.html');
@@ -41,7 +41,9 @@ describe('Account deletion controls', () => {
     cy.get('#confirmAccountDeletion').should('be.enabled');
     cy.get('#cancelAccountDeletion').click();
     cy.get('#accountDeleteDialog').should('not.be.visible');
-    cy.window().its('__nexlarCalls').should('not.deep.include', { path: 'account', method: 'DELETE' });
+    cy.window()
+      .its('__nexlarCalls')
+      .should('not.deep.include', { path: 'account', method: 'DELETE' });
   });
 
   it('explains why an account with contract history cannot be self-deleted', () => {
@@ -52,7 +54,9 @@ describe('Account deletion controls', () => {
     cy.get('#confirmAccountDeletion').click();
     cy.get('#accountDeleteFeedback').should('contain.text', 'Há contratos associados');
     cy.get('#accountDeleteDialog').should('be.visible');
-    cy.window().its('__nexlarCalls').should('not.deep.include', { path: 'account', method: 'DELETE' });
+    cy.window()
+      .its('__nexlarCalls')
+      .should('not.deep.include', { path: 'account', method: 'DELETE' });
   });
 
   it('deletes an eligible account and signs out the local session', () => {
@@ -62,7 +66,9 @@ describe('Account deletion controls', () => {
     cy.get('#accountDeleteConfirmation').type('EXCLUIR');
     cy.get('#confirmAccountDeletion').click();
     cy.location('pathname').should('eq', '/');
-    cy.window().its('localStorage').invoke('getItem', 'account-delete-request').should('eq', JSON.stringify({ method: 'DELETE', body: { confirmation: 'EXCLUIR' } }));
+    cy.window()
+      .its('localStorage')
+      .invoke('getItem', 'account-delete-request')
+      .should('eq', JSON.stringify({ method: 'DELETE', body: { confirmation: 'EXCLUIR' } }));
   });
 });
-

@@ -30,7 +30,7 @@ a {
 
 button,
 select,
-input:not([type="checkbox"]):not([type="radio"]),
+input:not([type='checkbox']):not([type='radio']),
 textarea,
 .btn,
 .btn-msg,
@@ -109,7 +109,9 @@ textarea,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -123,7 +125,7 @@ textarea,
     padding-right: max(0px, env(safe-area-inset-right));
   }
 
-.chat-input-bar {
+  .chat-input-bar {
     padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
 
@@ -135,4 +137,3 @@ textarea,
     }
   }
 }
-

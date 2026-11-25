@@ -10,8 +10,14 @@ const second = { id: 11, body: 'Tudo bem?', created_at: '2026-10-31T10:00:01Z' }
 assert.deepEqual(chat.mergeMessages([first], duplicate), [first]);
 assert.deepEqual(chat.mergeMessages([first], second), [first, second]);
 assert.deepEqual(chat.mergeMessages([second], first), [first, second]);
-assert.equal(chat.professionalChatUrl('abc-123'), '/src/pages/painelmensagens.html?provider_id=abc-123');
-assert.equal(chat.professionalChatUrl('id com espaço'), '/src/pages/painelmensagens.html?provider_id=id%20com%20espa%C3%A7o');
+assert.equal(
+  chat.professionalChatUrl('abc-123'),
+  '/src/pages/painelmensagens.html?provider_id=abc-123'
+);
+assert.equal(
+  chat.professionalChatUrl('id com espaço'),
+  '/src/pages/painelmensagens.html?provider_id=id%20com%20espa%C3%A7o'
+);
 assert.equal(chat.connectionMode('SUBSCRIBED'), 'realtime');
 assert.equal(chat.connectionMode('CHANNEL_ERROR'), 'fallback');
 assert.equal(chat.connectionMode('TIMED_OUT'), 'fallback');

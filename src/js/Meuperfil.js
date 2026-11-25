@@ -5,9 +5,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const canOffer = me.role === 'autonomo' || me.role === 'empresa';
   const serviceField = document.getElementById('profileService');
   const neighborhoodField = document.getElementById('profileNeighborhood');
-  const normalizeLabel = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const normalizeLabel = (value) =>
+    String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
   const setProviderValue = (field, value) => {
-    const option = [...field.options].find(item => item.value && normalizeLabel(item.value) === normalizeLabel(value));
+    const option = [...field.options].find(
+      (item) => item.value && normalizeLabel(item.value) === normalizeLabel(value)
+    );
     if (value && !option) field.add(new Option(`Atual: ${value}`, value));
     field.value = option?.value || value || '';
   };
@@ -25,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('profileName').value = me.full_name || '';
   document.getElementById('profilePhone').value = me.phone || '';
   document.getElementById('profileEmail').value = session.user.email || '';
-  document.querySelectorAll('.provider-profile-field').forEach(group => {
+  document.querySelectorAll('.provider-profile-field').forEach((group) => {
     group.hidden = !canOffer;
     group.querySelector('select').disabled = !canOffer;
   });
@@ -106,29 +113,44 @@ document.addEventListener('DOMContentLoaded', async () => {
   avatarTrigger.addEventListener('click', openAvatarModal);
   avatarDropzone.addEventListener('click', () => avatarInput.click());
   avatarInput.addEventListener('change', () => chooseAvatar(avatarInput.files));
-  ['dragenter', 'dragover'].forEach(type => avatarDropzone.addEventListener(type, event => {
-    event.preventDefault();
-    avatarDropzone.classList.add('is-dragging');
-  }));
-  ['dragleave', 'dragend'].forEach(type => avatarDropzone.addEventListener(type, () => avatarDropzone.classList.remove('is-dragging')));
-  avatarDropzone.addEventListener('drop', event => {
+  ['dragenter', 'dragover'].forEach((type) =>
+    avatarDropzone.addEventListener(type, (event) => {
+      event.preventDefault();
+      avatarDropzone.classList.add('is-dragging');
+    })
+  );
+  ['dragleave', 'dragend'].forEach((type) =>
+    avatarDropzone.addEventListener(type, () => avatarDropzone.classList.remove('is-dragging'))
+  );
+  avatarDropzone.addEventListener('drop', (event) => {
     event.preventDefault();
     avatarDropzone.classList.remove('is-dragging');
     chooseAvatar(event.dataTransfer.files);
   });
   avatarCancel.addEventListener('click', closeAvatarModal);
   avatarClose.addEventListener('click', closeAvatarModal);
-  avatarModal.addEventListener('click', event => { if (event.target === avatarModal) closeAvatarModal(); });
+  avatarModal.addEventListener('click', (event) => {
+    if (event.target === avatarModal) closeAvatarModal();
+  });
 
-  document.addEventListener('keydown', event => {
+  document.addEventListener('keydown', (event) => {
     if (avatarModal.hidden) return;
-    if (event.key === 'Escape') { event.preventDefault(); closeAvatarModal(); return; }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeAvatarModal();
+      return;
+    }
     if (event.key !== 'Tab') return;
     const controls = [...avatarPanel.querySelectorAll('button:not(:disabled)')];
     const first = controls[0];
     const last = controls[controls.length - 1];
-    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   });
 
   avatarSave.addEventListener('click', async () => {
@@ -145,18 +167,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         bucket: api.supabase.storage.from('avatars'),
         userId: session.user.id,
         file: selectedAvatar,
-        updateProfile: avatarUrl => api.request('me', {
-          method: 'PATCH',
-          body: JSON.stringify({ avatar_url: avatarUrl }),
-        }),
+        updateProfile: (avatarUrl) =>
+          api.request('me', {
+            method: 'PATCH',
+            body: JSON.stringify({ avatar_url: avatarUrl }),
+          }),
       });
       window.NexlarAvatar.render(avatar, me.full_name, publicUrl);
-      localStorage.setItem('nexlar:avatar-updated', JSON.stringify({ userId: session.user.id, avatarUrl: publicUrl, updatedAt: Date.now() }));
+      localStorage.setItem(
+        'nexlar:avatar-updated',
+        JSON.stringify({ userId: session.user.id, avatarUrl: publicUrl, updatedAt: Date.now() })
+      );
       avatarMessage.textContent = 'Foto atualizada com sucesso.';
       avatarMessage.className = 'avatar-upload-message is-success';
       setTimeout(closeAvatarModal, 500);
     } catch (error) {
-      avatarMessage.textContent = error.message || 'Não foi possível salvar a foto. Tente novamente.';
+      avatarMessage.textContent =
+        error.message || 'Não foi possível salvar a foto. Tente novamente.';
       avatarMessage.className = 'avatar-upload-message';
       avatarSave.disabled = false;
     } finally {
@@ -178,12 +205,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     portfolioFeedback.textContent = 'Carregando suas ofertas…';
     portfolioGrid.replaceChildren();
     let items;
-    try { items = await api.request('portfolio'); }
-    catch (error) {
+    try {
+      items = await api.request('portfolio');
+    } catch (error) {
       portfolioFeedback.textContent = error.message || 'Não foi possível carregar seu portfólio.';
       portfolioFeedback.classList.add('is-error');
       const retry = document.createElement('button');
-      retry.type = 'button'; retry.className = 'portfolio-retry'; retry.textContent = 'Tentar novamente';
+      retry.type = 'button';
+      retry.className = 'portfolio-retry';
+      retry.textContent = 'Tentar novamente';
       retry.addEventListener('click', renderPortfolio);
       portfolioGrid.appendChild(retry);
       return;
@@ -193,11 +223,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       ? `${items.length} ${items.length === 1 ? 'oferta publicada' : 'ofertas publicadas'}.`
       : 'Seu portfólio ainda está vazio. Crie sua primeira oferta para apresentar seu trabalho.';
     portfolioFeedback.classList.toggle('is-empty', items.length === 0);
-    items.forEach(item => {
+    items.forEach((item) => {
       const card = document.createElement('article');
       card.className = 'portfolio-work';
       const images = portfolioImages(item);
-      const gallery = document.createElement('div'); gallery.className = 'portfolio-work__gallery';
+      const gallery = document.createElement('div');
+      gallery.className = 'portfolio-work__gallery';
       images.forEach((entry, index) => {
         const image = document.createElement('img');
         image.src = entry.image_url;
@@ -205,34 +236,66 @@ document.addEventListener('DOMContentLoaded', async () => {
         image.loading = index ? 'lazy' : 'eager';
         gallery.appendChild(image);
       });
-      const body = document.createElement('div'); body.className = 'portfolio-work__body';
-      const title = document.createElement('h3'); title.textContent = item.title || 'Trabalho realizado'; body.appendChild(title);
-      if (item.description) { const description = document.createElement('p'); description.className = 'portfolio-work__description'; description.textContent = item.description; body.appendChild(description); }
-      const details = document.createElement('div'); details.className = 'portfolio-work__details';
-      const price = document.createElement('p'); price.className = 'portfolio-work__price';
-      if (item.price_mode === 'fixo' && Number(item.price) > 0) price.textContent = `R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-      else if (item.price_mode === 'a_partir_de' && Number(item.price) > 0) price.textContent = `A partir de R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      const body = document.createElement('div');
+      body.className = 'portfolio-work__body';
+      const title = document.createElement('h3');
+      title.textContent = item.title || 'Trabalho realizado';
+      body.appendChild(title);
+      if (item.description) {
+        const description = document.createElement('p');
+        description.className = 'portfolio-work__description';
+        description.textContent = item.description;
+        body.appendChild(description);
+      }
+      const details = document.createElement('div');
+      details.className = 'portfolio-work__details';
+      const price = document.createElement('p');
+      price.className = 'portfolio-work__price';
+      if (item.price_mode === 'fixo' && Number(item.price) > 0)
+        price.textContent = `R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      else if (item.price_mode === 'a_partir_de' && Number(item.price) > 0)
+        price.textContent = `A partir de R$ ${Number(item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
       else price.textContent = 'Preço sob consulta';
       details.appendChild(price);
-      if (item.estimated_duration) { const duration = document.createElement('p'); duration.className = 'portfolio-work__duration'; duration.textContent = `Prazo estimado: ${item.estimated_duration}`; details.appendChild(duration); }
+      if (item.estimated_duration) {
+        const duration = document.createElement('p');
+        duration.className = 'portfolio-work__duration';
+        duration.textContent = `Prazo estimado: ${item.estimated_duration}`;
+        details.appendChild(duration);
+      }
       body.append(details);
-      const actions = document.createElement('div'); actions.className = 'portfolio-work__actions';
-      const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'portfolio-edit'; edit.textContent = 'Editar oferta'; edit.addEventListener('click', () => openPortfolioUpload(item));
+      const actions = document.createElement('div');
+      actions.className = 'portfolio-work__actions';
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.className = 'portfolio-edit';
+      edit.textContent = 'Editar oferta';
+      edit.addEventListener('click', () => openPortfolioUpload(item));
       const remove = document.createElement('button');
-      remove.type = 'button'; remove.className = 'portfolio-remove'; remove.textContent = 'Excluir';
+      remove.type = 'button';
+      remove.className = 'portfolio-remove';
+      remove.textContent = 'Excluir';
       remove.addEventListener('click', async () => {
         if (!confirm('Excluir esta oferta e suas imagens do portfólio?')) return;
         remove.disabled = true;
         try {
           await api.request(`portfolio/${item.id}`, { method: 'DELETE' });
-          const paths = images.map(image => image.storage_path).filter(Boolean);
+          const paths = images.map((image) => image.storage_path).filter(Boolean);
           let cleanupFailed = false;
           if (paths.length) {
-            try { const { error } = await api.supabase.storage.from('avatars').remove(paths); cleanupFailed = Boolean(error); }
-            catch (_) { cleanupFailed = true; }
+            try {
+              const { error } = await api.supabase.storage.from('avatars').remove(paths);
+              cleanupFailed = Boolean(error);
+            } catch (_) {
+              cleanupFailed = true;
+            }
           }
           await renderPortfolio();
-          if (cleanupFailed) { portfolioFeedback.textContent = 'A oferta foi excluída, mas algumas imagens não puderam ser removidas do armazenamento.'; portfolioFeedback.classList.add('is-error'); }
+          if (cleanupFailed) {
+            portfolioFeedback.textContent =
+              'A oferta foi excluída, mas algumas imagens não puderam ser removidas do armazenamento.';
+            portfolioFeedback.classList.add('is-error');
+          }
         } catch (error) {
           remove.disabled = false;
           portfolioFeedback.textContent = error.message || 'Não foi possível excluir esta oferta.';
@@ -246,8 +309,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function portfolioImages(item) {
-    const images = item.images?.length ? item.images : item.portfolio_item_images?.length ? item.portfolio_item_images : [];
-    return images.length ? images : item.image_url ? [{ image_url: item.image_url, storage_path: item.storage_path || null }] : [];
+    const images = item.images?.length
+      ? item.images
+      : item.portfolio_item_images?.length
+        ? item.portfolio_item_images
+        : [];
+    return images.length
+      ? images
+      : item.image_url
+        ? [{ image_url: item.image_url, storage_path: item.storage_path || null }]
+        : [];
   }
 
   const portfolioModal = document.createElement('div');
@@ -273,7 +344,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const portfolioModalTitle = document.getElementById('portfolioUploadTitle');
   const portfolioFileHint = document.getElementById('portfolioFileHint');
   const portfolioSave = document.getElementById('savePortfolioUpload');
-  const portfolioCloseButtons = [document.getElementById('closePortfolioUpload'), document.getElementById('cancelPortfolioUpload')];
+  const portfolioCloseButtons = [
+    document.getElementById('closePortfolioUpload'),
+    document.getElementById('cancelPortfolioUpload'),
+  ];
   let selectedPortfolioFiles = [];
   let portfolioExistingImages = [];
   let portfolioOriginalImages = [];
@@ -282,7 +356,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let portfolioReturnFocus = portfolioAdd;
 
   function clearPortfolioSelection() {
-    selectedPortfolioFiles.forEach(entry => URL.revokeObjectURL(entry.previewUrl));
+    selectedPortfolioFiles.forEach((entry) => URL.revokeObjectURL(entry.previewUrl));
     selectedPortfolioFiles = [];
     portfolioExistingImages = [];
     portfolioOriginalImages = [];
@@ -303,43 +377,70 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function renderPortfolioPreview() {
     portfolioPreview.replaceChildren();
-    [...portfolioExistingImages.map(image => ({ image, previewUrl: image.image_url, existing: true })),
-      ...selectedPortfolioFiles.map(entry => ({ image: entry.file, previewUrl: entry.previewUrl, existing: false }))]
-      .forEach((entry, index) => {
-        const tile = document.createElement('figure'); tile.className = 'portfolio-upload-preview__item';
-        const image = document.createElement('img'); image.src = entry.previewUrl;
-        image.alt = `Imagem ${index + 1} da oferta`;
-        const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'portfolio-upload-preview__remove';
-        remove.textContent = 'Remover'; remove.setAttribute('aria-label', `Remover imagem ${index + 1}`);
-        remove.addEventListener('click', () => {
-          if (entry.existing) portfolioExistingImages = portfolioExistingImages.filter(item => item !== entry.image);
-          else {
-            const selected = selectedPortfolioFiles.find(item => item.file === entry.image);
-            if (selected) { URL.revokeObjectURL(selected.previewUrl); selectedPortfolioFiles = selectedPortfolioFiles.filter(item => item !== selected); }
+    [
+      ...portfolioExistingImages.map((image) => ({
+        image,
+        previewUrl: image.image_url,
+        existing: true,
+      })),
+      ...selectedPortfolioFiles.map((entry) => ({
+        image: entry.file,
+        previewUrl: entry.previewUrl,
+        existing: false,
+      })),
+    ].forEach((entry, index) => {
+      const tile = document.createElement('figure');
+      tile.className = 'portfolio-upload-preview__item';
+      const image = document.createElement('img');
+      image.src = entry.previewUrl;
+      image.alt = `Imagem ${index + 1} da oferta`;
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'portfolio-upload-preview__remove';
+      remove.textContent = 'Remover';
+      remove.setAttribute('aria-label', `Remover imagem ${index + 1}`);
+      remove.addEventListener('click', () => {
+        if (entry.existing)
+          portfolioExistingImages = portfolioExistingImages.filter((item) => item !== entry.image);
+        else {
+          const selected = selectedPortfolioFiles.find((item) => item.file === entry.image);
+          if (selected) {
+            URL.revokeObjectURL(selected.previewUrl);
+            selectedPortfolioFiles = selectedPortfolioFiles.filter((item) => item !== selected);
           }
-          renderPortfolioPreview();
-          updatePortfolioSaveState();
-        });
-        tile.append(image, remove);
-        portfolioPreview.appendChild(tile);
+        }
+        renderPortfolioPreview();
+        updatePortfolioSaveState();
       });
+      tile.append(image, remove);
+      portfolioPreview.appendChild(tile);
+    });
     const total = portfolioExistingImages.length + selectedPortfolioFiles.length;
     portfolioFileHint.textContent = `${total} de 5 imagens · JPG, PNG, GIF ou WebP · 5 MB cada`;
   }
 
   function updatePortfolioSaveState() {
-    portfolioSave.disabled = portfolioSaving || (!portfolioExistingImages.length && !selectedPortfolioFiles.length);
+    portfolioSave.disabled =
+      portfolioSaving || (!portfolioExistingImages.length && !selectedPortfolioFiles.length);
   }
 
   function choosePortfolio(files) {
     const { files: selected, validation } = window.NexlarProfileUpload.selectPortfolioImages(files);
     portfolioInput.value = '';
-    if (!validation.valid) { portfolioMessage.textContent = validation.error; return; }
-    if (portfolioExistingImages.length + selectedPortfolioFiles.length + selected.length > window.NexlarProfileUpload.portfolioImageCountLimit) {
+    if (!validation.valid) {
+      portfolioMessage.textContent = validation.error;
+      return;
+    }
+    if (
+      portfolioExistingImages.length + selectedPortfolioFiles.length + selected.length >
+      window.NexlarProfileUpload.portfolioImageCountLimit
+    ) {
       portfolioMessage.textContent = 'Cada oferta pode ter no máximo cinco imagens.';
       return;
     }
-    selectedPortfolioFiles.push(...selected.map(file => ({ file, previewUrl: URL.createObjectURL(file) })));
+    selectedPortfolioFiles.push(
+      ...selected.map((file) => ({ file, previewUrl: URL.createObjectURL(file) }))
+    );
     portfolioMessage.textContent = 'As imagens estão prontas para salvar.';
     portfolioMessage.className = 'avatar-upload-message is-success';
     renderPortfolioPreview();
@@ -354,7 +455,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       portfolioModalTitle.textContent = 'Editar oferta de serviço';
       portfolioTitle.value = item.title || '';
       portfolioDescription.value = item.description || '';
-      portfolioPriceMode.value = ['fixo', 'a_partir_de', 'sob_consulta'].includes(item.price_mode) ? item.price_mode : 'sob_consulta';
+      portfolioPriceMode.value = ['fixo', 'a_partir_de', 'sob_consulta'].includes(item.price_mode)
+        ? item.price_mode
+        : 'sob_consulta';
       portfolioPrice.value = item.price ?? '';
       portfolioDuration.value = item.estimated_duration || '';
       portfolioOriginalImages = portfolioImages(item);
@@ -390,35 +493,75 @@ document.addEventListener('DOMContentLoaded', async () => {
     updatePortfolioSaveState();
   });
   portfolioInput.addEventListener('change', () => choosePortfolio(portfolioInput.files));
-  ['dragenter', 'dragover'].forEach(type => portfolioDropzone.addEventListener(type, event => {
-    event.preventDefault(); portfolioDropzone.classList.add('is-dragging');
-  }));
-  ['dragleave', 'dragend'].forEach(type => portfolioDropzone.addEventListener(type, () => portfolioDropzone.classList.remove('is-dragging')));
-  portfolioDropzone.addEventListener('drop', event => { event.preventDefault(); choosePortfolio(event.dataTransfer.files); });
-  portfolioDropzone.addEventListener('keydown', event => {
-    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); portfolioInput.click(); }
+  ['dragenter', 'dragover'].forEach((type) =>
+    portfolioDropzone.addEventListener(type, (event) => {
+      event.preventDefault();
+      portfolioDropzone.classList.add('is-dragging');
+    })
+  );
+  ['dragleave', 'dragend'].forEach((type) =>
+    portfolioDropzone.addEventListener(type, () =>
+      portfolioDropzone.classList.remove('is-dragging')
+    )
+  );
+  portfolioDropzone.addEventListener('drop', (event) => {
+    event.preventDefault();
+    choosePortfolio(event.dataTransfer.files);
   });
-  portfolioCloseButtons.forEach(button => button.addEventListener('click', closePortfolioUpload));
-  portfolioModal.addEventListener('click', event => { if (event.target === portfolioModal) closePortfolioUpload(); });
-  document.addEventListener('keydown', event => {
+  portfolioDropzone.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      portfolioInput.click();
+    }
+  });
+  portfolioCloseButtons.forEach((button) => button.addEventListener('click', closePortfolioUpload));
+  portfolioModal.addEventListener('click', (event) => {
+    if (event.target === portfolioModal) closePortfolioUpload();
+  });
+  document.addEventListener('keydown', (event) => {
     if (portfolioModal.hidden) return;
-    if (event.key === 'Escape') { event.preventDefault(); closePortfolioUpload(); return; }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closePortfolioUpload();
+      return;
+    }
     if (event.key !== 'Tab') return;
-    const controls = [...portfolioPanel.querySelectorAll('button:not(:disabled), input:not([type="file"]):not(:disabled), select:not(:disabled), textarea:not(:disabled)')];
-    const first = controls[0]; const last = controls[controls.length - 1];
-    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    const controls = [
+      ...portfolioPanel.querySelectorAll(
+        'button:not(:disabled), input:not([type="file"]):not(:disabled), select:not(:disabled), textarea:not(:disabled)'
+      ),
+    ];
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   });
 
   portfolioSave.addEventListener('click', async () => {
-    if (portfolioSaving || (!portfolioExistingImages.length && !selectedPortfolioFiles.length)) return;
-    if (!portfolioTitle.value.trim()) { portfolioMessage.textContent = 'Informe um nome para o serviço.'; portfolioTitle.focus(); return; }
-    if (portfolioPriceMode.value !== 'sob_consulta' && !(Number(portfolioPrice.value) > 0)) { portfolioMessage.textContent = 'Informe um valor válido ou escolha “Sob consulta”.'; portfolioPrice.focus(); return; }
+    if (portfolioSaving || (!portfolioExistingImages.length && !selectedPortfolioFiles.length))
+      return;
+    if (!portfolioTitle.value.trim()) {
+      portfolioMessage.textContent = 'Informe um nome para o serviço.';
+      portfolioTitle.focus();
+      return;
+    }
+    if (portfolioPriceMode.value !== 'sob_consulta' && !(Number(portfolioPrice.value) > 0)) {
+      portfolioMessage.textContent = 'Informe um valor válido ou escolha “Sob consulta”.';
+      portfolioPrice.focus();
+      return;
+    }
     portfolioSaving = true;
     portfolioSave.disabled = true;
     portfolioSave.textContent = 'Salvando...';
     portfolioPanel.setAttribute('aria-busy', 'true');
-    portfolioMessage.textContent = selectedPortfolioFiles.length ? 'Enviando imagens e salvando oferta…' : 'Salvando oferta…';
+    portfolioMessage.textContent = selectedPortfolioFiles.length
+      ? 'Enviando imagens e salvando oferta…'
+      : 'Salvando oferta…';
     portfolioMessage.className = 'avatar-upload-message';
     const bucket = api.supabase.storage.from('avatars');
     const uploaded = [];
@@ -432,40 +575,65 @@ document.addEventListener('DOMContentLoaded', async () => {
         estimated_duration: portfolioDuration.value.trim(),
       };
       for (const [index, entry] of selectedPortfolioFiles.entries()) {
-        uploaded.push(await window.NexlarProfileUpload.uploadImage({
-          bucket, userId: session.user.id, file: entry.file, folder: 'portfolio', timestamp: Date.now() + index,
-        }));
+        uploaded.push(
+          await window.NexlarProfileUpload.uploadImage({
+            bucket,
+            userId: session.user.id,
+            file: entry.file,
+            folder: 'portfolio',
+            timestamp: Date.now() + index,
+          })
+        );
       }
       data.images = [
-        ...portfolioExistingImages.map(image => ({ image_url: image.image_url, storage_path: image.storage_path || null })),
-        ...uploaded.map(image => ({ image_url: image.publicUrl, storage_path: image.path })),
+        ...portfolioExistingImages.map((image) => ({
+          image_url: image.image_url,
+          storage_path: image.storage_path || null,
+        })),
+        ...uploaded.map((image) => ({ image_url: image.publicUrl, storage_path: image.path })),
       ];
-      await api.request(portfolioEditingItem ? `portfolio/${portfolioEditingItem.id}` : 'portfolio', {
-        method: portfolioEditingItem ? 'PATCH' : 'POST', body: JSON.stringify(data),
-      });
+      await api.request(
+        portfolioEditingItem ? `portfolio/${portfolioEditingItem.id}` : 'portfolio',
+        {
+          method: portfolioEditingItem ? 'PATCH' : 'POST',
+          body: JSON.stringify(data),
+        }
+      );
       persisted = true;
       portfolioSaving = false;
-      const retainedPaths = new Set(portfolioExistingImages.map(image => image.storage_path).filter(Boolean));
-      const removedPaths = portfolioOriginalImages.map(image => image.storage_path).filter(path => path && !retainedPaths.has(path));
+      const retainedPaths = new Set(
+        portfolioExistingImages.map((image) => image.storage_path).filter(Boolean)
+      );
+      const removedPaths = portfolioOriginalImages
+        .map((image) => image.storage_path)
+        .filter((path) => path && !retainedPaths.has(path));
       const focusAfterSave = portfolioAdd;
       closePortfolioUpload();
       let cleanupFailed = false;
       if (removedPaths.length) {
-        try { const { error } = await bucket.remove(removedPaths); cleanupFailed = Boolean(error); }
-        catch (_) { cleanupFailed = true; }
+        try {
+          const { error } = await bucket.remove(removedPaths);
+          cleanupFailed = Boolean(error);
+        } catch (_) {
+          cleanupFailed = true;
+        }
       }
       await renderPortfolio();
       if (focusAfterSave?.isConnected) focusAfterSave.focus();
       if (cleanupFailed) {
-        portfolioFeedback.textContent = 'A oferta foi salva, mas algumas imagens removidas ainda estão no armazenamento.';
+        portfolioFeedback.textContent =
+          'A oferta foi salva, mas algumas imagens removidas ainda estão no armazenamento.';
         portfolioFeedback.classList.add('is-error');
       }
     } catch (error) {
       if (uploaded.length && !persisted) {
         try {
-          const { error: cleanupError } = await bucket.remove(uploaded.map(image => image.path));
-          if (cleanupError) console.error('[Nexlar] Não foi possível limpar um upload de portfólio incompleto.');
-        } catch (_) { console.error('[Nexlar] Não foi possível limpar um upload de portfólio incompleto.'); }
+          const { error: cleanupError } = await bucket.remove(uploaded.map((image) => image.path));
+          if (cleanupError)
+            console.error('[Nexlar] Não foi possível limpar um upload de portfólio incompleto.');
+        } catch (_) {
+          console.error('[Nexlar] Não foi possível limpar um upload de portfólio incompleto.');
+        }
       }
       portfolioMessage.textContent = error.message || 'Não foi possível salvar o trabalho.';
       portfolioMessage.className = 'avatar-upload-message';
@@ -479,7 +647,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function activateTab(tab, moveFocus = false) {
     const portfolioOpen = tab === portfolioTab && canOffer;
-    tabs.forEach(item => {
+    tabs.forEach((item) => {
       const active = item === tab;
       item.classList.toggle('active', active);
       item.setAttribute('aria-selected', String(active));
@@ -492,13 +660,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     else if (profileTab) profileTab.dataset.visited = 'true';
   }
 
-  tabs.forEach(tab => tab.addEventListener('click', () => activateTab(tab)));
-  document.querySelector('.tabs').addEventListener('keydown', event => {
-    const available = [...tabs].filter(tab => !tab.hidden);
+  tabs.forEach((tab) => tab.addEventListener('click', () => activateTab(tab)));
+  document.querySelector('.tabs').addEventListener('keydown', (event) => {
+    const available = [...tabs].filter((tab) => !tab.hidden);
     const currentIndex = available.indexOf(document.activeElement);
     let nextIndex = currentIndex;
     if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % available.length;
-    else if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + available.length) % available.length;
+    else if (event.key === 'ArrowLeft')
+      nextIndex = (currentIndex - 1 + available.length) % available.length;
     else if (event.key === 'Home') nextIndex = 0;
     else if (event.key === 'End') nextIndex = available.length - 1;
     else return;
@@ -506,21 +675,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     activateTab(available[nextIndex], true);
   });
 
-  form.addEventListener('submit', async event => {
-    event.preventDefault(); const button = form.querySelector('.btn-save'); button.disabled = true; button.textContent = 'Salvando...';
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('.btn-save');
+    button.disabled = true;
+    button.textContent = 'Salvando...';
     try {
-      await api.request('me', { method: 'PATCH', body: JSON.stringify({
-        full_name: document.getElementById('profileName').value.trim(), phone: document.getElementById('profilePhone').value.trim(),
-        neighborhood: canOffer ? neighborhoodField.value : undefined,
-        service_category: canOffer ? serviceField.value : undefined,
-        bio: document.getElementById('profileBio').value.trim(),
-      }) });
+      await api.request('me', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          full_name: document.getElementById('profileName').value.trim(),
+          phone: document.getElementById('profilePhone').value.trim(),
+          neighborhood: canOffer ? neighborhoodField.value : undefined,
+          service_category: canOffer ? serviceField.value : undefined,
+          bio: document.getElementById('profileBio').value.trim(),
+        }),
+      });
       button.textContent = 'Dados salvos ✓';
-    } catch (error) { alert(error.message); button.textContent = 'Salvar alterações'; }
-    setTimeout(() => { button.disabled = false; button.textContent = 'Salvar alterações'; }, 1500);
+    } catch (error) {
+      alert(error.message);
+      button.textContent = 'Salvar alterações';
+    }
+    setTimeout(() => {
+      button.disabled = false;
+      button.textContent = 'Salvar alterações';
+    }, 1500);
   });
 
-  document.querySelector('.btn-outline').addEventListener('click', async event => {
+  document.querySelector('.btn-outline').addEventListener('click', async (event) => {
     const button = event.currentTarget;
     button.disabled = true;
     try {
@@ -551,32 +733,46 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   accountDeleteConfirmation.addEventListener('input', () => {
-    confirmAccountDeletion.disabled = accountDeleteConfirmation.value.trim().toUpperCase() !== 'EXCLUIR' || deletingAccount;
+    confirmAccountDeletion.disabled =
+      accountDeleteConfirmation.value.trim().toUpperCase() !== 'EXCLUIR' || deletingAccount;
   });
 
   cancelAccountDeletion.addEventListener('click', () => accountDeleteDialog.close());
   accountDeleteDialog.addEventListener('close', () => openAccountDeletion.focus());
 
   confirmAccountDeletion.addEventListener('click', async () => {
-    if (deletingAccount || accountDeleteConfirmation.value.trim().toUpperCase() !== 'EXCLUIR') return;
+    if (deletingAccount || accountDeleteConfirmation.value.trim().toUpperCase() !== 'EXCLUIR')
+      return;
     deletingAccount = true;
     confirmAccountDeletion.disabled = true;
     cancelAccountDeletion.disabled = true;
     confirmAccountDeletion.textContent = 'Excluindo…';
-    accountDeleteFeedback.textContent = 'Removendo seus dados pessoais e preservando o histórico contratual…';
+    accountDeleteFeedback.textContent =
+      'Removendo seus dados pessoais e preservando o histórico contratual…';
     accountDeletionFeedback.hidden = true;
 
     try {
       const storage = api.supabase.storage.from('avatars');
-      const { data: rootFiles, error: listError } = await storage.list(session.user.id, { limit: 1000 });
+      const { data: rootFiles, error: listError } = await storage.list(session.user.id, {
+        limit: 1000,
+      });
       if (listError) throw listError;
       const paths = (rootFiles || [])
-        .filter(file => file.id || file.metadata)
-        .map(file => `${session.user.id}/${file.name}`);
-      if ((rootFiles || []).some(file => file.name === 'portfolio' && !file.id && !file.metadata)) {
-        const { data: portfolioFiles, error: portfolioListError } = await storage.list(`${session.user.id}/portfolio`, { limit: 1000 });
+        .filter((file) => file.id || file.metadata)
+        .map((file) => `${session.user.id}/${file.name}`);
+      if (
+        (rootFiles || []).some((file) => file.name === 'portfolio' && !file.id && !file.metadata)
+      ) {
+        const { data: portfolioFiles, error: portfolioListError } = await storage.list(
+          `${session.user.id}/portfolio`,
+          { limit: 1000 }
+        );
         if (portfolioListError) throw portfolioListError;
-        paths.push(...(portfolioFiles || []).filter(file => file.id || file.metadata).map(file => `${session.user.id}/portfolio/${file.name}`));
+        paths.push(
+          ...(portfolioFiles || [])
+            .filter((file) => file.id || file.metadata)
+            .map((file) => `${session.user.id}/portfolio/${file.name}`)
+        );
       }
       if (paths.length) {
         const { error: removeError } = await storage.remove(paths);
@@ -585,13 +781,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       await api.request('account', {
         method: 'DELETE',
-        body: JSON.stringify({ confirmation: accountDeleteConfirmation.value.trim().toUpperCase() }),
+        body: JSON.stringify({
+          confirmation: accountDeleteConfirmation.value.trim().toUpperCase(),
+        }),
       });
       await api.supabase.auth.signOut({ scope: 'local' }).catch(() => {});
       location.replace('/');
     } catch (error) {
       const code = String(error.message || '');
-      accountDeleteFeedback.textContent = code || 'Não foi possível excluir a conta. Seus dados de perfil continuam ativos; tente novamente.';
+      accountDeleteFeedback.textContent =
+        code ||
+        'Não foi possível excluir a conta. Seus dados de perfil continuam ativos; tente novamente.';
       accountDeletionFeedback.textContent = accountDeleteFeedback.textContent;
       accountDeletionFeedback.hidden = false;
       confirmAccountDeletion.disabled = false;
@@ -599,8 +799,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     } finally {
       deletingAccount = false;
       confirmAccountDeletion.textContent = 'Excluir permanentemente';
-      confirmAccountDeletion.disabled = accountDeleteConfirmation.value.trim().toUpperCase() !== 'EXCLUIR';
+      confirmAccountDeletion.disabled =
+        accountDeleteConfirmation.value.trim().toUpperCase() !== 'EXCLUIR';
     }
   });
 });
-

@@ -23,8 +23,7 @@ describe('Regressões da home e da navegação financeira', () => {
 
     cy.visit('/');
 
-    cy.get('#cards .card').should('have.length', 1)
-      .and('contain', 'Profissional da Home');
+    cy.get('#cards .card').should('have.length', 1).and('contain', 'Profissional da Home');
   });
 
   function visitInicioWithRole(role) {
@@ -36,7 +35,7 @@ describe('Regressões da home e da navegação financeira', () => {
     cy.visit('/src/pages/inicio.html', {
       onBeforeLoad(win) {
         win.__nexlarApi = {
-          request: async route => {
+          request: async (route) => {
             if (route === 'me') return { id: 'account-1', role };
             throw new Error(`Rota inesperada: ${route}`);
           },

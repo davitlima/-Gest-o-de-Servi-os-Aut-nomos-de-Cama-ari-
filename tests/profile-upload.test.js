@@ -1,5 +1,12 @@
 const assert = require('assert');
-const { validateProfileImage, selectProfileImage, selectPortfolioImages, uploadProfileAvatar, uploadImage, profileImageLimit } = require('../src/js/profile-upload-core.js');
+const {
+  validateProfileImage,
+  selectProfileImage,
+  selectPortfolioImages,
+  uploadProfileAvatar,
+  uploadImage,
+  profileImageLimit,
+} = require('../src/js/profile-upload-core.js');
 
 assert.equal(profileImageLimit, 5 * 1024 * 1024);
 assert.deepEqual(validateProfileImage({ type: 'image/jpeg', size: 1024 }), { valid: true });
@@ -17,19 +24,51 @@ assert.deepEqual(selectProfileImage([firstImage, secondImage]), {
   file: firstImage,
   validation: { valid: true },
 });
-assert.equal(selectProfileImage([{ name: 'arquivo.pdf', type: 'application/pdf', size: 1024 }]).validation.valid, false);
-assert.equal(selectProfileImage([{ name: 'grande.webp', type: 'image/webp', size: profileImageLimit + 1 }]).validation.valid, false);
-assert.deepEqual(selectPortfolioImages([firstImage, secondImage]), { files: [firstImage, secondImage], validation: { valid: true } });
-assert.equal(selectPortfolioImages([]).validation.valid, false, 'Oferta deve ter ao menos uma imagem');
-assert.equal(selectPortfolioImages(Array(6).fill(firstImage)).validation.valid, false, 'Galeria deve aceitar no máximo cinco imagens');
-assert.equal(selectPortfolioImages([firstImage, { name: 'arquivo.svg', type: 'image/svg+xml', size: 100 }]).validation.valid, false, 'Galeria rejeita arquivo inválido');
+assert.equal(
+  selectProfileImage([{ name: 'arquivo.pdf', type: 'application/pdf', size: 1024 }]).validation
+    .valid,
+  false
+);
+assert.equal(
+  selectProfileImage([{ name: 'grande.webp', type: 'image/webp', size: profileImageLimit + 1 }])
+    .validation.valid,
+  false
+);
+assert.deepEqual(selectPortfolioImages([firstImage, secondImage]), {
+  files: [firstImage, secondImage],
+  validation: { valid: true },
+});
+assert.equal(
+  selectPortfolioImages([]).validation.valid,
+  false,
+  'Oferta deve ter ao menos uma imagem'
+);
+assert.equal(
+  selectPortfolioImages(Array(6).fill(firstImage)).validation.valid,
+  false,
+  'Galeria deve aceitar no máximo cinco imagens'
+);
+assert.equal(
+  selectPortfolioImages([firstImage, { name: 'arquivo.svg', type: 'image/svg+xml', size: 100 }])
+    .validation.valid,
+  false,
+  'Galeria rejeita arquivo inválido'
+);
 
 (async () => {
   const storedPaths = new Set();
   const bucket = {
-    async upload(path) { storedPaths.add(path); return { error: null }; },
-    getPublicUrl(path) { return { data: { publicUrl: `https://cdn.example/${path}` } }; },
-    async remove(paths) { paths.forEach(path => storedPaths.delete(path)); return { error: null }; },
+    async upload(path) {
+      storedPaths.add(path);
+      return { error: null };
+    },
+    getPublicUrl(path) {
+      return { data: { publicUrl: `https://cdn.example/${path}` } };
+    },
+    async remove(paths) {
+      paths.forEach((path) => storedPaths.delete(path));
+      return { error: null };
+    },
   };
 
   await assert.rejects(
@@ -38,13 +77,24 @@ assert.equal(selectPortfolioImages([firstImage, { name: 'arquivo.svg', type: 'im
       userId: 'user-1',
       file: firstImage,
       timestamp: 123,
-      updateProfile: async () => { throw new Error('Falha ao atualizar perfil'); },
+      updateProfile: async () => {
+        throw new Error('Falha ao atualizar perfil');
+      },
     }),
     /Falha ao atualizar perfil/
   );
   assert.deepEqual([...storedPaths], [], 'Falha no perfil deve remover o upload recém-criado');
-  const portfolio = await uploadImage({ bucket, userId: 'user-1', file: firstImage, folder: 'portfolio', timestamp: 456 });
+  const portfolio = await uploadImage({
+    bucket,
+    userId: 'user-1',
+    file: firstImage,
+    folder: 'portfolio',
+    timestamp: 456,
+  });
   assert.equal(portfolio.path, 'user-1/portfolio/456-perfil.png');
   assert.equal(portfolio.publicUrl, 'https://cdn.example/user-1/portfolio/456-perfil.png');
   console.log('Validações de upload de perfil passaram.');
-})().catch(error => { console.error(error); process.exitCode = 1; });
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

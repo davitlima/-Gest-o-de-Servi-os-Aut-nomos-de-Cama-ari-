@@ -13,13 +13,16 @@ describe('Shared panel navigation layout', () => {
           channel: () => ({ on() { return this; }, subscribe() { return this; } }),
           removeChannel: async () => {}
         }
-      });`
+      });`,
     });
     cy.intercept('GET', 'https://cdn.jsdelivr.net/npm/@supabase/**', { body: '' });
     cy.visit('/src/pages/' + page + '.html');
   }
 
-  for (const [width, height] of [[320, 568], [390, 844]]) {
+  for (const [width, height] of [
+    [320, 568],
+    [390, 844],
+  ]) {
     it(`keeps the last conversation and chat controls reachable at ${width}x${height}`, () => {
       cy.viewport(width, height);
       visitPanel('painelmensagens');
@@ -27,7 +30,7 @@ describe('Shared panel navigation layout', () => {
       cy.get('.conversation-item').last().should('be.visible').click();
       cy.get('#chatInput').should('be.visible');
       cy.get('#contratarBtn').should('be.visible');
-      cy.get('#contratarBtn').then($button => {
+      cy.get('#contratarBtn').then(($button) => {
         const rect = $button[0].getBoundingClientRect();
         expect(rect.bottom).to.be.at.most(height);
       });
@@ -50,7 +53,7 @@ describe('Shared panel navigation layout', () => {
       cy.get('.panel-nav__close').click();
       cy.get('.panel-nav__trigger').should('be.visible');
       cy.get('.btn-save').scrollIntoView().should('be.visible');
-      cy.document().then(doc => expect(doc.documentElement.scrollWidth).to.be.at.most(width));
+      cy.document().then((doc) => expect(doc.documentElement.scrollWidth).to.be.at.most(width));
     });
   }
 
@@ -60,7 +63,7 @@ describe('Shared panel navigation layout', () => {
     cy.get('.panel-nav__sidebar').should('be.visible');
     cy.get('.profile-card').should('be.visible');
     cy.get('.btn-save').scrollIntoView().should('be.visible');
-    cy.document().then(doc => expect(doc.documentElement.scrollWidth).to.be.at.most(800));
+    cy.document().then((doc) => expect(doc.documentElement.scrollWidth).to.be.at.most(800));
   });
 
   it('shows Financeiro in the navigation for provider accounts', () => {
@@ -86,7 +89,7 @@ describe('Shared panel navigation layout', () => {
           },
           supabase: { auth: { signOut: async () => ({ error: null }) } }
         });
-        window.dispatchEvent(new Event('nexlar:ready'));`
+        window.dispatchEvent(new Event('nexlar:ready'));`,
     });
     cy.intercept('GET', 'https://cdn.jsdelivr.net/npm/@supabase/**', { body: '' });
     cy.visit('/src/pages/Meuperfil.html');
@@ -98,5 +101,3 @@ describe('Shared panel navigation layout', () => {
     cy.get('.panel-nav__link[href="Painelfinanceiro.html"]').should('be.visible');
   });
 });
-
-

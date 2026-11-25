@@ -1,6 +1,12 @@
 (function () {
-  const initials = name => String(name || '?').trim().split(/\s+/).slice(0, 2)
-    .map(part => part[0] || '').join('').toUpperCase() || '?';
+  const initials = (name) =>
+    String(name || '?')
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0] || '')
+      .join('')
+      .toUpperCase() || '?';
 
   window.NexlarAvatar = {
     render(element, name, url, options = {}) {
@@ -18,8 +24,15 @@
       image.alt = '';
       image.decoding = 'async';
       image.loading = options.loading || 'lazy';
-      image.onload = () => { element.classList.add('has-photo'); fallback.hidden = true; };
-      image.onerror = () => { image.remove(); element.classList.remove('has-photo'); fallback.hidden = false; };
+      image.onload = () => {
+        element.classList.add('has-photo');
+        fallback.hidden = true;
+      };
+      image.onerror = () => {
+        image.remove();
+        element.classList.remove('has-photo');
+        fallback.hidden = false;
+      };
       image.src = url;
       element.appendChild(image);
     },

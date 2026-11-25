@@ -1,6 +1,5 @@
 <?php
-declare(strict_types=1);
-?>
+declare(strict_types=1) ?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
