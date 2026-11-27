@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Administração — Nexlar</title>
+    <link rel="stylesheet" href="/src/css/global.css" />
+    <link rel="stylesheet" href="/src/css/admin.css" />
+  </head>
+  <body>
+    <main class="admin-shell">
+      <header class="admin-header">
+        <div>
+          <a href="/src/pages/inicio.html" class="admin-brand">Nexlar</a>
+          <p class="admin-eyebrow">Área administrativa</p>
+        </div>
+        <button class="admin-logout" id="logoutButton" type="button">Sair</button>
+      </header>
+
+      <section class="admin-intro">
+        <p class="admin-eyebrow">Contas da plataforma</p>
+        <h1>Usuários</h1>
+        <p>Consulte os perfis e restrinja permanentemente contas que infringirem as regras.</p>
+      </section>
+
+      <section class="admin-card" aria-labelledby="accountsHeading">
+        <div class="admin-toolbar">
+          <div>
+            <h2 id="accountsHeading">Contas cadastradas</h2>
+            <p id="accountCount" class="admin-muted">Carregando contas…</p>
+          </div>
+          <label class="admin-search">
+            <span>Buscar</span>
+            <input id="accountSearch" type="search" placeholder="Nome ou e-mail" autocomplete="off" />
+          </label>
+        </div>
+        <p id="adminMessage" class="admin-message" role="status" aria-live="polite"></p>
+        <div class="admin-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Situação</th>
+                <th><span class="visually-hidden">Ações</span></th>
+              </tr>
+            </thead>
+            <tbody id="accountRows">
+              <tr><td colspan="6" class="admin-empty">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="admin-footnote">
+          A restrição conserva os identificadores para impedir novo cadastro e bloqueia as sessões existentes.
+          O motivo fica registrado para auditoria.
+        </p>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/src/js/api.js"></script>
+    <script src="/src/js/admin.js"></script>
+  </body>
+</html>

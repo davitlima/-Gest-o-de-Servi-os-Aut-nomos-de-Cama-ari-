@@ -26,6 +26,11 @@ final class Supabase
     return $this->request('GET', '/auth/v1/user', null, $token, false);
   }
 
+  public function authAdmin(string $method, string $path, ?array $body = null): array
+  {
+    return $this->request('GET' === $method ? 'GET' : $method, '/auth/v1/admin/' . ltrim($path, '/'), $body, '', true);
+  }
+
   public function rest(
     string $method,
     string $path,

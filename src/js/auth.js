@@ -70,11 +70,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       return show(
         error.message === 'Invalid login credentials' ? 'E-mail ou senha inválidos.' : error.message
       );
-    location.href = '/src/pages/inicio.html';
+    try {
+      const account = await window.nexlar.request('me');
+      location.href = account.is_admin ? '/src/pages/admin.html' : '/src/pages/inicio.html';
+    } catch (error) {
+      await supabase.auth.signOut();
+      show(error.message || 'Não foi possível validar o acesso à conta.');
+    }
   });
 
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  if (session) location.href = '/src/pages/inicio.html';
+  if (session) {
+    try {
+      const account = await window.nexlar.request('me');
+      location.href = account.is_admin ? '/src/pages/admin.html' : '/src/pages/inicio.html';
+    } catch {
+      await supabase.auth.signOut();
+    }
+  }
 });

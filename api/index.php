@@ -67,6 +67,96 @@ function profile(Supabase $db, string $token, string $userId): array
   );
 }
 
+function normalized(string $value, bool $email = false): string
+{
+  $value = trim($value);
+  return $email ? mb_strtolower($value) : preg_replace('/\D+/', '', $value);
+}
+
+function isAdmin(array $user): bool
+{
+  $allowed = array_filter(array_map(
+    static fn(string $email): string => mb_strtolower(trim($email)),
+    explode(',', Config::get('NEXLAR_ADMIN_EMAILS', false)),
+  ));
+  $email = mb_strtolower(trim((string) ($user['email'] ?? '')));
+  return $email !== '' && in_array($email, $allowed, true);
+}
+
+function authUsers(Supabase $db): array
+{
+  $users = [];
+  for ($page = 1; $page <= 1000; $page++) {
+    $result = $db->authAdmin('GET', 'users?page=' . $page . '&per_page=1000');
+    $batch = $result['users'] ?? (array_is_list($result) ? $result : []);
+    array_push($users, ...$batch);
+    if (count($batch) < 1000) {
+      break;
+    }
+  }
+  return $users;
+}
+
+function adminAccounts(Supabase $db): array
+{
+  $users = authUsers($db);
+  $profiles = $db->rest('GET', 'profiles?select=id,role,full_name,created_at', null, '', true);
+  $privateProfiles = $db->rest(
+    'GET',
+    'profile_private?select=user_id,phone,document',
+    null,
+    '',
+    true,
+  );
+  $restrictions = $db->rest(
+    'GET',
+    'account_restrictions?select=identifier_type,normalized_value',
+    null,
+    '',
+    true,
+  );
+  $profilesById = [];
+  foreach ($profiles as $profile) {
+    $profilesById[(string) $profile['id']] = $profile;
+  }
+  $privateById = [];
+  foreach ($privateProfiles as $private) {
+    $privateById[(string) $private['user_id']] = $private;
+  }
+  $restricted = [];
+  foreach ($restrictions as $restriction) {
+    $restricted[$restriction['identifier_type']][$restriction['normalized_value']] = true;
+  }
+
+  $accounts = [];
+  foreach ($users as $user) {
+    $id = (string) ($user['id'] ?? '');
+    if ($id === '' || !isset($profilesById[$id])) {
+      continue;
+    }
+    $profile = $profilesById[$id];
+    $private = $privateById[$id] ?? [];
+    $metadata = is_array($user['user_metadata'] ?? null) ? $user['user_metadata'] : [];
+    $email = (string) ($user['email'] ?? '');
+    $phone = (string) ($private['phone'] ?? $metadata['phone'] ?? $user['phone'] ?? '');
+    $document = (string) ($private['document'] ?? $metadata['document'] ?? '');
+    $accounts[] = [
+      'id' => $id,
+      'name' => (string) ($profile['full_name'] ?? ''),
+      'role' => (string) ($profile['role'] ?? ''),
+      'email' => $email,
+      'phone' => $phone,
+      'document' => $document,
+      'created_at' => $profile['created_at'] ?? null,
+      'restricted' => isset($restricted['email'][normalized($email, true)]) ||
+        isset($restricted['phone'][normalized($phone)]) ||
+        isset($restricted['document'][normalized($document)]),
+      'banned' => !empty($user['banned_until']) && strtotime((string) $user['banned_until']) > time(),
+    ];
+  }
+  return $accounts;
+}
+
 function abacatePay(
   string $method,
   string $path,
@@ -336,7 +426,95 @@ try {
   if ($userId === '') {
     throw new HttpError(401, 'Sessão inválida.');
   }
+  $restrictionStatus = $db->rest(
+    'POST',
+    'rpc/nexlar_is_user_restricted',
+    ['p_user_id' => $userId],
+    '',
+    true,
+  );
+  if ($restrictionStatus === true || !empty($restrictionStatus[0]['restricted'])) {
+    throw new HttpError(403, 'Esta conta foi impedida de acessar a Nexlar.');
+  }
   $me = profile($db, $token, $userId);
+  $isAdmin = isAdmin($user);
+
+  if ($route === 'admin/users' && $method === 'GET') {
+    if (!$isAdmin) {
+      throw new HttpError(403, 'Acesso exclusivo à administração.');
+    }
+    respond(adminAccounts($db));
+  }
+
+  if (preg_match('#^admin/users/([0-9a-f-]{36})/restrict$#i', $route, $match) && $method === 'POST') {
+    if (!$isAdmin) {
+      throw new HttpError(403, 'Acesso exclusivo à administração.');
+    }
+    $targetId = strtolower($match[1]);
+    if ($targetId === strtolower($userId)) {
+      throw new HttpError(422, 'Você não pode restringir a própria conta administrativa.');
+    }
+    $data = input();
+    $reason = trim((string) ($data['reason'] ?? ''));
+    if (mb_strlen($reason) < 5 || mb_strlen($reason) > 1000) {
+      throw new HttpError(422, 'Informe um motivo entre 5 e 1.000 caracteres.');
+    }
+    $accounts = adminAccounts($db);
+    $target = null;
+    foreach ($accounts as $account) {
+      if (strtolower($account['id']) === $targetId) {
+        $target = $account;
+        break;
+      }
+    }
+    if ($target === null) {
+      throw new HttpError(404, 'Conta não encontrada.');
+    }
+    $configuredAdmins = array_filter(array_map(
+      static fn(string $email): string => mb_strtolower(trim($email)),
+      explode(',', Config::get('NEXLAR_ADMIN_EMAILS', false)),
+    ));
+    if (in_array(mb_strtolower($target['email']), $configuredAdmins, true)) {
+      throw new HttpError(422, 'Contas administrativas não podem ser restringidas por este painel.');
+    }
+
+    $affected = $db->rest(
+      'POST',
+      'rpc/nexlar_restrict_account',
+      [
+        'p_user_id' => $targetId,
+        'p_reason' => $reason,
+        'p_actor_email' => (string) ($user['email'] ?? ''),
+      ],
+      '',
+      true,
+    );
+    if (!$affected) {
+      throw new HttpError(422, 'A conta não possui CPF, e-mail ou telefone para restringir.');
+    }
+
+    $banned = 0;
+    $banFailures = 0;
+    foreach ($affected as $affectedUser) {
+      try {
+        $db->authAdmin(
+          'PUT',
+          'users/' . rawurlencode((string) $affectedUser['user_id']),
+          ['ban_duration' => '876000h'],
+        );
+        $banned++;
+      } catch (Throwable $error) {
+        error_log('Supabase Auth could not suspend one restricted Nexlar account.');
+        $banFailures++;
+      }
+    }
+    respond([
+      'restricted' => true,
+      'accounts_affected' => count($affected),
+      'accounts_suspended' => $banned,
+      'suspension_failures' => $banFailures,
+    ], $banFailures > 0 ? 207 : 200);
+  }
 
   if ($route === 'finance/payouts' && $method === 'GET') {
     if (!Domain::canUseFinance($me['role'])) {
@@ -471,7 +649,7 @@ try {
   }
 
   if ($route === 'me' && $method === 'GET') {
-    respond($me);
+    respond(array_merge($me, ['is_admin' => $isAdmin]));
   }
 
   if ($route === 'me' && $method === 'PATCH') {
